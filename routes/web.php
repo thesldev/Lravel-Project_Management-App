@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TemplateController;
@@ -117,5 +118,24 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('project.destroy');
 
+
+
+// routes for handle employee data
+
+
+// create route for get employee data page
+Route::get('/employees', [EmployeeController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('employee.index');
+
+// create route for "add client" page
+Route::get('/employees/new-employee', [EmployeeController::class, 'create'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.create');
+
+// route for employee table create function
+Route::post('/employee', [EmployeeController::class, 'store'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])
+    ->name('employee.store');
 
 require __DIR__.'/auth.php';

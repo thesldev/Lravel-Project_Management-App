@@ -105,8 +105,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Employees:</h6>
-                <a class="collapse-item" href="">View All Employees</a>
-                <a class="collapse-item" href="">Add New Employee</a>
+                <a class="collapse-item" href="{{route('employee.index')}}">View All Employees</a>
+                <a class="collapse-item" href="{{route('employee.create')}}">Add New Employee</a>
             </div>
         </div>
     </li>
