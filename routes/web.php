@@ -9,17 +9,17 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified','rolemanager:employee'])->name('dashboard');
 
 
 Route::get('/admin/dashboard', function () {
     return view('adminDashboard');
-})->middleware(['auth', 'verified'])->name('adminDashboard');
+})->middleware(['auth', 'verified', 'rolemanager:admin'])->name('adminDashboard');
 
 
 Route::get('/sup-admin/dashboard', function () {
     return view('superAdmindashboard');
-})->middleware(['auth', 'verified'])->name('supAdminDashboard');
+})->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])->name('supAdminDashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
