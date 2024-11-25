@@ -122,7 +122,6 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
 
 // routes for handle employee data
 
-
 // create route for get employee data page
 Route::get('/employees', [EmployeeController::class, 'index'])
     ->middleware(['auth', 'verified'])
