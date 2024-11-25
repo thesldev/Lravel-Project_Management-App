@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -70,5 +71,44 @@ Route::put('/client/{client}/update', [ClientController::class, 'updateData'])
 Route::delete('/client/{client}/destroy', [ClientController::class, 'deleteData'])
     ->middleware('auth','verified','rolemanager:admin,supperAdmin')
     ->name('client.deleteData');
+
+// route for grt client data in JSON format
+Route::get('/api/clients', [ClientController::class, 'getClients'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('clients.getClients');
+
+
+// routes for handel projects data
+
+// route for get project data page
+Route::get('/projects', [ProjectController::class, 'index'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->name('projects.index');
+
+// create route for "add client" page
+Route::get('/projects/new-project', [ProjectController::class, 'create'])
+    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->name('project.create');
+
+// create route for add project to system
+Route::post('/project', [ProjectController::class, 'store'])
+    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->name('project.store');
+
+// route for view selected project
+Route::get('/projects/{project}/view', [ProjectController::class, 'viewProject'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->name('project.viewProject');
+
+// route for edit project details
+Route::put('/projects/{project}/update', [ProjectController::class, 'update'])
+    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->name('project.update');
+
+// route for delete project
+Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('project.destroy');
+
 
 require __DIR__.'/auth.php';
