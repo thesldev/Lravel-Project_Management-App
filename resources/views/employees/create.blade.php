@@ -143,56 +143,42 @@
             }, false);
         })();
     </script>
+    
     <!-- Jquery function for submit form -->
     <script>
-        $(document).ready(function() {
-        // Set CSRF token for all Ajax requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Fetch clients and populate the dropdown
-        $.ajax({
-            url: '/api/clients', // Backend route to fetch clients
-            method: 'GET',
-            success: function(data) {
-                const clientDropdown = $('#client');
-                clientDropdown.empty(); // Clear any existing options
-                
-                // Add a default placeholder option
-                clientDropdown.append('<option value="">Select a Client</option>');
-                
-                // Populate dropdown with clients
-                data.forEach(function(client) {
-                    clientDropdown.append(`<option value="${client.id}">${client.name}</option>`);
-                });
-            },
-            error: function(xhr) {
-                console.error('Error fetching clients:', xhr);
-            }
-        });
-
-        // Handle form submission
-        $('#projectForm').on('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            
-            // Send Ajax POST request
-            $.ajax({
-                url: '/project', // The route defined in your Laravel app
-                method: 'POST',
-                data: $(this).serialize(), // Serialize form data
-                success: function(response) {
-                    $('#response').html('<p style="color:green;">Project added successfully!</p>');
-                },
-                error: function(xhr) {
-                    $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+        $(document).ready(function () {
+            // Set CSRF token for all Ajax requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // Handle form submission
+            $('#employeeForm').on('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                
+                // Serialize form data
+                const formData = $(this).serialize();
+                
+                // Send Ajax POST request
+                $.ajax({
+                    url: '/employee', // Replace with your Laravel route for saving employee data
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#response').html('<p style="color:green;">Employee added successfully!</p>');
+                        $('#employeeForm')[0].reset(); // Reset the form
+                        $('#employeeForm').removeClass('was-validated'); // Reset validation
+                    },
+                    error: function (xhr) {
+                        $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+                    }
+                });
+            });
         });
-    });
     </script>
+
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
