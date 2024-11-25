@@ -84,32 +84,33 @@
         </div>
     </li>
 
-    <!-- Nav Item - employee Collapse Menu -->
+    <!-- Nav Item - Employees Collapse Menu -->
     <li class="nav-item">
         <a
-        class="nav-link collapsed"
-        href="#"
-        data-toggle="collapse"
-        data-target="#collapseUtilities"
-        aria-expanded="true"
-        aria-controls="collapseUtilities"
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseEmployees"
+            aria-expanded="true"
+            aria-controls="collapseEmployees"
         >
-        <i class="fas fa-clipboard-list"></i>
-        <span>Employees</span>
+            <i class="fas fa-user-friends"></i>
+            <span>Employees</span>
         </a>
         <div
-        id="collapseUtilities"
-        class="collapse"
-        aria-labelledby="headingUtilities"
-        data-parent="#accordionSidebar"
+            id="collapseEmployees"
+            class="collapse"
+            aria-labelledby="headingEmployees"
+            data-parent="#accordionSidebar"
         >
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Manage Team:</h6>
-            <a class="collapse-item" href="{{route('projects.index')}}">View All Members</a>
-            <a class="collapse-item" href="{{route('project.create')}}">Add New Member</a>
-        </div>
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Manage Employees:</h6>
+                <a class="collapse-item" href="">View All Employees</a>
+                <a class="collapse-item" href="">Add New Employee</a>
+            </div>
         </div>
     </li>
+
 
     <!-- Divider -->
     <hr class="sidebar-divider" />
