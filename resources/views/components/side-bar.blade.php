@@ -51,8 +51,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Client Options:</h6>
-                <a class="collapse-item" href="">View All Clients</a>
-                <a class="collapse-item" href="">Add New Client</a>
+                <a class="collapse-item" href="{{route('client.index')}}">View All Clients</a>
+                <a class="collapse-item" href="{{route('client.create')}}">Add New Client</a>
             </div>
         </div>
     </li>
