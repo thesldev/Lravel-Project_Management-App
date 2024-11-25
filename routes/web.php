@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TemplateController;
@@ -117,5 +118,39 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('project.destroy');
 
+
+
+// routes for handle employee data
+
+
+// create route for get employee data page
+Route::get('/employees', [EmployeeController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('employee.index');
+
+// create route for "add client" page
+Route::get('/employees/new-employee', [EmployeeController::class, 'create'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.create');
+
+// route for employee table create function
+Route::post('/employee', [EmployeeController::class, 'store'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])
+    ->name('employee.store');
+
+// route for view selected employee
+Route::get('/employee/{employee}/view', [EmployeeController::class, 'viewEmployee'])
+    ->middleware(['auth','verified'])
+    ->name('employee.viewEmployee');
+
+// route for edit employee details
+Route::put('/employees/{employee}/update', [EmployeeController::class, 'update'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.update');
+
+// route for remove employee
+Route::delete('/employees/{employee}/destroy', [EmployeeController::class, 'destroy'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.destroy');
 
 require __DIR__.'/auth.php';
