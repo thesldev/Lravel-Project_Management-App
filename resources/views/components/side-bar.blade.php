@@ -30,7 +30,7 @@
     <!-- Heading -->
     <div class="sidebar-heading">Interface</div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - clients Collapse Menu -->
     <li class="nav-item">
         <a 
             class="nav-link collapsed" 
@@ -57,7 +57,7 @@
         </div>
     </li>
 
-    <!-- Nav Item - Utilities Collapse Menu -->
+    <!-- Nav Item - projects Collapse Menu -->
     <li class="nav-item">
         <a
         class="nav-link collapsed"
@@ -83,6 +83,34 @@
         </div>
         </div>
     </li>
+
+    <!-- Nav Item - Employees Collapse Menu -->
+    <li class="nav-item">
+        <a
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseEmployees"
+            aria-expanded="true"
+            aria-controls="collapseEmployees"
+        >
+            <i class="fas fa-user-friends"></i>
+            <span>Employees</span>
+        </a>
+        <div
+            id="collapseEmployees"
+            class="collapse"
+            aria-labelledby="headingEmployees"
+            data-parent="#accordionSidebar"
+        >
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Manage Employees:</h6>
+                <a class="collapse-item" href="">View All Employees</a>
+                <a class="collapse-item" href="">Add New Employee</a>
+            </div>
+        </div>
+    </li>
+
 
     <!-- Divider -->
     <hr class="sidebar-divider" />
