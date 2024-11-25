@@ -30,7 +30,7 @@
     <!-- Heading -->
     <div class="sidebar-heading">Interface</div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Nav Item - clients Collapse Menu -->
     <li class="nav-item">
         <a 
             class="nav-link collapsed" 
@@ -57,7 +57,7 @@
         </div>
     </li>
 
-    <!-- Nav Item - Utilities Collapse Menu -->
+    <!-- Nav Item - projects Collapse Menu -->
     <li class="nav-item">
         <a
         class="nav-link collapsed"
@@ -80,6 +80,33 @@
             <h6 class="collapse-header">Manage Projects:</h6>
             <a class="collapse-item" href="{{route('projects.index')}}">View All Projects</a>
             <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a>
+        </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - employee Collapse Menu -->
+    <li class="nav-item">
+        <a
+        class="nav-link collapsed"
+        href="#"
+        data-toggle="collapse"
+        data-target="#collapseUtilities"
+        aria-expanded="true"
+        aria-controls="collapseUtilities"
+        >
+        <i class="fas fa-clipboard-list"></i>
+        <span>Employees</span>
+        </a>
+        <div
+        id="collapseUtilities"
+        class="collapse"
+        aria-labelledby="headingUtilities"
+        data-parent="#accordionSidebar"
+        >
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Manage Team:</h6>
+            <a class="collapse-item" href="{{route('projects.index')}}">View All Members</a>
+            <a class="collapse-item" href="{{route('project.create')}}">Add New Member</a>
         </div>
         </div>
     </li>
