@@ -13,12 +13,12 @@ Route::get('/dashboard', function () {
 
 
 Route::get('/admin/dashboard', function () {
-    return view('adminDashboard');
+    return view('dashboard');
 })->middleware(['auth', 'verified', 'rolemanager:admin'])->name('adminDashboard');
 
 
 Route::get('/sup-admin/dashboard', function () {
-    return view('superAdmindashboard');
+    return view('dashboard');
 })->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])->name('supAdminDashboard');
 
 Route::middleware('auth')->group(function () {
