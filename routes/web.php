@@ -56,4 +56,19 @@ Route::get('/clients/{client}/view', [ClientController::class, 'viewClient'])
     ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
     ->name('client.view');
 
+// create route for fetch existing client data to edit
+Route::get('/client/{client}/edit', [ClientController::class, 'editData'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('client.editData');
+
+// create route for edit existing client data 
+Route::put('/client/{client}/update', [ClientController::class, 'updateData'])
+    ->middleware(['auth','verified', 'rolemanager:admin,supperAdmin'])
+    ->name('client.updateData');
+
+//create route for delete client data
+Route::delete('/client/{client}/destroy', [ClientController::class, 'deleteData'])
+    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->name('client.deleteData');
+
 require __DIR__.'/auth.php';
