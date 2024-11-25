@@ -46,12 +46,12 @@ Route::post('/clients', [ClientController::class, 'storeData'])
 
 // create route for get client data page
 Route::get('/clients', [ClientController::class, 'index'])
-    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin,employee'])
+    ->middleware(['auth', 'verified'])
     ->name('client.index');
 
 // Route for fetching client data via Ajax
 Route::get('/clients/fetch', [ClientController::class, 'fetchClients'])
-    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin,employee'])
+    ->middleware(['auth', 'verified', 'rolemanager:employee,admin,supperAdmin'])
     ->name('clients.fetch');
 
 // route for access create new client form
@@ -61,7 +61,7 @@ Route::get('/clients/add-client', [ClientController::class, 'create'])
 
 // route for get client by id
 Route::get('/clients/{client}/view', [ClientController::class, 'viewClient'])
-    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->middleware(['auth','verified'])
     ->name('client.view');
 
 // create route for fetch existing client data to edit
@@ -89,7 +89,7 @@ Route::get('/api/clients', [ClientController::class, 'getClients'])
 
 // route for get project data page
 Route::get('/projects', [ProjectController::class, 'index'])
-    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->middleware(['auth','verified'])
     ->name('projects.index');
 
 // create route for "add client" page
@@ -104,7 +104,7 @@ Route::post('/project', [ProjectController::class, 'store'])
 
 // route for view selected project
 Route::get('/projects/{project}/view', [ProjectController::class, 'viewProject'])
-    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->middleware(['auth','verified'])
     ->name('project.viewProject');
 
 // route for edit project details
