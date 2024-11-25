@@ -78,7 +78,7 @@
 
 
                         <!-- Delete Button -->
-                        <form action="" method="POST" style="display:inline;">
+                        <form action="{{ route('employee.destroy', $employee->id) }}"" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-icon-split" onclick="return confirm('Are you sure you want to delete this project?');">
@@ -92,7 +92,42 @@
                 </div>
 
                 <!-- Edit Modal -->
-                
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Client</h5>
+                                <a href="{{ route('employee.viewEmployee', ['employee' => $employee->id]) }}" class="btn-close" aria-label="Close"></a>
+                            </div>
+                            <form id="editForm" action="{{ route('employee.update', ['employee' => $employee->id]) }}" method="POST">
+                                <div class="modal-body">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-3">
+                                        <label for="editRole" class="form-label">Worker - Role</label>
+                                        <select class="form-select" id="editRole" name="role" required>
+                                            <option value="0" @if ($employee->role == 0) selected @endif>Super Admin</option>
+                                            <option value="1" @if ($employee->role == 1) selected @endif>Admin</option>
+                                            <option value="2" @if ($employee->role == 2) selected @endif>Employee</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editJobrole" class="form-label">Job Role</label>
+                                        <textarea class="form-control" id="editJobrole" name="job_role">{{ $employee->job_role }}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editPosition" class="form-label">Position</label>
+                                        <textarea class="form-control" id="editPosition" name="position">{{ $employee->position }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="{{ route('employee.viewEmployee', ['employee' => $employee->id]) }}" class="btn btn-secondary">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <!-- /.container-fluid -->
 
             </div>
@@ -118,7 +153,68 @@
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Ajax and Jquery functions for handle update form -->
-     
+    <script>
+        $(document).ready(function () {
+        // Set CSRF token for all Ajax requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        let employeeId;
+
+        // Open edit modal and populate fields
+        $('#editButton').on('click', function () {
+            employeeId = "{{ $employee->id }}"; // Ensure employee ID is valid
+            
+            // Populate modal fields with employee data
+            $('#editRole').val("{{ $employee->role }}");
+            $('#editJobrole').val("{{ $employee->job_role }}");
+            $('#editPosition').val("{{ $employee->position }}");
+
+            // Show modal
+            $('#editModal').modal('show');
+        });
+
+        // Handle form submission
+        $('#editForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            if (!employeeId) {
+                alert('Employee ID is missing. Please try again.');
+                return;
+            }
+
+            // Serialize form data
+            const formData = $(this).serialize();
+
+            // AJAX request to update employee
+            $.ajax({
+                url: `/employees/${employeeId}/update`,  // Ensure employeeId is properly set
+                method: 'PUT',
+                data: formData,  // Ensure formData is serialized correctly
+                success: function (response) {
+                    // Close the modal
+                    $('#editModal').modal('hide');
+
+                    // Optionally, show a success message
+                    $('#response').html('<p style="color:green;">Employee updated successfully!</p>');
+
+                    // Reload the page to reflect changes
+                    location.reload();  // This will reload the current page
+                },
+                error: function (xhr) {
+                    // Handle error
+                    $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+                }
+            });
+
+
+        });
+    });
+
+    </script>
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>

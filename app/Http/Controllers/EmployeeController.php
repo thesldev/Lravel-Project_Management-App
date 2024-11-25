@@ -49,4 +49,29 @@ class EmployeeController extends Controller
     }
 
 
+    // function for update existing employee
+    public function update(Employees $employee, Request $request)
+    {
+        $data = $request->validate([
+            'role' => 'required|in:0,1,2',
+            'job_role' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+        ]);
+
+        $employee->update($data);
+        
+    }
+
+    // function for delete employees
+    public function destroy(Employees $employee)
+    {
+        // Delete the project
+        $employee->delete();
+
+        // Return the index view with the updated projects list
+        return redirect()->route('employee.index')->with('success', 'Employee Deleted successfully');
+
+    }
+
+
 }

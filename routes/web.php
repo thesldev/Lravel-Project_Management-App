@@ -143,5 +143,14 @@ Route::get('/employee/{employee}/view', [EmployeeController::class, 'viewEmploye
     ->middleware(['auth','verified'])
     ->name('employee.viewEmployee');
 
+// route for edit employee details
+Route::put('/employees/{employee}/update', [EmployeeController::class, 'update'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.update');
+
+// route for remove employee
+Route::delete('/employees/{employee}/destroy', [EmployeeController::class, 'destroy'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('employee.destroy');
 
 require __DIR__.'/auth.php';
