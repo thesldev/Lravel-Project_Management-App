@@ -40,7 +40,6 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <!-- Begin Page Content -->
                 <div class="container my-5">
                     
                     <h1 class="h3 mb-4 text-gray-800">Add New Client</h1>
