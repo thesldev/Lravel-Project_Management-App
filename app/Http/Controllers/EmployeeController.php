@@ -9,9 +9,10 @@ class EmployeeController extends Controller
 {
 
     public function index(){
-        // fetch client data from model
-        $clients = Employees::all();
-        return view('employees.index');
+        // fetch employee data from model
+        $employees = Employees::all();
+
+        return view('employees.index', ['employees' => $employees]);
 
     }
 
@@ -41,4 +42,11 @@ class EmployeeController extends Controller
         return redirect()->route('employee.index')->with('success', 'Employee created successfully!');
 
     }
+
+    // function for get selected employee data
+    public function viewEmployee(Employees $employee){
+        return view('employees.view', compact('employee'));
+    }
+
+
 }

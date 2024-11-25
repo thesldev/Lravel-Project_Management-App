@@ -138,4 +138,10 @@ Route::post('/employee', [EmployeeController::class, 'store'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])
     ->name('employee.store');
 
+// route for view selected employee
+Route::get('/employee/{employee}/view', [EmployeeController::class, 'viewEmployee'])
+    ->middleware(['auth','verified'])
+    ->name('employee.viewEmployee');
+
+
 require __DIR__.'/auth.php';
