@@ -5,7 +5,7 @@
     <!-- Sidebar - Brand -->
     <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href=""
+        href={{ route('home.index') }}
     >
         <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
@@ -18,7 +18,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{ route('home.index') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
@@ -51,8 +51,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Client Options:</h6>
-                <a class="collapse-item" href="{{route('client.index')}}">View All Clients</a>
-                <a class="collapse-item" href="{{route('client.create')}}">Add New Client</a>
+                <a class="collapse-item" href="{{ route('client.index') }}">View All Clients</a>
+                <a class="collapse-item" href="{{ route('client.create') }}">Add New Client</a>
             </div>
         </div>
     </li>
@@ -78,8 +78,8 @@
         >
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Manage Projects:</h6>
-            <a class="collapse-item" href="">View All Projects</a>
-            <a class="collapse-item" href="">Add New Project</a>
+            <a class="collapse-item" href="{{route('projects.index')}}">View All Projects</a>
+            <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a>
         </div>
         </div>
     </li>
@@ -111,14 +111,15 @@
         >
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="">Login</a>
-            <a class="collapse-item" href="">Register</a>
-            <a class="collapse-item" href=""
+            <a class="collapse-item" href="login.html">Login</a>
+            <a class="collapse-item" href="register.html">Register</a>
+            <a class="collapse-item" href="forgot-password.html"
             >Forgot Password</a
             >
             <div class="collapse-divider"></div>
             <h6 class="collapse-header">Other Pages:</h6>
             <a class="collapse-item" href="404.html">404 Page</a>
+            <a class="collapse-item" href="blank.html">Blank Page</a>
         </div>
         </div>
     </li>
@@ -146,4 +147,6 @@
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
-  </ul>
+    </ul>
+
+    <x-logoutModule />

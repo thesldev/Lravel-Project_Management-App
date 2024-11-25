@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,6 +23,12 @@ Route::get('/admin/dashboard', function () {
 Route::get('/sup-admin/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])->name('supAdminDashboard');
+
+
+// create rout for home & dashboard
+Route::get('/home', [TemplateController::class, 'index'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin,employee'])
+    ->name('home.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
