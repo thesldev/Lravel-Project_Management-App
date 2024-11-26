@@ -2,12 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Project;
+use Carbon\Carbon;
 
 class TemplateController extends Controller
 {
-    // create function for display home page
-    public function index(){
-        return view('dashboard');
+    // Create function to display home page
+    public function index()
+    {
+        // Calculate total budget for the current year
+        $totalBudget = Project::whereYear('start_date', Carbon::now()->year)->sum('budget');
+
+        // Calculate total budget for the current month
+        $monthlyEarnings = Project::whereYear('start_date', Carbon::now()->year)
+            ->whereMonth('start_date', Carbon::now()->month)
+            ->sum('budget');
+
+        // Pass the $totalBudget to the view
+        return view('dashboard', compact('totalBudget','monthlyEarnings'));
     }
+
 }
