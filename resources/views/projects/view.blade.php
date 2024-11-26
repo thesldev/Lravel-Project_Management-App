@@ -63,24 +63,25 @@
                         <div class="card-body">
                             <h5 class="font-weight-bold text-primary">Assigned Employees</h5>
                             @if($project->employees->count() > 0)
-                                <ul>
+                                <div class="row">
                                     @foreach($project->employees as $employee)
-                                        <li>
-                                            <strong>Name:</strong> {{ $employee->name }} 
-                                            | <strong>Email:</strong> {{ $employee->email }}
-                                            @if($employee->job_role)
-                                                | <strong>Role:</strong> {{ $employee->job_role }}
-                                            @endif
-                                            @if($employee->position)
-                                                | <strong>Position:</strong> {{ $employee->position }}
-                                            @endif
-                                        </li>
+                                        <div class="col-12 col-sm-6 col-lg-3">
+                                            <x-employee-card 
+                                                :role="$employee->role" 
+                                                :profileImage="null" 
+                                                :name="$employee->name" 
+                                                :jobRole="$employee->job_role" 
+                                                :position="$employee->position" 
+                                                :email="$employee->email" />
+                                        </div>
                                     @endforeach
-                                </ul>
+                                </div>
                             @else
                                 <p>No employees assigned to this project.</p>
                             @endif
                         </div>
+
+
                         
                         <!-- Extended Deadline -->
                         <hr>
