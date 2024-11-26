@@ -32,8 +32,20 @@ class TemplateController extends Controller
         // Count total employees
         $totalEmployees = Employees::count(); 
 
+        // Calculate the number of completed, ongoing, and pending projects
+        $completedProjects = Project::where('status', 'completed')->count();
+        $ongoingProjects = Project::where('status', 'ongoing')->count();
+        $pendingProjects = Project::where('status', 'pending')->count();
+
+        // Prepare data for the pie chart
+        $chartData = [
+            'completed' => $completedProjects,
+            'ongoing' => $ongoingProjects,
+            'pending' => $pendingProjects,
+        ];
+
         // Pass the $totalBudget to the view
-        return view('dashboard', compact('totalBudget','monthlyEarnings','totalProjects','totalEmployees','monthlyData'));
+        return view('dashboard', compact('totalBudget','monthlyEarnings','totalProjects','totalEmployees','monthlyData','chartData'));
     }
 
 }
