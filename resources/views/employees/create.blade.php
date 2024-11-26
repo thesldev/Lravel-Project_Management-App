@@ -289,6 +289,7 @@
                 // Send Ajax POST request
                 $.ajax({
                     url: '/employee', 
+                    method: 'POST',
                     data: formData,
                     success: function (response) {
                         $('#response').html('<p style="color:green;">Employee added successfully!</p>');
