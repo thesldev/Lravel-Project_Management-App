@@ -48,52 +48,63 @@
                             <h6 class="m-0 font-weight-bold text-primary">Project Information</h6>
                         </div>
                         <div class="card-body">
-                            <p><strong>Project ID:</strong> {{ $project->id }}</p>
-                            <p><strong>Project Name:</strong> {{ $project->name }}</p>
-                            <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
-                            <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
-                            <p><strong>Description:</strong> {{ $project->description }}</p>
-                            <p><strong>Project Status:</strong> {{ $project->status }}</p>
-                            <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
-                            <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Project ID:</strong> {{ $project->id }}</p>
+                                    <p><strong>Project Name:</strong> {{ $project->name }}</p>
+                                    <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
+                                    <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Description:</strong> {{ $project->description }}</p>
+                                    <p><strong>Project Status:</strong> {{ $project->status }}</p>
+                                    <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
+                                    <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
+                                </div>
+                            </div>
                         </div>
-                        
+              
                         <!-- Assigned Employees, Job Role & Position -->
                         <hr>
-                        <h5 class="font-weight-bold text-primary">Assigned Employees</h5>
-                        @if($project->employees->count() > 0)
-                            <ul>
-                                @foreach($project->employees as $employee)
-                                    <li>
-                                        <strong>Name:</strong> {{ $employee->name }} 
-                                        | <strong>Email:</strong> {{ $employee->email }}
-                                        @if($employee->job_role)
-                                            | <strong>Role:</strong> {{ $employee->job_role }}
-                                        @endif
-                                        @if($employee->position)
-                                            | <strong>Position:</strong> {{ $employee->position }}
-                                        @endif
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <p>No employees assigned to this project.</p>
-                        @endif
+                        <div class="card-body">
+                            <h5 class="font-weight-bold text-primary">Assigned Employees</h5>
+                            @if($project->employees->count() > 0)
+                                <div class="row">
+                                    @foreach($project->employees as $employee)
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <x-employee-card 
+                                            :role="$employee->role" 
+                                            :profileImage="null" 
+                                            :name="$employee->name" 
+                                            :jobRole="$employee->job_role" 
+                                            :position="$employee->position" 
+                                            :email="$employee->email" />
+                                    </div>
 
+                                    @endforeach
+                                </div>
+                            @else
+                                <p>No employees assigned to this project.</p>
+                            @endif
+                        </div>
+                        
                         <!-- Extended Deadline -->
                         <hr>
-                        <h5 class="font-weight-bold text-primary">Extended Deadline</h5>
-                        @if($project->extended_deadline)
-                            <p><strong>Extended Deadline:</strong> {{ $project->extended_deadline }}</p>
-                        @else
-                            <p>No extended deadline set for this project.</p>
-                        @endif
+                        <div class="card-body">
+                            <h5 class="font-weight-bold text-primary">Extended Deadline</h5>
+                            @if($project->extended_deadline)
+                                <p><strong>Extended Deadline:</strong> {{ $project->extended_deadline }}</p>
+                            @else
+                                <p>No extended deadline set for this project.</p>
+                            @endif
+                         </div>
 
                         <!-- Project Priority -->
-                        <hr>
-                        <h5 class="font-weight-bold text-primary">Project Priority</h5>
-                        <p><strong>Priority:</strong> {{ $project->priority ?? 'Medium' }}</p>
-
+                        <div class="card-body">
+                            <h5 class="font-weight-bold text-primary">Project Priority</h5>
+                            <p><strong>Priority:</strong> {{ $project->priority ?? 'Medium' }}</p>
+                        </div>
+                        
                     </div>
 
                     <!-- Action Buttons -->
