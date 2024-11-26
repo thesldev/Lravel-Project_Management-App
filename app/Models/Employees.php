@@ -25,6 +25,7 @@ class Employees extends Model
     // define relationship with project table
     public function projects()
     {
-        return $this->hasMany(Project::class, 'employee_id'); 
+        return $this->belongsToMany(Project::class, 'employee_project', 'employee_id', 'project_id');
     }
+
 }
