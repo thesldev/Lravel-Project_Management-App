@@ -42,7 +42,7 @@
                 <!-- Begin Page Content -->
                 <div class="container my-5">
                     
-                    <h1 class="h3 mb-4 text-gray-800">Add New Client</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Create New Project</h1>
 
                     <form id="projectForm" class="needs-validation" novalidate>
                         <div class="mb-3">
@@ -75,11 +75,18 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="budget" class="form-label">Budget:</label>
+                            <input type="text" class="form-control" id="budget" name="budget" placeholder="Enter project budget" pattern="^\d+(\.\d{1,2})?$" title="Budget should be a valid number with up to 2 decimal places.">
+                            <div class="invalid-feedback">Please enter a valid budget amount.</div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="status" class="form-label">Status:</label>
                             <select id="status" name="status" class="form-select" required>
                                 <option value="Pending">Pending</option>
                                 <option value="Ongoing">Ongoing</option>
                                 <option value="Completed">Completed</option>
+                                <option value="Delivered">Delivered</option>
                             </select>
                             <div class="invalid-feedback">Please select a status.</div>
                         </div>
@@ -146,52 +153,60 @@
     <!-- Jquery function for submit form -->
     <script>
         $(document).ready(function() {
-        // Set CSRF token for all Ajax requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Fetch clients and populate the dropdown
-        $.ajax({
-            url: '/api/clients', // Backend route to fetch clients
-            method: 'GET',
-            success: function(data) {
-                const clientDropdown = $('#client');
-                clientDropdown.empty(); // Clear any existing options
-                
-                // Add a default placeholder option
-                clientDropdown.append('<option value="">Select a Client</option>');
-                
-                // Populate dropdown with clients
-                data.forEach(function(client) {
-                    clientDropdown.append(`<option value="${client.id}">${client.name}</option>`);
-                });
-            },
-            error: function(xhr) {
-                console.error('Error fetching clients:', xhr);
-            }
-        });
-
-        // Handle form submission
-        $('#projectForm').on('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-            
-            // Send Ajax POST request
-            $.ajax({
-                url: '/project', // The route defined in your Laravel app
-                method: 'POST',
-                data: $(this).serialize(), // Serialize form data
-                success: function(response) {
-                    $('#response').html('<p style="color:green;">Project added successfully!</p>');
-                },
-                error: function(xhr) {
-                    $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+            // Set CSRF token for all Ajax requests
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            // Fetch clients and populate the dropdown
+            $.ajax({
+                url: '/api/clients', 
+                method: 'GET',
+                success: function(data) {
+                    const clientDropdown = $('#client');
+                    clientDropdown.empty(); 
+                    
+                    // Add a default placeholder option
+                    clientDropdown.append('<option value="">Select a Client</option>');
+                    
+                    // Populate dropdown with clients
+                    data.forEach(function(client) {
+                        clientDropdown.append(`<option value="${client.id}">${client.name}</option>`);
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error fetching clients:', xhr);
+                }
+            });
+
+            // Handle form submission
+            $('#projectForm').on('submit', function(event) {
+                event.preventDefault(); 
+                
+                // Validate the form first
+                if (!this.checkValidity()) {
+                    event.stopPropagation(); // Prevent submission if validation fails
+                    this.classList.add('was-validated');
+                    return; // Stop form submission
+                }
+
+                // Send Ajax POST request
+                $.ajax({
+                    url: '/project', 
+                    method: 'POST',
+                    data: $(this).serialize(), // Serialize form data
+                    success: function(response) {
+                        $('#response').html('<p style="color:green;">Project added successfully!</p>');
+                    },
+                    error: function(xhr) {
+                        $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+                    }
+                });
+            });
         });
-    });
+
     </script>
 
     <!-- Core plugin JavaScript-->
