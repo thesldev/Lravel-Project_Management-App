@@ -118,6 +118,11 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('project.destroy');
 
+// route for manage project
+Route::get('/projects/{project}/manage', [ProjectController::class, 'manage'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('project.manage');
+
 
 
 // routes for handle employee data
