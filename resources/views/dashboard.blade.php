@@ -576,8 +576,7 @@
 
         var myPieChart = new Chart(ctp, {
             type: 'pie',
-            data: {
-                labels: ["Completed", "Ongoing", "Pending"],
+            data: {   
                 datasets: [{
                     data: chartData, // Using the passed PHP data here
                     backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
