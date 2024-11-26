@@ -61,6 +61,15 @@
 
                     <!-- Action Buttons -->
                     <div>
+
+                        <!-- Manage Button -->
+                        <a href="{{ route('project.manage', $project->id) }}" class="btn btn-primary btn-icon-split" style="margin-right: 10px;">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-tasks"></i>
+                            </span>
+                            <span class="text">Manage</span>
+                        </a>
+
                         <!-- Edit Button -->
                         <a href="javascript:void(0);" id="editButton" class="btn btn-warning btn-icon-split" style="margin-right: 10px;">
                             <span class="icon text-white-50">
@@ -226,6 +235,8 @@
             });
         });
     </script>
+
+
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
