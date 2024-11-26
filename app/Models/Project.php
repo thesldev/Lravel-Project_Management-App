@@ -19,8 +19,14 @@ class Project extends Model
         'client_id',
         'project_type',
         'status',
+        'priority',
         'start_date',
-        'end_date'
+        'end_date',
+        'extended_deadline'
+    ];
+
+    protected $casts = [
+        'assigned_employees' => 'array', // Automatically handle JSON conversion
     ];
 
     // define the relationship between clident & project
@@ -29,6 +35,7 @@ class Project extends Model
         return $this->belongsTo(Client::class);
     }
 
+    // Define the relationship between project and employees (pivot table)
     public function employees()
     {
         return $this->belongsToMany(Employees::class, 'employee_project', 'project_id', 'employee_id');

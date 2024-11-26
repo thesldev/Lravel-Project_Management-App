@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('priority')->default('Medium');
             $table->date('start_date');
             $table->date('end_date')->nullable();
-            $table->json('assigned_employees')->nullable();
             $table->date('extended_deadline')->nullable();
             $table->timestamps();
 
@@ -36,9 +35,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('project');
 
-        Schema::table('project', function (Blueprint $table) {
-            $table->dropColumn('assigned_employees');
-            $table->dropColumn('extended_deadline');
-        });
     }
 };
