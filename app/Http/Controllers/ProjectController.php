@@ -35,6 +35,7 @@ class ProjectController extends Controller
             'status' => 'required|in:Pending,Ongoing,Completed',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'budget' => 'nullable|regex:/^\d+(\.\d{1,2})?$/|min:0',
         ]);
 
         // save data in databse
@@ -68,6 +69,7 @@ class ProjectController extends Controller
             'status' => 'required|in:Pending,Ongoing,Completed',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'budget' => 'nullable|regex:/^\d+(\.\d{1,2})?$/|min:0',
         ]);
 
         // Update the project with validated data

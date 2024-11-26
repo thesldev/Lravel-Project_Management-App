@@ -19,6 +19,7 @@ class Project extends Model
         'client_id',
         'project_type',
         'status',
+        'budget',
         'priority',
         'start_date',
         'end_date',
@@ -26,7 +27,7 @@ class Project extends Model
     ];
 
     protected $casts = [
-        'assigned_employees' => 'array', // Automatically handle JSON conversion
+        'assigned_employees' => 'array', 
     ];
 
     // define the relationship between clident & project
