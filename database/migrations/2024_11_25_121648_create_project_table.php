@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('client_id');
             $table->string('project_type');
+            $table->decimal('budget', 10,2)->nullable();
             $table->string('status');
             $table->string('priority')->default('Medium');
             $table->date('start_date');
