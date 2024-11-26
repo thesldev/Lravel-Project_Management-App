@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Employees;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -95,6 +96,36 @@ class ProjectController extends Controller
         // Return the index view with the updated projects list
         return redirect()->route('projects.index')->with('success', 'Project Deleted successfully');
 
+    }
+
+
+    // functions for handle project's manage data
+    public function manageData(Project $project)
+    {
+        $employees = Employees::all();
+        $assignedEmployees = $project->employees->pluck('id')->toArray();
+
+        return response()->json([
+            'employees' => $employees,
+            'assignedEmployees' => $assignedEmployees,
+            'priority' => $project->priority ?? 'Medium', // Assuming a 'priority' field
+            'end_date' => $project->end_date,
+        ]);
+    }
+
+
+    // functions for handle project's manage data
+    public function updateManageData(Request $request, Project $project)
+    {
+        $project->update([
+            'extended_deadline' => $request->end_date,
+            'priority' => $request->priority,
+        ]);
+
+        // Sync employees
+        $project->employees()->sync($request->employees); 
+
+        return response()->json(['message' => 'Project updated successfully']);
     }
 
 }
