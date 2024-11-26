@@ -48,16 +48,22 @@
                             <h6 class="m-0 font-weight-bold text-primary">Project Information</h6>
                         </div>
                         <div class="card-body">
-                            <p><strong>Project ID:</strong> {{ $project->id }}</p>
-                            <p><strong>Project Name:</strong> {{ $project->name }}</p>
-                            <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
-                            <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
-                            <p><strong>Description:</strong> {{ $project->description }}</p>
-                            <p><strong>Project Status:</strong> {{ $project->status }}</p>
-                            <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
-                            <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Project ID:</strong> {{ $project->id }}</p>
+                                    <p><strong>Project Name:</strong> {{ $project->name }}</p>
+                                    <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
+                                    <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Description:</strong> {{ $project->description }}</p>
+                                    <p><strong>Project Status:</strong> {{ $project->status }}</p>
+                                    <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
+                                    <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
+                                </div>
+                            </div>
                         </div>
-                        
+              
                         <!-- Assigned Employees, Job Role & Position -->
                         <hr>
                         <div class="card-body">
@@ -81,8 +87,6 @@
                                 <p>No employees assigned to this project.</p>
                             @endif
                         </div>
-
-
                         
                         <!-- Extended Deadline -->
                         <hr>
@@ -94,8 +98,6 @@
                                 <p>No extended deadline set for this project.</p>
                             @endif
                          </div>
-
-                        
 
                         <!-- Project Priority -->
                         <div class="card-body">
