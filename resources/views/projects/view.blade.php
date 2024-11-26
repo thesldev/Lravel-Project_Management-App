@@ -57,10 +57,56 @@
                             <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
                             <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
                         </div>
+                        
+                        <!-- Assigned Employees, Job Role & Position -->
+                        <hr>
+                        <h5 class="font-weight-bold text-primary">Assigned Employees</h5>
+                        @if($project->employees->count() > 0)
+                            <ul>
+                                @foreach($project->employees as $employee)
+                                    <li>
+                                        <strong>Name:</strong> {{ $employee->name }} 
+                                        | <strong>Email:</strong> {{ $employee->email }}
+                                        @if($employee->job_role)
+                                            | <strong>Role:</strong> {{ $employee->job_role }}
+                                        @endif
+                                        @if($employee->position)
+                                            | <strong>Position:</strong> {{ $employee->position }}
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>No employees assigned to this project.</p>
+                        @endif
+
+                        <!-- Extended Deadline -->
+                        <hr>
+                        <h5 class="font-weight-bold text-primary">Extended Deadline</h5>
+                        @if($project->extended_deadline)
+                            <p><strong>Extended Deadline:</strong> {{ $project->extended_deadline }}</p>
+                        @else
+                            <p>No extended deadline set for this project.</p>
+                        @endif
+
+                        <!-- Project Priority -->
+                        <hr>
+                        <h5 class="font-weight-bold text-primary">Project Priority</h5>
+                        <p><strong>Priority:</strong> {{ $project->priority ?? 'Medium' }}</p>
+
                     </div>
 
                     <!-- Action Buttons -->
                     <div>
+
+                        <!-- Manage Button -->
+                        <a href="javascript:void(0);" class="btn btn-primary btn-icon-split" onclick="openManageProjectModal('{{ $project->id }}')">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-tasks"></i>
+                            </span>
+                            <span class="text">Manage</span>
+                        </a>
+      
                         <!-- Edit Button -->
                         <a href="javascript:void(0);" id="editButton" class="btn btn-warning btn-icon-split" style="margin-right: 10px;">
                             <span class="icon text-white-50">
@@ -68,7 +114,6 @@
                             </span>
                             <span class="text">Edit</span>
                         </a>
-
 
                         <!-- Delete Button -->
                         <form action="{{ route('project.destroy', $project->id) }}" method="POST" style="display:inline;">
@@ -145,6 +190,57 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- Manage Project Modal -->
+                <div class="modal fade" id="manageProjectModal" tabindex="-1" role="dialog" aria-labelledby="manageProjectModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="manageProjectModalLabel">Manage Project</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="manageProjectForm">
+                                <div class="modal-body">
+                                    <div id="responseMessage"></div>
+
+                                    <!-- Assign Employees -->
+                                    <div class="form-group">
+                                        <label for="employees">Assign/Remove Employees</label>
+                                        <select id="employees" name="employees[]" class="form-control" multiple>
+                                            <!-- Dynamic Employee List -->
+                                        </select>
+                                    </div>
+
+                                    <!-- Set Priority -->
+                                    <div class="form-group">
+                                        <label for="priority">Set Priority</label>
+                                        <select id="priority" name="priority" class="form-control">
+                                            <option value="Low">Low</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="High">High</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Extend Deadline -->
+                                    <div class="form-group">
+                                        <label for="end_date">Extend Deadline</label>
+                                        <input type="date" id="end_date" name="end_date" class="form-control">
+                                    </div>
+
+                                    <input type="hidden" id="project_id" name="project_id">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- /.container-fluid -->
 
             </div>
@@ -225,6 +321,68 @@
                 });
             });
         });
+    </script>
+
+    <!-- Ajax and Jquery functions for handle manage function -->
+    <script>
+        function openManageProjectModal(projectId) {
+        // Set project ID in the modal's hidden field
+        $('#project_id').val(projectId);
+
+        // Clear response message
+        $('#responseMessage').html('');
+
+        // Fetch existing data for this project via AJAX
+        $.ajax({
+            url: `/projects/${projectId}/manage-data`,
+            method: 'GET',
+            success: function (data) {
+                // Populate employee list
+                let employeeOptions = '';
+                data.employees.forEach(employee => {
+                    const selected = data.assignedEmployees.includes(employee.id) ? 'selected' : '';
+                    employeeOptions += `<option value="${employee.id}" ${selected}>${employee.name}</option>`;
+                });
+                $('#employees').html(employeeOptions);
+
+                // Set priority
+                $('#priority').val(data.priority);
+
+                // Set deadline
+                $('#end_date').val(data.end_date);
+            },
+            error: function () {
+                alert('Failed to load project data.');
+            }
+        });
+
+        // Open the modal
+        $('#manageProjectModal').modal('show');
+    }
+
+        $('#manageProjectForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const projectId = $('#project_id').val();
+        const formData = $(this).serialize(); // This should automatically handle the 'employees[]' field
+
+        console.log('Form Data:', formData);
+
+        $.ajax({
+            url: `/projects/${projectId}/manage`,
+            method: 'POST',
+            data: formData,
+            success: function (response) {
+                $('#responseMessage').html('<p class="text-success">Project updated successfully!</p>');
+                setTimeout(() => $('#manageProjectModal').modal('hide'), 1500);
+            },
+            error: function (xhr) {
+                $('#responseMessage').html(`<p class="text-danger">Error: ${xhr.responseText}</p>`);
+            }
+        });
+    });
+
+
     </script>
 
     <!-- Core plugin JavaScript-->
