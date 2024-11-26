@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employees;
 use App\Models\Project;
 use Carbon\Carbon;
 
@@ -18,8 +19,14 @@ class TemplateController extends Controller
             ->whereMonth('start_date', Carbon::now()->month)
             ->sum('budget');
 
+        // Count total number of projects
+        $totalProjects = Project::count();
+
+        // Count total employees
+        $totalEmployees = Employees::count(); 
+
         // Pass the $totalBudget to the view
-        return view('dashboard', compact('totalBudget','monthlyEarnings'));
+        return view('dashboard', compact('totalBudget','monthlyEarnings','totalProjects','totalEmployees'));
     }
 
 }
