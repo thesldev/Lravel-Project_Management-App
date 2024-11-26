@@ -70,15 +70,140 @@
 
                         <div class="mb-3">
                             <label for="job_role" class="form-label">Job Role:</label>
-                            <input type="text" class="form-control" id="job_role" name="job_role" placeholder="Enter job role" required>
-                            <div class="invalid-feedback">Please enter a job role.</div>
+                            <select class="form-select" id="job_role" name="job_role" required>
+                                <option value="" disabled selected>Select a job role</option>
+                                <!-- Development -->
+                                <optgroup label="Development">
+                                    <option value="Front-End Developer">Front-End Developer</option>
+                                    <option value="Back-End Developer">Back-End Developer</option>
+                                    <option value="Full-Stack Developer">Full-Stack Developer</option>
+                                    <option value="Mobile App Developer">Mobile App Developer</option>
+                                    <option value="Game Developer">Game Developer</option>
+                                    <option value="Software Developer">Software Developer</option>
+                                    <option value="Web Developer">Web Developer</option>
+                                </optgroup>
+                                <!-- Software Engineering -->
+                                <optgroup label="Software Engineering">
+                                    <option value="Software Engineer">Software Engineer</option>
+                                    <option value="Application Engineer">Application Engineer</option>
+                                    <option value="Embedded Systems Engineer">Embedded Systems Engineer</option>
+                                    <option value="Systems Software Engineer">Systems Software Engineer</option>
+                                    <option value="Firmware Engineer">Firmware Engineer</option>
+                                </optgroup>
+                                <!-- Cloud Engineering -->
+                                <optgroup label="Cloud Engineering">
+                                    <option value="Cloud Engineer">Cloud Engineer</option>
+                                    <option value="Cloud Solutions Architect">Cloud Solutions Architect</option>
+                                    <option value="Cloud DevOps Engineer">Cloud DevOps Engineer</option>
+                                    <option value="Cloud Security Engineer">Cloud Security Engineer</option>
+                                    <option value="Cloud Infrastructure Engineer">Cloud Infrastructure Engineer</option>
+                                </optgroup>
+                                <!-- Developer Operations (DevOps) -->
+                                <optgroup label="Developer Operations (DevOps)">
+                                    <option value="DevOps Engineer">DevOps Engineer</option>
+                                    <option value="Site Reliability Engineer (SRE)">Site Reliability Engineer (SRE)</option>
+                                    <option value="Build and Release Engineer">Build and Release Engineer</option>
+                                    <option value="Infrastructure Engineer">Infrastructure Engineer</option>
+                                </optgroup>
+                                <!-- Data Engineering -->
+                                <optgroup label="Data Engineering">
+                                    <option value="Data Engineer">Data Engineer</option>
+                                    <option value="Data Architect">Data Architect</option>
+                                    <option value="Big Data Engineer">Big Data Engineer</option>
+                                    <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                                    <option value="Artificial Intelligence Engineer">Artificial Intelligence Engineer</option>
+                                </optgroup>
+                                <!-- Quality Assurance (QA) -->
+                                <optgroup label="Quality Assurance (QA)">
+                                    <option value="QA Engineer">QA Engineer</option>
+                                    <option value="Test Automation Engineer">Test Automation Engineer</option>
+                                    <option value="Performance Tester">Performance Tester</option>
+                                    <option value="QA Analyst">QA Analyst</option>
+                                    <option value="Manual Tester">Manual Tester</option>
+                                </optgroup>
+                                <!-- Business Analytics -->
+                                <optgroup label="Business Analytics">
+                                    <option value="Business Analyst">Business Analyst</option>
+                                    <option value="Data Analyst">Data Analyst</option>
+                                    <option value="Product Analyst">Product Analyst</option>
+                                    <option value="Systems Analyst">Systems Analyst</option>
+                                </optgroup>
+                                <!-- Project Management -->
+                                <optgroup label="Project Management">
+                                    <option value="Project Manager">Project Manager</option>
+                                    <option value="Scrum Master">Scrum Master</option>
+                                    <option value="Technical Program Manager">Technical Program Manager</option>
+                                </optgroup>
+                            </select>
+                            <div class="invalid-feedback">Please select a job role.</div>
                         </div>
+
 
                         <div class="mb-3">
                             <label for="position" class="form-label">Position:</label>
-                            <input type="text" class="form-control" id="position" name="position" placeholder="Enter position" required>
-                            <div class="invalid-feedback">Please enter a position.</div>
+                            <select class="form-select" id="position" name="position" required>
+                                <option value="" disabled selected>Select a position</option>
+                                <!-- Entry-Level Positions -->
+                                <optgroup label="Entry-Level">
+                                    <option value="Intern">Intern</option>
+                                    <option value="Junior Developer">Junior Developer</option>
+                                    <option value="Junior Software Engineer">Junior Software Engineer</option>
+                                    <option value="Junior Data Analyst">Junior Data Analyst</option>
+                                    <option value="IT Support Intern">IT Support Intern</option>
+                                    <option value="QA Intern">QA Intern</option>
+                                    <option value="Technical Support Specialist">Technical Support Specialist</option>
+                                </optgroup>
+                                <!-- Mid-Level Positions -->
+                                <optgroup label="Mid-Level">
+                                    <option value="Software Developer">Software Developer</option>
+                                    <option value="Data Analyst">Data Analyst</option>
+                                    <option value="DevOps Engineer">DevOps Engineer</option>
+                                    <option value="Systems Administrator">Systems Administrator</option>
+                                    <option value="Cloud Engineer">Cloud Engineer</option>
+                                    <option value="QA Engineer">QA Engineer</option>
+                                    <option value="UI/UX Designer">UI/UX Designer</option>
+                                    <option value="Product Manager">Product Manager</option>
+                                    <option value="IT Specialist">IT Specialist</option>
+                                    <option value="Network Engineer">Network Engineer</option>
+                                </optgroup>
+                                <!-- Senior-Level Positions -->
+                                <optgroup label="Senior-Level">
+                                    <option value="Senior Developer">Senior Developer</option>
+                                    <option value="Senior Software Engineer">Senior Software Engineer</option>
+                                    <option value="Senior Data Engineer">Senior Data Engineer</option>
+                                    <option value="Senior Cloud Architect">Senior Cloud Architect</option>
+                                    <option value="Senior DevOps Engineer">Senior DevOps Engineer</option>
+                                    <option value="Senior QA Analyst">Senior QA Analyst</option>
+                                    <option value="Senior Product Manager">Senior Product Manager</option>
+                                    <option value="Technical Lead">Technical Lead</option>
+                                    <option value="IT Project Manager">IT Project Manager</option>
+                                    <option value="Senior Business Analyst">Senior Business Analyst</option>
+                                </optgroup>
+                                <!-- Managerial and Leadership Positions -->
+                                <optgroup label="Managerial & Leadership">
+                                    <option value="IT Manager">IT Manager</option>
+                                    <option value="Engineering Manager">Engineering Manager</option>
+                                    <option value="QA Manager">QA Manager</option>
+                                    <option value="Product Owner">Product Owner</option>
+                                    <option value="Director of Technology">Director of Technology</option>
+                                    <option value="Chief Technology Officer">Chief Technology Officer (CTO)</option>
+                                    <option value="Chief Information Officer">Chief Information Officer (CIO)</option>
+                                    <option value="VP of Engineering">VP of Engineering</option>
+                                </optgroup>
+                                <!-- Specialist Positions -->
+                                <optgroup label="Specialist Positions">
+                                    <option value="Cloud Solutions Architect">Cloud Solutions Architect</option>
+                                    <option value="Data Architect">Data Architect</option>
+                                    <option value="Network Architect">Network Architect</option>
+                                    <option value="Security Architect">Security Architect</option>
+                                    <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                                    <option value="Blockchain Developer">Blockchain Developer</option>
+                                    <option value="AI Researcher">AI Researcher</option>
+                                </optgroup>
+                            </select>
+                            <div class="invalid-feedback">Please select a position.</div>
                         </div>
+
 
                         <div class="mb-3">
                             <label for="join_date" class="form-label">Join Date:</label>
@@ -99,7 +224,7 @@
 
                     <div id="response" class="mt-3"></div>
                 </div>
-<!-- /.container-fluid -->
+            <!-- /.container-fluid -->
 
                 <!-- /.container-fluid -->
 
@@ -156,19 +281,18 @@
 
             // Handle form submission
             $('#employeeForm').on('submit', function (event) {
-                event.preventDefault(); // Prevent default form submission
+                event.preventDefault(); 
                 
                 // Serialize form data
                 const formData = $(this).serialize();
                 
                 // Send Ajax POST request
                 $.ajax({
-                    url: '/employee', // Replace with your Laravel route for saving employee data
-                    method: 'POST',
+                    url: '/employee', 
                     data: formData,
                     success: function (response) {
                         $('#response').html('<p style="color:green;">Employee added successfully!</p>');
-                        $('#employeeForm')[0].reset(); // Reset the form
+                        $('#employeeForm')[0].reset(); 
                         $('#employeeForm').removeClass('was-validated'); // Reset validation
                     },
                     error: function (xhr) {
