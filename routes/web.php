@@ -118,10 +118,19 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('project.destroy');
 
+// route for manage project
+Route::get('/projects/{project}/manage-data', [ProjectController::class, 'manageData'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
+    ->name('project.manageData');
+
+// route for handle manage form submission
+Route::post('/projects/{project}/manage', [ProjectController::class, 'updateManageData'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
+    ->name('project.updateManageData');
+
 
 
 // routes for handle employee data
-
 
 // create route for get employee data page
 Route::get('/employees', [EmployeeController::class, 'index'])

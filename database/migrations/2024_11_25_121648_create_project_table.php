@@ -18,8 +18,10 @@ return new class extends Migration
             $table->unsignedBigInteger('client_id');
             $table->string('project_type');
             $table->string('status');
+            $table->string('priority')->default('Medium');
             $table->date('start_date');
             $table->date('end_date')->nullable();
+            $table->date('extended_deadline')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('client')->onDelete('cascade');
@@ -32,5 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('project');
+
     }
 };
