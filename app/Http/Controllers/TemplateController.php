@@ -19,6 +19,13 @@ class TemplateController extends Controller
             ->whereMonth('start_date', Carbon::now()->month)
             ->sum('budget');
 
+        // Get monthly earnings for the chart
+        $monthlyData = Project::selectRaw('SUM(budget) as total, MONTH(start_date) as month')
+            ->whereYear('start_date', Carbon::now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month')->toArray();
+
         // Count total number of projects
         $totalProjects = Project::count();
 
@@ -26,7 +33,7 @@ class TemplateController extends Controller
         $totalEmployees = Employees::count(); 
 
         // Pass the $totalBudget to the view
-        return view('dashboard', compact('totalBudget','monthlyEarnings','totalProjects','totalEmployees'));
+        return view('dashboard', compact('totalBudget','monthlyEarnings','totalProjects','totalEmployees','monthlyData'));
     }
 
 }
