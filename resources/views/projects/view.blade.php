@@ -54,6 +54,7 @@
                                     <p><strong>Project Name:</strong> {{ $project->name }}</p>
                                     <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
                                     <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
+                                    <p><strong>Total Budget: </strong>{{ $project->budget }} $</p>
                                 </div>
                                 <div class="col-md-6">
                                     <p><strong>Description:</strong> {{ $project->description }}</p>
