@@ -65,15 +65,16 @@
                             @if($project->employees->count() > 0)
                                 <div class="row">
                                     @foreach($project->employees as $employee)
-                                        <div class="col-12 col-sm-6 col-lg-3">
-                                            <x-employee-card 
-                                                :role="$employee->role" 
-                                                :profileImage="null" 
-                                                :name="$employee->name" 
-                                                :jobRole="$employee->job_role" 
-                                                :position="$employee->position" 
-                                                :email="$employee->email" />
-                                        </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <x-employee-card 
+                                            :role="$employee->role" 
+                                            :profileImage="null" 
+                                            :name="$employee->name" 
+                                            :jobRole="$employee->job_role" 
+                                            :position="$employee->position" 
+                                            :email="$employee->email" />
+                                    </div>
+
                                     @endforeach
                                 </div>
                             @else
