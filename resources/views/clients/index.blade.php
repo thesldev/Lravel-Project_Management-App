@@ -66,7 +66,7 @@
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-eye"></i>
                                                     </span>
-                                                    <span class="text">View</span>
+                                                    <span class="text">Profile</span>
                                                 </a>
                                             </td>
                                         </tr>
