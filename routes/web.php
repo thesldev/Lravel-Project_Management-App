@@ -137,7 +137,7 @@ Route::get('/employees', [EmployeeController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('employee.index');
 
-// create route for "add employee" page
+// create route for "add client" page
 Route::get('/employees/new-employee', [EmployeeController::class, 'create'])
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('employee.create');
