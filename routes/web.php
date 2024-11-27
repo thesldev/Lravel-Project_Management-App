@@ -15,14 +15,15 @@ Route::get('/employee-dashboard', [TemplateController::class, 'employeeDashboard
     ->middleware(['auth', 'verified', 'rolemanager:employee'])
     ->name('employeeDashboard');
 
-Route::get('/admin/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'rolemanager:admin'])->name('adminDashboard');
+
+Route::get('/admin-dashboard', [TemplateController::class, 'admin'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin'])
+    ->name('admin');
 
 
-Route::get('/sup-admin/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'rolemanager:supperAdmin'])->name('supAdminDashboard');
+Route::get('/sup-admin-dashboard', [TemplateController::class, 'supAdmin'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin'])
+    ->name('supAdmin');
 
 
 // create rout for home & dashboard
@@ -66,17 +67,17 @@ Route::get('/clients/{client}/view', [ClientController::class, 'viewClient'])
 
 // create route for fetch existing client data to edit
 Route::get('/client/{client}/edit', [ClientController::class, 'editData'])
-    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->middleware(['auth','verified','rolemanager:supperAdmin'])
     ->name('client.editData');
 
 // create route for edit existing client data 
 Route::put('/client/{client}/update', [ClientController::class, 'updateData'])
-    ->middleware(['auth','verified', 'rolemanager:admin,supperAdmin'])
+    ->middleware(['auth','verified', 'rolemanager:supperAdmin'])
     ->name('client.updateData');
 
 //create route for delete client data
 Route::delete('/client/{client}/destroy', [ClientController::class, 'deleteData'])
-    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('client.deleteData');
 
 // route for grt client data in JSON format
@@ -92,7 +93,7 @@ Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth','verified'])
     ->name('projects.index');
 
-// create route for "add client" page
+// create route for "add project" page
 Route::get('/projects/new-project', [ProjectController::class, 'create'])
     ->middleware('auth','verified','rolemanager:admin,supperAdmin')
     ->name('project.create');
