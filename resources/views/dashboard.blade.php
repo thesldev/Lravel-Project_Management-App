@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -64,6 +63,8 @@
             <!-- Content Row -->
             <div class="row">
               <!-- Earnings (Monthly) Card Example -->
+              <div class="row">
+              <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                   <div class="card-body">
@@ -75,7 +76,7 @@
                           Earnings (Monthly)
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            ${{ number_format($monthlyEarnings, 2) }}
+                        ${{ number_format($monthlyEarnings, 2) }}
                         </div>
                       </div>
                       <div class="col-auto">
@@ -85,6 +86,7 @@
                   </div>
                 </div>
               </div>
+
 
               <!-- Earnings (yearly) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
@@ -370,7 +372,9 @@
         const months = <?= json_encode(array_keys($monthlyData)); ?>;
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+      
+    </script>
 
     <script>
         // Data for the chart
