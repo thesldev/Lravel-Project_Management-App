@@ -82,7 +82,7 @@ Route::delete('/client/{client}/destroy', [ClientController::class, 'deleteData'
 
 // route for grt client data in JSON format
 Route::get('/api/clients', [ClientController::class, 'getClients'])
-    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->middleware(['auth','verified','rolemanager:supperAdmin,admin'])
     ->name('clients.getClients');
 
 
@@ -95,7 +95,7 @@ Route::get('/projects', [ProjectController::class, 'index'])
 
 // create route for "add project" page
 Route::get('/projects/new-project', [ProjectController::class, 'create'])
-    ->middleware('auth','verified','rolemanager:admin,supperAdmin')
+    ->middleware('auth','verified','rolemanager:supperAdmin,admin')
     ->name('project.create');
 
 // create route for add project to system
@@ -120,7 +120,7 @@ Route::delete('/projects/{project}/destroy', [ProjectController::class, 'destroy
 
 // route for manage project
 Route::get('/projects/{project}/manage-data', [ProjectController::class, 'manageData'])
-    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('project.manageData');
 
 // route for handle manage form submission
