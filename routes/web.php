@@ -11,10 +11,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified','rolemanager:employee'])->name('dashboard');
-
+Route::get('/employee-dashboard', [TemplateController::class, 'employeeDashboard'])
+    ->middleware(['auth', 'verified', 'rolemanager:employee'])
+    ->name('employeeDashboard');
 
 Route::get('/admin/dashboard', function () {
     return view('dashboard');

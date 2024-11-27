@@ -46,7 +46,7 @@ class RoleManager
             case 1:
                 return redirect()->route('adminDashboard');
             case 2:
-                return redirect()->route('dashboard');
+                return redirect()->route('employeeDashboard');
         }
 
         return redirect()->route('login');
