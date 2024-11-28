@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketStatusController;
+use App\Http\Controllers\TicketTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -128,6 +132,8 @@ Route::post('/projects/{project}/manage', [ProjectController::class, 'updateMana
     ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
     ->name('project.updateManageData');
 
+// fetch project data
+Route::get('/api/projects', [ProjectController::class, 'getProjects']);
 
 
 // routes for handle employee data
@@ -161,5 +167,84 @@ Route::put('/employees/{employee}/update', [EmployeeController::class, 'update']
 Route::delete('/employees/{employee}/destroy', [EmployeeController::class, 'destroy'])
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('employee.destroy');
+
+//  fetch employee data
+Route::get('/api/employees', [EmployeeController::class, 'getEmployees']);
+
+
+
+// routes for manage ticketing system
+
+// routr for manage board  
+Route::get('/boards', [BoardController::class, 'index'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('board.index');
+
+// routes for go to tiklets page
+Route::get('/tickets', [TicketController::class, 'index'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.index');
+
+
+
+// route for go to types page
+Route::get('/ticket-types', [TicketTypeController::class, 'index'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.index');
+
+// rote for sore ticket type
+Route::post('/ticket-types', [TicketTypeController::class, 'store'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name('type.store');
+
+// route for get ticket types
+Route::get('/ticket-type', [TicketTypeController::class, 'getType'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name('type.getType');
+
+// Route for updating ticket type
+Route::put('/ticket-types/{ticketType}', [TicketTypeController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.update');
+
+// Route for deleting ticket type
+Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.destroy');
+
+
+// route for go to add status page
+Route::get('/status', [TicketStatusController::class, 'status'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.status');
+
+
+// route for create status
+Route::post('/ticket-status', [TicketStatusController::class, 'store'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.store');
+
+// route for get all statuses
+Route::get('/ticket-statuses', [TicketStatusController::class, 'get'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.get');
+
+// Delete route for ticket status
+Route::delete('/ticket-status/{ticketStatus}', [TicketStatusController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('status.destroy');
+
+// update route for ticket status
+Route::put('/ticket-statuses/{id}', [TicketStatusController::class,'update'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('status.update');
+
+
+
+// route for create function for ticket
+Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.store');
+
 
 require __DIR__.'/auth.php';
