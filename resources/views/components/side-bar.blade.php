@@ -102,8 +102,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Tickets:</h6>
-                <a class="collapse-item" href="">Manage Board</a>
-                <a class="collapse-item" href="">Manage Ticket</a>
+                <a class="collapse-item" href="{{route('board.index')}}">Manage Board</a>
+                <a class="collapse-item" href="{{route('ticket.index')}}">Manage Ticket</a>
             </div>
         </div>
     </li>

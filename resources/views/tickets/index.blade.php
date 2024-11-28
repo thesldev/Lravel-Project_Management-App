@@ -1,0 +1,1 @@
+<h1>Ticket board</h1>

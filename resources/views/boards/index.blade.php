@@ -1,0 +1,1 @@
+<h1>board page</h1>
