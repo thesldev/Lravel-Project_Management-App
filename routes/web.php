@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TicketStatusController;
+use App\Http\Controllers\TicketTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -178,17 +180,47 @@ Route::get('/boards', [BoardController::class, 'index'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('board.index');
 
-// route for create function for ticket
-Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
-    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
-    ->name('ticket.store');
-
-
+// routes for go to tiklets page
 Route::get('/tickets', [TicketController::class, 'index'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.index');
 
+// route for go to status page
+Route::get('/ticket-status', [TicketStatusController::class, 'index'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.index');
 
+// route for go to types page
+Route::get('/ticket-types', [TicketTypeController::class, 'index'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.index');
+
+// rote for sore ticket type
+Route::post('/ticket-types', [TicketTypeController::class, 'store'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name('type.store');
+
+// route for get ticket types
+Route::get('/ticket-type', [TicketTypeController::class, 'getType'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name('type.getType');
+
+// Route for updating ticket type
+Route::put('/ticket-types/{ticketType}', [TicketTypeController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.update');
+
+// Route for deleting ticket type
+Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('type.destroy');
+
+
+
+// route for create function for ticket
+Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.store');
 
 
 require __DIR__.'/auth.php';
