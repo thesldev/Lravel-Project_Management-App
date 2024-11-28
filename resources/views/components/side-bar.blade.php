@@ -104,7 +104,7 @@
                 <h6 class="collapse-header">Manage Tickets:</h6>
                 <a class="collapse-item" href="{{route('board.index')}}">Manage Board</a>
                 <a class="collapse-item" href="{{route('ticket.index')}}">Manage Ticket</a>
-                <a class="collapse-item" href="{{route('status.index')}}">Add Ticket Status</a>
+                <a class="collapse-item" href="{{route('status.status')}}">Add Ticket Status</a>
                 <a class="collapse-item" href="{{route('type.index')}}">Add Ticket Types</a>
             </div>
         </div>

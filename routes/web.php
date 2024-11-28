@@ -185,10 +185,7 @@ Route::get('/tickets', [TicketController::class, 'index'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.index');
 
-// route for go to status page
-Route::get('/ticket-status', [TicketStatusController::class, 'index'])
-    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
-    ->name('status.index');
+
 
 // route for go to types page
 Route::get('/ticket-types', [TicketTypeController::class, 'index'])
@@ -214,6 +211,33 @@ Route::put('/ticket-types/{ticketType}', [TicketTypeController::class, 'update']
 Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('type.destroy');
+
+
+// route for go to add status page
+Route::get('/status', [TicketStatusController::class, 'status'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.status');
+
+
+// route for create status
+Route::post('/ticket-status', [TicketStatusController::class, 'store'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.store');
+
+// route for get all statuses
+Route::get('/ticket-statuses', [TicketStatusController::class, 'get'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('status.get');
+
+// Delete route for ticket status
+Route::delete('/ticket-status/{ticketStatus}', [TicketStatusController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('status.destroy');
+
+// update route for ticket status
+Route::put('/ticket-statuses/{id}', [TicketStatusController::class,'update'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('status.update');
 
 
 
