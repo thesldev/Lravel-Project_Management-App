@@ -74,15 +74,15 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="status_id" class="form-label">Status</label>
+                                            <label for="status_id" class="form-label">Ticket Status</label>
                                             <select class="form-select" id="status_id" name="status_id" required>
-                                                <!-- Fetch statuses dynamically -->
+                                                <!-- Options will be populated dynamically by the AJAX script -->
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="type_id" class="form-label">Type</label>
+                                            <label for="type_id" class="form-label">Ticket Type</label>
                                             <select class="form-select" id="type_id" name="type_id" required>
-                                                <!-- Fetch types dynamically -->
+                                                <!-- Options will be populated dynamically by the AJAX script -->
                                             </select>
                                         </div>
                                         <div class="mb-3">
@@ -165,17 +165,53 @@
             url: '/api/projects',
             method: 'GET',
             success: function(data) {
-                let projectDropdown = $('#project_id');
-                projectDropdown.empty();
-                projectDropdown.append('<option value="">Select Project</option>');
+                let statustDropdown = $('#project_id');
+                pstatusDropdown.empty();
+                pstatusDropdown.append('<option value="">Select Project</option>');
                 data.forEach(function(project) {
-                    projectDropdown.append('<option value="' + project.id + '">' + project.name + '</option>');
+                    pstatusDropdown.append('<option value="' + project.id + '">' + project.name + '</option>');
                 });
             },
             error: function(error) {
                 console.error('Error fetching projects:', error);
             }
         });
+        
+
+        // Fetch ticket types
+        $.ajax({
+            url: '/api/ticketType',
+            method: 'GET',
+            success: function(data) {
+                let typeDropdown = $('#type_id');
+                typeDropdown.empty();
+                typeDropdown.append('<option value="">Select Type</option>');
+                data.forEach(function(ticketType) {
+                    typeDropdown.append('<option value="' + ticketType.id + '">' + ticketType.name + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching ticket types:', error);
+            }
+        });
+
+        // Fetch ticket statuses
+        $.ajax({
+            url: '/api/ticketStatuses',
+            method: 'GET',
+            success: function(data) {
+                let statusDropdown = $('#status_id');
+                statusDropdown.empty();
+                statusDropdown.append('<option value="">Select Status</option>');
+                data.forEach(function(ticketStatus) {
+                    statusDropdown.append('<option value="' + ticketStatus.id + '">' + ticketStatus.name + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching ticket statuses:', error);
+            }
+        });
+
 
 
     </script>

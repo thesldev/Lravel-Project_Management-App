@@ -61,4 +61,11 @@ class TicketStatusController extends Controller
     }
 
 
+    // TicketStatusController
+    public function getTicketStatuses()
+    {
+        $ticketStatuses = TicketStatus::select('id', 'name')->get();
+        return response()->json($ticketStatuses);
+    }
+
 }

@@ -48,4 +48,13 @@ class TicketTypeController extends Controller
         $ticketType->delete();
         return response()->json(['message' => 'Ticket type deleted successfully.']);
     }
+
+
+    // TicketTypeController
+    public function getTicketType()
+    {
+        $ticketTypes = TicketType::select('id', 'name')->get();
+        return response()->json($ticketTypes);
+    }
+
 }

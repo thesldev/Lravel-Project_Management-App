@@ -212,6 +212,9 @@ Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destr
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('type.destroy');
 
+// Route for fetching ticket types
+Route::get('/api/ticketType', [TicketTypeController::class, 'getTicketType']);
+
 
 // route for go to add status page
 Route::get('/status', [TicketStatusController::class, 'status'])
@@ -238,6 +241,10 @@ Route::delete('/ticket-status/{ticketStatus}', [TicketStatusController::class, '
 Route::put('/ticket-statuses/{id}', [TicketStatusController::class,'update'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
     ->name('status.update');
+
+// Route for fetching ticket statuses
+Route::get('/api/ticketStatuses', [TicketStatusController::class, 'getTicketStatuses']);
+
 
 
 
