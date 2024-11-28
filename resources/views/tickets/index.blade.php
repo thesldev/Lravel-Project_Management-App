@@ -11,7 +11,7 @@
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Custom fonts for this template-->
@@ -19,13 +19,14 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+     <!-- Custom styles for this template-->
+     <link href="css/sb-admin-2.min.css" rel="stylesheet" />
 </head>
 
 <body id="page-top">
 
     <div id="wrapper">
+
         <!-- Include Sidebar -->
         <x-side-bar />
 
@@ -37,7 +38,7 @@
 
                 <!-- Topbar -->
                 <x-topbar />
-
+                <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
@@ -54,8 +55,10 @@
                                     <h5 class="modal-title" id="createTicketModalLabel">Create Ticket</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form method="POST" action="/tickets">
+                                <form method="POST" action="/tickets/create-ticket">
+                                    @csrf
                                     <div class="modal-body">
+                                        <!-- Form fields as provided -->
                                         <div class="mb-3">
                                             <label for="title" class="form-label">Title</label>
                                             <input type="text" class="form-control" id="title" name="title" required>
@@ -76,13 +79,13 @@
                                         <div class="mb-3">
                                             <label for="status_id" class="form-label">Ticket Status</label>
                                             <select class="form-select" id="status_id" name="status_id" required>
-                                                <!-- Options will be populated dynamically by the AJAX script -->
+                                                <!-- Options populated dynamically by AJAX -->
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label for="type_id" class="form-label">Ticket Type</label>
                                             <select class="form-select" id="type_id" name="type_id" required>
-                                                <!-- Options will be populated dynamically by the AJAX script -->
+                                                <!-- Options populated dynamically by AJAX -->
                                             </select>
                                         </div>
                                         <div class="mb-3">
@@ -92,7 +95,6 @@
                                             </div>
                                             <input type="hidden" name="reporter_id" value="{{ Auth::user()->id }}">
                                         </div>
-
                                         <div class="mb-3">
                                             <label for="assignee_id" class="form-label">Assignee</label>
                                             <select class="form-select" id="assignee_id" name="assignee_id">
@@ -102,7 +104,7 @@
                                         <div class="mb-3">
                                             <label for="project_id" class="form-label">Project</label>
                                             <select class="form-select" id="project_id" name="project_id">
-                                                <!-- Fetch projects dynamically -->
+                                                <!-- Options populated dynamically by AJAX -->
                                             </select>
                                         </div>
                                         <div class="mb-3">
@@ -118,7 +120,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                 </div>
                 <!-- /.container-fluid -->
 
@@ -135,11 +137,13 @@
     </div>
     <!-- End of Wrapper -->
 
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
+    
     <!-- Jquey scripts for fetch project and employee data -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -212,16 +216,48 @@
             }
         });
 
+        // Fetch project data
+        $.ajax({
+            url: '/api/projects',
+            method: 'GET',
+            success: function(data) {
+                let projectDropdown = $('#project_id');
+                projectDropdown.empty();
+                projectDropdown.append('<option value="">Select Project</option>');
+                data.forEach(function(project) {
+                    projectDropdown.append('<option value="' + project.id + '">' + project.name + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching projects:', error);
+            }
+        });
 
 
     </script>
 
-    
-
-
-    <!-- Bootstrap core JavaScript -->
+    <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+
+    <!-- jQuery (necessary for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
