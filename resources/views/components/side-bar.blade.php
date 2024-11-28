@@ -5,7 +5,7 @@
     <!-- Sidebar - Brand -->
     <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href={{ route('home.index') }}
+        href={{ route('supAdmin') }}
     >
         <div class="sidebar-brand-text mx-3">Claps Dev</div>
     </a>
@@ -15,7 +15,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="{{ route('home.index') }}">
+        <a class="nav-link" href="{{ route('supAdmin') }}">
             <i class="fas fa-fw fa-chart-line"></i>
             <span>Dashboard</span>
         </a>

@@ -74,4 +74,12 @@ class EmployeeController extends Controller
     }
 
 
+    // get employee for tickets
+    public function getEmployees()
+    {
+        $employees = Employees::select('id', 'name')->get();
+        return response()->json($employees);
+    }
+
+
 }

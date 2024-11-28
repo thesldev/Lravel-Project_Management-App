@@ -130,6 +130,8 @@ Route::post('/projects/{project}/manage', [ProjectController::class, 'updateMana
     ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
     ->name('project.updateManageData');
 
+// fetch project data
+Route::get('/api/projects', [ProjectController::class, 'getProjects']);
 
 
 // routes for handle employee data
@@ -164,6 +166,9 @@ Route::delete('/employees/{employee}/destroy', [EmployeeController::class, 'dest
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('employee.destroy');
 
+//  fetch employee data
+Route::get('/api/employees', [EmployeeController::class, 'getEmployees']);
+
 
 
 // routes for manage ticketing system
@@ -173,8 +178,17 @@ Route::get('/boards', [BoardController::class, 'index'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('board.index');
 
+// route for create function for ticket
+Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.store');
+
+
 Route::get('/tickets', [TicketController::class, 'index'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.index');
+
+
+
 
 require __DIR__.'/auth.php';
