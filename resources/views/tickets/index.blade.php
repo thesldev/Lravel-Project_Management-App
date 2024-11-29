@@ -42,10 +42,21 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tickets</h1>
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-2 text-gray-800">Tickets</h1>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTicketModal">Create Ticket</button>
+                        </div>
+                    </div>
 
-                    <!-- Create Ticket Button -->
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTicketModal">Create Ticket</button>
+                    <div class="container mt-4">
+                        <!-- Ticket List -->
+                        <div class="row">
+                            <!-- Dynamic Tickets -->
+                            <!-- Add dynamically generated tickets here -->
+                        </div>
+                    </div>
+
 
                     <!-- Create Ticket Modal -->
                     <div class="modal fade" id="createTicketModal" tabindex="-1" aria-labelledby="createTicketModalLabel" aria-hidden="true">
@@ -146,10 +157,12 @@
     
     <!-- Jquey scripts for fetch project and employee data -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Ajax & Jquery for create tickets -->
     <script>
         // fetch values for assignee drop down
         $.ajax({
-            url: '/api/employees',
+            url: '/tickets/all',
             method: 'GET',
             success: function(data) {
                 let assigneeDropdown = $('#assignee_id');
@@ -233,6 +246,101 @@
             }
         });
 
+
+        // Fetch all ticket details
+        $.ajax({
+            url: '/api/projects',
+            method: 'GET',
+            success: function(data) {
+                let projectDropdown = $('#project_id');
+                projectDropdown.empty();
+                projectDropdown.append('<option value="">Select Project</option>');
+                data.forEach(function(project) {
+                    projectDropdown.append('<option value="' + project.id + '">' + project.name + '</option>');
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching projects:', error);
+            }
+        });
+
+    </script>
+
+    <!-- Ajax & Jquery for handle ticket functions -->
+    <script>
+        // Fetch all ticket details
+        $.ajax({
+            url: '/tickets/all',
+            method: 'GET',
+            success: function(tickets) {
+                let container = $('.row');
+                container.empty(); // Clear any existing content
+
+                tickets.forEach(ticket => {
+                    // Format the created date
+                    const createdDate = new Date(ticket.created_at);
+                    const formattedDate = `${createdDate.getFullYear()}.${('0' + (createdDate.getMonth() + 1)).slice(-2)}.${('0' + createdDate.getDate()).slice(-2)}`;
+
+                    // Get related data
+                    const ticketType = ticket.type ? ticket.type.name : 'Unknown';
+                    const ticketPriority = ticket.priority;
+                    const projectName = ticket.project ? ticket.project.name : 'Unknown';
+                    const ticketStatus = ticket.status ? ticket.status.name : 'Unknown';
+                    const assigneeName = ticket.assignee ? ticket.assignee.name : 'Unknown';
+                    const assigneeRole = ticket.assignee ? ticket.assignee.job_role : 'Unknown';
+
+                    // Header part
+                    let headerHTML = `
+                        <div class="card-body pt-3 pb-1"> <!-- Reduced padding -->
+                            <h6 class="card-title">
+                                Created By: <span class="fw-bold">${ticket.reporter ? ticket.reporter.name : 'Unknown'}</span>
+                                | At: <span class="fw-bold">${formattedDate}</span>
+                                <span class="float-end">${ticketType} | ${ticketPriority}</span>
+                            </h6>
+                        </div>
+                    `;
+
+                    // Body part with flex layout for alignment and reduced margin
+                    let bodyHTML = `
+                        <div class="card-body pt-1 pb-3"> <!-- Reduced padding -->
+                            <h5 class="card-title">${ticket.title}</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span><strong>Project:</strong> ${projectName}</span>
+                                <button class="btn btn-primary btn-sm" style="height: 40px;">View Details</button> <!-- Increased height -->
+                            </div>
+                            <p class="card-text mb-1"> <!-- Reduced margin -->
+                                <strong>Status:</strong> ${ticketStatus}
+                            </p>
+                        </div>
+                    `;
+
+
+                    // Footer part (keep as it is)
+                    let footerHTML = `
+                        <div class="card-footer d-flex justify-content-between">
+                            <span><strong>Due Date:</strong> ${ticket.due_date}</span>
+                            <span><strong>Assignees:</strong> ${assigneeName} | <strong>Job Role:</strong> ${assigneeRole}</span>
+                        </div>
+                    `;
+
+                    // Combine all parts into a complete ticket card
+                    let ticketHTML = `
+                        <div class="col-md-6 col-lg-12 mb-4">
+                            <div class="card shadow-sm border-0">
+                                ${headerHTML}
+                                ${bodyHTML}
+                                ${footerHTML}
+                            </div>
+                        </div>
+                    `;
+
+                    container.append(ticketHTML);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching tickets:', error);
+            }
+        });
 
     </script>
 

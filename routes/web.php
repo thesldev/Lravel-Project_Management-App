@@ -253,5 +253,10 @@ Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.store');
 
+// route fot gey all ticket data
+Route::get('/tickets/all', [TicketController::class, 'getTickets'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name(('ticket.getProjects'));
+
 
 require __DIR__.'/auth.php';

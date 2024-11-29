@@ -13,7 +13,6 @@ class TicketController extends Controller
     }
 
     // function for store ticket data into db
-   
     public function store(Request $request) {
         $data = $request->validate([
             'title' => 'required|string|max:255',
@@ -36,5 +35,11 @@ class TicketController extends Controller
         return redirect()->route('ticket.index')->with('success', 'Ticket created successfully!');
     }
     
+
+    // functionm for get all ticket data
+    public function getTickets(){
+        $tickets = Ticket::with(['reporter', 'status', 'type', 'project', 'assignee'])->get(); 
+        return response()->json($tickets);
+    }
     
 }
