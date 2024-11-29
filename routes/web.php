@@ -212,6 +212,9 @@ Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destr
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('type.destroy');
 
+// Route for fetching ticket types
+Route::get('/api/ticketType', [TicketTypeController::class, 'getTicketType']);
+
 
 // route for go to add status page
 Route::get('/status', [TicketStatusController::class, 'status'])
@@ -239,12 +242,37 @@ Route::put('/ticket-statuses/{id}', [TicketStatusController::class,'update'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
     ->name('status.update');
 
+// Route for fetching ticket statuses
+Route::get('/api/ticketStatuses', [TicketStatusController::class, 'getTicketStatuses']);
+
+
 
 
 // route for create function for ticket
 Route::post('/tickets/create-ticket', [TicketController::class, 'store'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.store');
+
+// route fot gey all ticket data
+Route::get('/tickets/all', [TicketController::class, 'getTickets'])
+    ->middleware('auth','verified','rolemanager:supperAdmin, admin')
+    ->name(('ticket.getProjects'));
+
+// view selected ticket
+Route::get('/tickets/{ticket}/view', [TicketController::class, 'view'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.view');
+
+// route for edit ticket details
+Route::put('/tickets/{ticket}/update', [TicketController::class, 'update'])
+    ->middleware('auth','verified','rolemanager:supperAdmin')
+    ->name('tickets.update');
+
+// route for delete ticketdetails
+Route::delete('/tickets/{ticket}/delete', [TicketController::class, 'destroy']) 
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.destroy');
+
 
 
 require __DIR__.'/auth.php';

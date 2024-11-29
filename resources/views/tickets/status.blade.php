@@ -96,7 +96,6 @@
     </div>
     <!-- End of Wrapper -->
 
-    <!-- Create Ticket Type Modal -->
     <!-- Create Ticket Status Modal -->
     <div class="modal fade" id="createTicketModal" tabindex="-1" aria-labelledby="createTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -125,7 +124,7 @@
         </div>
     </div>
 
-    <!-- Edit Ticket Type Modal -->
+    <!-- Edit Ticket status Modal -->
     <div class="modal fade" id="editTicketTypeModal" tabindex="-1" aria-labelledby="editTicketTypeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -253,7 +252,7 @@
 
 
 
-            // Edit Ticket Status
+            // Edit Ticket Status Button Click Event
             $(document).on('click', '.editStatusBtn', function () {
                 let statusId = $(this).data('id');
                 let name = $(this).data('name');
@@ -288,10 +287,11 @@
                         loadTicketStatuses(); // Reload the table after successful update
                     },
                     error: function (xhr) {
-                        alert('Error: ' + xhr.responseJSON.message);
+                        alert('Error: ' + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An unexpected error occurred.'));
                     },
                 });
             });
+
 
 
             // Initial load of ticket statuses

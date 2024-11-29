@@ -41,15 +41,31 @@ class TicketStatusController extends Controller
     }
 
     // function for update ticket status
-    public function update(Request $request, TicketStatus $ticketStatus){
+    public function update(Request $request, TicketStatus $ticketStatus)
+    {
+        // Validate the incoming request data
         $data = $request->validate([
-            'name' => 'required|string|max:100', 
+            'name' => 'required|string|max:100',
             'is_final' => 'required|boolean',
         ]);
 
+        // Update the record
         $ticketStatus->update($data);
 
-        return response()->json(['message' => 'Ticket type updated successfully.']);
+        // Check if the update was successful
+        if ($ticketStatus->wasChanged()) {
+            return response()->json(['message' => 'Ticket status updated successfully.']);
+        } else {
+            return response()->json(['message' => 'No changes were made.']);
+        }
+    }
+
+
+    // TicketStatusController
+    public function getTicketStatuses()
+    {
+        $ticketStatuses = TicketStatus::select('id', 'name')->get();
+        return response()->json($ticketStatuses);
     }
 
 }
