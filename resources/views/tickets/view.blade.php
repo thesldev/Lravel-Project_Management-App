@@ -140,10 +140,343 @@
         </div>
     </div>
 
+    <!-- Update Ticket Modal -->
+<div class="modal fade" id="updateTicketModal" tabindex="-1" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updateTicketForm" method="POST" action="/tickets/{ticket}/update">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="ticket_id" id="ticket_id">
+                <div class="modal-body">
+                    <!-- Form fields as provided -->
+                    <div class="mb-3">
+                        <label for="update_title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="update_title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="update_description" name="description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_priority" class="form-label">Priority</label>
+                        <select class="form-select" id="update_priority" name="priority" required>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_status_id" class="form-label">Ticket Status</label>
+                        <select class="form-select" id="update_status_id" name="status_id" required>
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_type_id" class="form-label">Ticket Type</label>
+                        <select class="form-select" id="update_type_id" name="type_id" required>
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_assignee_id" class="form-label">Assignee</label>
+                        <select class="form-select" id="update_assignee_id" name="assignee_id">
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_project_id" class="form-label">Project</label>
+                        <select class="form-select" id="update_project_id" name="project_id">
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="update_due_date" class="form-label">Due Date</label>
+                        <input type="date" class="form-control" id="update_due_date" name="due_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- scripts for update form -->
+
+    <!-- fetch dynamic data for disply update form -->
+    <script>
+        $(document).ready(function () {
+            // Fetch and populate the Assignee dropdown
+            $.ajax({
+                url: '/tickets/all',
+                method: 'GET',
+                success: function (data) {
+                    let assigneeDropdown = $('#update_assignee_id');
+                    assigneeDropdown.empty();
+                    assigneeDropdown.append('<option value="">Select Assignee</option>');
+                    data.forEach(function (employee) {
+                        assigneeDropdown.append('<option value="' + employee.id + '">' + employee.name + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching employees:', error);
+                }
+            });
+
+            // Fetch and populate the Project dropdown
+            $.ajax({
+                url: '/api/projects',
+                method: 'GET',
+                success: function (data) {
+                    let projectDropdown = $('#update_project_id');
+                    projectDropdown.empty();
+                    projectDropdown.append('<option value="">Select Project</option>');
+                    data.forEach(function (project) {
+                        projectDropdown.append('<option value="' + project.id + '">' + project.name + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching projects:', error);
+                }
+            });
+
+            // Fetch and populate the Ticket Type dropdown
+            $.ajax({
+                url: '/api/ticketType',
+                method: 'GET',
+                success: function (data) {
+                    let typeDropdown = $('#update_type_id');
+                    typeDropdown.empty();
+                    typeDropdown.append('<option value="">Select Type</option>');
+                    data.forEach(function (ticketType) {
+                        typeDropdown.append('<option value="' + ticketType.id + '">' + ticketType.name + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching ticket types:', error);
+                }
+            });
+
+            // Fetch and populate the Ticket Status dropdown
+            $.ajax({
+                url: '/api/ticketStatuses',
+                method: 'GET',
+                success: function (data) {
+                    let statusDropdown = $('#update_status_id');
+                    statusDropdown.empty();
+                    statusDropdown.append('<option value="">Select Status</option>');
+                    data.forEach(function (ticketStatus) {
+                        statusDropdown.append('<option value="' + ticketStatus.id + '">' + ticketStatus.name + '</option>');
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching ticket statuses:', error);
+                }
+            });
+        });
+    </script>
+
+    <!-- update poppu box -->
+    <script>
+        $(document).ready(function () {
+            function populateUpdateModal(data) {
+                $('#ticket_id').val(data.id || '{{ $ticket->id }}');
+                $('#update_title').val(data.title || '{{ $ticket->title }}');
+                $('#update_description').val(data.description || '{{ $ticket->description }}');
+                $('#update_priority').val(data.priority || '{{ $ticket->priority }}');
+                $('#update_status_id').val(data.status_id || '{{ $ticket->status_id }}');
+                $('#update_type_id').val(data.type_id || '{{ $ticket->type_id }}');
+                $('#update_assignee_id').val(data.assignee_id || '{{ $ticket->assignee_id }}');
+                $('#update_project_id').val(data.project_id || '{{ $ticket->project_id }}');
+                $('#update_due_date').val(data.due_date || '{{ $ticket->due_date }}');
+            }
+
+            // Event listener for Update button
+            $('#updateButton').on('click', function () {
+                const ticketData = {
+                    id: '{{ $ticket->id }}',
+                    title: '{{ $ticket->title }}',
+                    description: '{{ $ticket->description }}',
+                    priority: '{{ $ticket->priority }}',
+                    status_id: '{{ $ticket->status_id }}',
+                    type_id: '{{ $ticket->type_id }}',
+                    assignee_id: '{{ $ticket->assignee_id }}',
+                    project_id: '{{ $ticket->project_id }}',
+                    due_date: '{{ $ticket->due_date }}',
+                };
+
+                // Populate the modal fields
+                populateUpdateModal(ticketData);
+
+                // Fetch and populate dropdown data dynamically
+                populateDropdowns();
+
+                // Show the modal
+                $('#updateTicketModal').modal('show');
+            });
+
+            // Function to dynamically populate dropdown fields
+            function populateDropdowns() {
+                // Populate Assignee dropdown
+                $.ajax({
+                    url: '/employees/all',
+                    method: 'GET',
+                    success: function (data) {
+                        let assigneeDropdown = $('#update_assignee_id');
+                        assigneeDropdown.empty();
+                        assigneeDropdown.append('<option value="">Select Assignee</option>');
+                        data.forEach(function (employee) {
+                            assigneeDropdown.append(
+                                `<option value="${employee.id}" ${employee.id == '{{ $ticket->assignee_id }}' ? 'selected' : ''}>
+                                    ${employee.name}
+                                </option>`
+                            );
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching employees:', error);
+                    },
+                });
+
+                // Populate Status dropdown
+                $.ajax({
+                    url: '/statuses/all',
+                    method: 'GET',
+                    success: function (data) {
+                        let statusDropdown = $('#update_status_id');
+                        statusDropdown.empty();
+                        statusDropdown.append('<option value="">Select Status</option>');
+                        data.forEach(function (status) {
+                            statusDropdown.append(
+                                `<option value="${status.id}" ${status.id == '{{ $ticket->status_id }}' ? 'selected' : ''}>
+                                    ${status.name}
+                                </option>`
+                            );
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching statuses:', error);
+                    },
+                });
+
+                // Populate Type dropdown
+                $.ajax({
+                    url: '/types/all',
+                    method: 'GET',
+                    success: function (data) {
+                        let typeDropdown = $('#update_type_id');
+                        typeDropdown.empty();
+                        typeDropdown.append('<option value="">Select Type</option>');
+                        data.forEach(function (type) {
+                            typeDropdown.append(
+                                `<option value="${type.id}" ${type.id == '{{ $ticket->type_id }}' ? 'selected' : ''}>
+                                    ${type.name}
+                                </option>`
+                            );
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching types:', error);
+                    },
+                });
+
+                // Populate Project dropdown
+                $.ajax({
+                    url: '/projects/all',
+                    method: 'GET',
+                    success: function (data) {
+                        let projectDropdown = $('#update_project_id');
+                        projectDropdown.empty();
+                        projectDropdown.append('<option value="">Select Project</option>');
+                        data.forEach(function (project) {
+                            projectDropdown.append(
+                                `<option value="${project.id}" ${project.id == '{{ $ticket->project_id }}' ? 'selected' : ''}>
+                                    ${project.name}
+                                </option>`
+                            );
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error fetching projects:', error);
+                    },
+                });
+            }
+
+            // Reset modal fields on close
+            $('#updateTicketModal').on('hidden.bs.modal', function () {
+                $('#updateTicketForm')[0].reset();
+                // Clear dropdowns
+                $('#update_assignee_id, #update_status_id, #update_type_id, #update_project_id').empty();
+            });
+
+
+            // Event listener for the Update button
+            $(document).ready(function () {
+                $('#updateTicketForm').submit(function(event) {
+                    event.preventDefault();
+
+                    console.log('Form data:', {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        title: $('#update_title').val(),
+                        description: $('#update_description').val(),
+                        priority: $('#update_priority').val(),
+                        status_id: $('#update_status_id').val(),
+                        type_id: $('#update_type_id').val(),
+                        assignee_id: $('#update_assignee_id').val(),
+                        project_id: $('#update_project_id').val(),
+                        due_date: $('#update_due_date').val(),
+                        reporter_id: $('#update_reporter_id').val()
+                    });
+
+                    $.ajax({
+                        url: '/tickets/' + $('#ticket_id').val() + '/update',
+                        method: 'PUT',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            title: $('#update_title').val(),
+                            description: $('#update_description').val(),
+                            priority: $('#update_priority').val(),
+                            status_id: $('#update_status_id').val(),
+                            type_id: $('#update_type_id').val(),
+                            assignee_id: $('#update_assignee_id').val(),
+                            project_id: $('#update_project_id').val(),
+                            due_date: $('#update_due_date').val(),
+                            reporter_id: $('#update_reporter_id').val()
+                        },
+                        success: function(response) {
+                            alert('Ticket updated successfully!');
+                            location.reload();  // Optional: reload the page to reflect changes
+                        },
+                        error: function(xhr) {
+                            console.error('Error:', xhr);
+                            alert('Failed to update the ticket. Please try again.');
+                        }
+                    });
+                });
+            });
+
+
+        });
+
+    </script>
+
+    
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>

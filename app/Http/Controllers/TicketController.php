@@ -45,4 +45,31 @@ class TicketController extends Controller
     public function view(Ticket $ticket){
         return view('tickets.view', compact('ticket'));
     }
+
+    // update function for tickets
+    public function update(Request $request, Ticket $ticket) {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'priority' => 'required|in:Low,Medium,High,Critical',
+            'status_id' => 'required|exists:ticket_statuses,id',
+            'type_id' => 'required|exists:ticket_type,id',
+            'assignee_id' => 'nullable|exists:users,id',
+            'project_id' => 'nullable|exists:project,id',
+            'due_date' => 'nullable|date|after_or_equal:today',
+            'closed_at' => 'nullable|date|after_or_equal:created_at',
+            'parent_ticket_id' => 'nullable|exists:tickets,id',
+        ]);
+    
+        // Update the ticket with the validated data
+        $ticket->update($data);
+    
+        // Return a JSON response indicating success
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket updated successfully!',
+            'ticket' => $ticket,
+        ]);
+    }
+    
 }
