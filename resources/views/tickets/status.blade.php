@@ -96,7 +96,6 @@
     </div>
     <!-- End of Wrapper -->
 
-    <!-- Create Ticket Type Modal -->
     <!-- Create Ticket Status Modal -->
     <div class="modal fade" id="createTicketModal" tabindex="-1" aria-labelledby="createTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog">
