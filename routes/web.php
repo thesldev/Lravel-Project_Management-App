@@ -258,5 +258,10 @@ Route::get('/tickets/all', [TicketController::class, 'getTickets'])
     ->middleware('auth','verified','rolemanager:supperAdmin, admin')
     ->name(('ticket.getProjects'));
 
+// view selected ticket
+Route::get('/tickets/{ticket}/view', [TicketController::class, 'view'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.view');
+
 
 require __DIR__.'/auth.php';

@@ -35,11 +35,14 @@ class TicketController extends Controller
         return redirect()->route('ticket.index')->with('success', 'Ticket created successfully!');
     }
     
-
     // functionm for get all ticket data
     public function getTickets(){
         $tickets = Ticket::with(['reporter', 'status', 'type', 'project', 'assignee'])->get(); 
         return response()->json($tickets);
     }
     
+
+    public function view(Ticket $ticket){
+        return view('tickets.view', compact('ticket'));
+    }
 }

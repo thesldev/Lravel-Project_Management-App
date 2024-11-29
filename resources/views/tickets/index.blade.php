@@ -307,15 +307,14 @@
                             <h5 class="card-title">${ticket.title}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span><strong>Project:</strong> ${projectName}</span>
-                                <button class="btn btn-primary btn-sm" style="height: 40px;">View Ticket</button> <!-- Increased height -->
+                                <a class="btn btn-primary btn-sm" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a> <!-- Use dynamic ticket ID -->
                             </div>
                             <p class="card-text mb-1"> <!-- Reduced margin -->
                                 <strong>Status:</strong> ${ticketStatus}
                             </p>
                         </div>
                     `;
-
-
+                    
                     // Footer part (keep as it is)
                     let footerHTML = `
                         <div class="card-footer d-flex justify-content-between">
