@@ -130,4 +130,13 @@ class ProjectController extends Controller
         return response()->json(['message' => 'Project updated successfully']);
     }
 
+
+    // get project data for tickets
+    public function getProjects()
+    {
+        $projects = Project::select('id', 'name')->get();
+        return response()->json($projects);
+    }
+
+
 }
