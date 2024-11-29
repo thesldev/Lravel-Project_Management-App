@@ -18,7 +18,7 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'priority' => 'required|in:Low,Medium,High,Critical',
-            'status_id' => 'required|exists:ticket_statuses,id', // Updated validation rule
+            'status_id' => 'required|exists:ticket_statuses,id', 
             'type_id' => 'required|exists:ticket_type,id',
             'reporter_id' => 'required|exists:users,id',
             'assignee_id' => 'nullable|exists:users,id',
@@ -71,5 +71,13 @@ class TicketController extends Controller
             'ticket' => $ticket,
         ]);
     }
+
+    // delete function for delete ticket
+    public function destroy(Ticket $ticket)
+    {
+        $ticket->delete();
+        return redirect()->route('ticket.index')->with('success', 'Ticket Deleted successfully');
+    }
+    
     
 }

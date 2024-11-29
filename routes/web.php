@@ -263,11 +263,16 @@ Route::get('/tickets/{ticket}/view', [TicketController::class, 'view'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.view');
 
-
 // route for edit ticket details
 Route::put('/tickets/{ticket}/update', [TicketController::class, 'update'])
     ->middleware('auth','verified','rolemanager:supperAdmin')
     ->name('tickets.update');
+
+// route for delete ticketdetails
+Route::delete('/tickets/{ticket}/delete', [TicketController::class, 'destroy']) 
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.destroy');
+
 
 
 require __DIR__.'/auth.php';
