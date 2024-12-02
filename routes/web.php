@@ -273,6 +273,12 @@ Route::delete('/tickets/{ticket}/delete', [TicketController::class, 'destroy'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.destroy');
 
+//  route for display ticket by user ID
+Route::get('/my-tickets', [TicketController::class, 'empTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('ticket.empTickets');
+
+
 
 
 require __DIR__.'/auth.php';
