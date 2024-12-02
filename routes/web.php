@@ -303,5 +303,10 @@ Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('comments.store');
 
+// route for get all comments related to the ticket
+Route::get('/tickets/{ticket}/comments', [CommentController::class, 'getComments'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('comments.getComments');
+
 
 require __DIR__.'/auth.php';

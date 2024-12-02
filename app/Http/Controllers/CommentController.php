@@ -16,7 +16,9 @@ class CommentController extends Controller
      * @param Ticket $ticket
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, Ticket $ticket)
+   
+    // function for store comments in the databse
+     public function store(Request $request, Ticket $ticket)
     {
         // Validate the request
         $request->validate([
@@ -33,5 +35,15 @@ class CommentController extends Controller
         // Redirect back to the ticket page with a success message
         return redirect()->route('ticket.empView', $ticket->id)
             ->with('success', 'Comment added successfully.');
+    }
+
+
+    // function for get all commets related to the selected ticket
+    public function getComments(Ticket $ticket)
+    {
+        // Eager load comments related to the ticket
+        $comments = $ticket->comments()->get();
+
+        return response()->json($comments);
     }
 }
