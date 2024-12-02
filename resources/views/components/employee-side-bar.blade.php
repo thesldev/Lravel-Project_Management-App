@@ -102,7 +102,7 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Tickets:</h6>
-                <a class="collapse-item" href="">View My Tickets</a>
+                <a class="collapse-item" href="{{route('ticket.empTickets')}}">View My Tickets</a>
                 <a class="collapse-item" href="">Manage My Tickets</a>
             </div>
         </div>
