@@ -42,10 +42,18 @@
                     <h1 class="h3 mb-4 text-gray-800">Ticket  #{{ $ticket->id }} Details</h1>
 
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Ticket {{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}</h6>
-                            
-                        </div>
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            Ticket {{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}
+                        </h6>
+                        <button 
+                            type="button" 
+                            class="btn btn-warning btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#changeStatusModal">
+                            Change Status
+                        </button>
+                    </div>
                         <!-- display ticket data -->
                         <div class="card-body">
                             <div class="row">
@@ -125,6 +133,34 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Change Status Modal -->
+    <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeStatusModalLabel">Change Ticket Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changeStatusForm" method="POST" action="">
+                        @csrf
+                        @method('PUT')
+                        <div class="form-group">
+                            <label for="status">Select New Status</label>
+                            <select name="status" id="status" class="form-control" required>
+                                <option value="open" {{ $ticket->status == 'open' ? 'selected' : '' }}>Open</option>
+                                <option value="in-progress" {{ $ticket->status == 'in-progress' ? 'selected' : '' }}>In Progress</option>
+                                <option value="closed" {{ $ticket->status == 'closed' ? 'selected' : '' }}>Closed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
