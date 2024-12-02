@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -78,5 +79,20 @@ class TicketController extends Controller
         return redirect()->route('ticket.index')->with('success', 'Ticket Deleted successfully');
     }
     
+
+    // function for get tickets relavent to specific employee
+    public function empTickets()
+    {
+        $userId = Auth::id();
+
+        // Fetch tickets assigned to the user with related data
+        $tickets = Ticket::with(['type', 'project', 'status', 'assignee', 'reporter'])
+            ->where('assignee_id', $userId)
+            ->get();
+
+        // Return the view with the tickets
+        return view('tickets.empTickets', compact('tickets'));
+    }
+
     
 }

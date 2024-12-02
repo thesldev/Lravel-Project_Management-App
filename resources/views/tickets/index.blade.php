@@ -315,7 +315,7 @@
                             <h5 class="card-title">${ticket.title}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span><strong>Project:</strong> ${projectName}</span>
-                                <a class="btn btn-primary btn-sm" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a> <!-- Use dynamic ticket ID -->
+                                <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a> <!-- Use dynamic ticket ID -->
                             </div>
                             <p class="card-text mb-1"> <!-- Reduced margin -->
                                 <strong>Status:</strong> ${ticketStatus}
