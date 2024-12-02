@@ -42,18 +42,18 @@
                     <h1 class="h3 mb-4 text-gray-800">Ticket  #{{ $ticket->id }} Details</h1>
 
                     <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            Ticket {{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}
-                        </h6>
-                        <button 
-                            type="button" 
-                            class="btn btn-warning btn-sm" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#changeStatusModal">
-                            Change Status
-                        </button>
-                    </div>
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                Ticket {{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}
+                            </h6>
+                            <button 
+                                type="button" 
+                                class="btn btn-warning btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#changeStatusModal">
+                                Change Status
+                            </button>
+                        </div>
                         <!-- display ticket data -->
                         <div class="card-body">
                             <div class="row">
@@ -61,7 +61,7 @@
                                 <p><strong>Ticket Title:</strong> {{ $ticket->title }}</p>
 
                                 <!-- Ticket Priority -->
-                                <div class="col-md-3 me-3 ">
+                                <div class="col-md-3 me-3">
                                     <p><strong>Ticket Priority:</strong> {{ $ticket->priority }}</p>
                                 </div>
 
@@ -135,7 +135,7 @@
     </a>
 
     <!-- Change Status Modal -->
-    <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeStatusModal" tabindex="-1" aria-labelledby="changeStatusModalLabel" aria-hidden="true" data-current-status-id="{{ $ticket->status_id }}">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,15 +143,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="changeStatusForm" method="POST" action="">
+                    <form id="changeStatusForm" method="POST" action="{{ route('ticket.updateStatus', $ticket->id) }}">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
-                            <label for="status">Select New Status</label>
-                            <select name="status" id="status" class="form-control" required>
-                                <option value="open" {{ $ticket->status == 'open' ? 'selected' : '' }}>Open</option>
-                                <option value="in-progress" {{ $ticket->status == 'in-progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="closed" {{ $ticket->status == 'closed' ? 'selected' : '' }}>Closed</option>
+                            <label for="status_id">Select New Status</label>
+                            <select name="status_id" id="status_id" class="form-control" required>
+                                <option value="">Select Status</option>
+                                <!-- The dropdown options will be populated dynamically by the JavaScript code -->
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Update Status</button>
@@ -161,14 +160,12 @@
         </div>
     </div>
 
-
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -178,6 +175,37 @@
 
     <!-- Font Awesome (optional, for icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- fetch available status for ticket -->
+    <script>
+        $(document).ready(function() {
+            // Get the current status ID from the modal's data attribute
+            let currentStatusId = $('#changeStatusModal').data('current-status-id');
+
+            $.ajax({
+                url: '/api/ticketStatuses',
+                method: 'GET',
+                success: function(data) {
+                    let statusDropdown = $('#status_id');
+                    statusDropdown.empty();
+                    statusDropdown.append('<option value="">Select Status</option>');
+
+                    data.forEach(function(ticketStatus) {
+                        // Append options to the dropdown, setting the selected attribute if it matches the current status
+                        statusDropdown.append(
+                            '<option value="' + ticketStatus.id + '" ' + 
+                            (ticketStatus.id == currentStatusId ? 'selected' : '') +
+                            '>' + ticketStatus.name + '</option>'
+                        );
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching ticket statuses:', error);
+                }
+            });
+        });
+    </script>
+
 
 </body>
 </html>

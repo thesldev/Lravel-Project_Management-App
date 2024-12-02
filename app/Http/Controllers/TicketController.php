@@ -110,14 +110,18 @@ class TicketController extends Controller
     // update function for change the ticket status
     public function updateStatus(Request $request, Ticket $ticket)
     {
+        // Validate the status_id field
         $request->validate([
-            'status' => 'required|string|in:open,in-progress,closed',
+            'status_id' => 'required|exists:ticket_statuses,id',
         ]);
 
-        $ticket->status = $request->status;
+        // Update the ticket's status_id column with the new value from the request
+        $ticket->status_id = $request->status_id;
         $ticket->save();
 
+        // Redirect back with a success message
         return redirect()->back()->with('success', 'Ticket status updated successfully.');
     }
+
 
 }
