@@ -99,13 +99,16 @@
                                     <p>Due Date: <strong>{{ $ticket->due_date }}</strong></p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <h6 class="mb-3">Add a Comment:</h6>
-                                <div class="input-group">
-                                    <textarea class="form-control" id="commentInput" placeholder="Write your comment here..." rows="2"></textarea>
-                                    <button class="btn btn-primary" id="submitComment" type="button">Submit</button>
+                            <form method="POST" action="{{ route('comments.store', $ticket->id) }}">
+                                @csrf
+                                <div class="row">
+                                    <h6 class="mb-3">Add a Comment:</h6>
+                                    <div class="input-group">
+                                        <textarea name="content" class="form-control" id="commentInput" placeholder="Write your comment here..." rows="2" required></textarea>
+                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
 
