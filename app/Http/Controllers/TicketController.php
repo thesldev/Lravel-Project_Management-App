@@ -54,7 +54,6 @@ class TicketController extends Controller
             'priority' => 'required|in:Low,Medium,High,Critical',
             'status_id' => 'required|exists:ticket_statuses,id',
             'type_id' => 'required|exists:ticket_type,id',
-            'assignee_id' => 'nullable|exists:users,id',
             'project_id' => 'nullable|exists:project,id',
             'due_date' => 'nullable|date|after_or_equal:today',
             'closed_at' => 'nullable|date|after_or_equal:created_at',

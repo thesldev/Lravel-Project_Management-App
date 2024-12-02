@@ -134,8 +134,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="updateButton">Update</button>
-                    <button type="button" class="btn btn-danger" id="deleteButton" data-ticket-id="{{ $ticket->id }}">Delete</button>
+                    <form method="POST" action="{{ route('ticket.destroy', $ticket->id) }}" style="display: inline;" id="deleteForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" id="deleteButton" onclick="return confirm('Are you sure you want to delete this ticket?');">
+                            Delete
+                        </button>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -184,12 +191,6 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="update_assignee_id" class="form-label">Assignee</label>
-                            <select class="form-select" id="update_assignee_id" name="assignee_id">
-                                <!-- Options populated dynamically -->
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label for="update_project_id" class="form-label">Project</label>
                             <select class="form-select" id="update_project_id" name="project_id">
                                 <!-- Options populated dynamically -->
@@ -209,6 +210,9 @@
         </div>
     </div>
 
+
+
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -219,23 +223,6 @@
     <!-- fetch dynamic data for disply update form -->
     <script>
         $(document).ready(function () {
-            // Fetch and populate the Assignee dropdown
-            $.ajax({
-                url: '/tickets/all',
-                method: 'GET',
-                success: function (data) {
-                    let assigneeDropdown = $('#update_assignee_id');
-                    assigneeDropdown.empty();
-                    assigneeDropdown.append('<option value="">Select Assignee</option>');
-                    data.forEach(function (employee) {
-                        assigneeDropdown.append('<option value="' + employee.id + '">' + employee.name + '</option>');
-                    });
-                },
-                error: function (error) {
-                    console.error('Error fetching employees:', error);
-                }
-            });
-
             // Fetch and populate the Project dropdown
             $.ajax({
                 url: '/api/projects',
@@ -299,7 +286,6 @@
                 $('#update_priority').val(data.priority || '{{ $ticket->priority }}');
                 $('#update_status_id').val(data.status_id || '{{ $ticket->status_id }}');
                 $('#update_type_id').val(data.type_id || '{{ $ticket->type_id }}');
-                $('#update_assignee_id').val(data.assignee_id || '{{ $ticket->assignee_id }}');
                 $('#update_project_id').val(data.project_id || '{{ $ticket->project_id }}');
                 $('#update_due_date').val(data.due_date || '{{ $ticket->due_date }}');
             }
@@ -313,7 +299,6 @@
                     priority: '{{ $ticket->priority }}',
                     status_id: '{{ $ticket->status_id }}',
                     type_id: '{{ $ticket->type_id }}',
-                    assignee_id: '{{ $ticket->assignee_id }}',
                     project_id: '{{ $ticket->project_id }}',
                     due_date: '{{ $ticket->due_date }}',
                 };
@@ -330,26 +315,6 @@
 
             // Function to dynamically populate dropdown fields
             function populateDropdowns() {
-                // Populate Assignee dropdown
-                $.ajax({
-                    url: '/employees/all',
-                    method: 'GET',
-                    success: function (data) {
-                        let assigneeDropdown = $('#update_assignee_id');
-                        assigneeDropdown.empty();
-                        assigneeDropdown.append('<option value="">Select Assignee</option>');
-                        data.forEach(function (employee) {
-                            assigneeDropdown.append(
-                                `<option value="${employee.id}" ${employee.id == '{{ $ticket->assignee_id }}' ? 'selected' : ''}>
-                                    ${employee.name}
-                                </option>`
-                            );
-                        });
-                    },
-                    error: function (error) {
-                        console.error('Error fetching employees:', error);
-                    },
-                });
 
                 // Populate Status dropdown
                 $.ajax({
@@ -419,7 +384,7 @@
             $('#updateTicketModal').on('hidden.bs.modal', function () {
                 $('#updateTicketForm')[0].reset();
                 // Clear dropdowns
-                $('#update_assignee_id, #update_status_id, #update_type_id, #update_project_id').empty();
+                $(' #update_status_id, #update_type_id, #update_project_id').empty();
             });
 
 
@@ -435,7 +400,6 @@
                         priority: $('#update_priority').val(),
                         status_id: $('#update_status_id').val(),
                         type_id: $('#update_type_id').val(),
-                        assignee_id: $('#update_assignee_id').val(),
                         project_id: $('#update_project_id').val(),
                         due_date: $('#update_due_date').val(),
                         reporter_id: $('#update_reporter_id').val()
@@ -451,7 +415,6 @@
                             priority: $('#update_priority').val(),
                             status_id: $('#update_status_id').val(),
                             type_id: $('#update_type_id').val(),
-                            assignee_id: $('#update_assignee_id').val(),
                             project_id: $('#update_project_id').val(),
                             due_date: $('#update_due_date').val(),
                             reporter_id: $('#update_reporter_id').val()
@@ -470,33 +433,6 @@
 
 
         });
-
-        // ticket delete function
-        $(document).ready(function() {
-    $('#deleteButton').on('click', function() {
-        var ticketId = $(this).data('ticket-id');
-        
-        // Confirm before deletion
-        if (confirm('Are you sure you want to delete this ticket?')) {
-            $.ajax({
-                url: '/tickets/' + ticketId + '/delete',
-                type: 'delete',
-                data: {
-                    _token: '{{ csrf_token() }}' // CSRF token for security
-                },
-                success: function(response) {
-                    alert(response.message || 'Ticket deleted successfully.');
- // Redirect to ticket index page
-                },
-                error: function(xhr, status, error) {
-                    alert('Error: ' + xhr.responseText);
-                }
-            });
-        }
-    });
-});
-
-
 
     </script>
 
