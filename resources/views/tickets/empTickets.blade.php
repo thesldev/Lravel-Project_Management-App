@@ -86,10 +86,9 @@
                                                 <span><strong>Project:</strong> ${projectName}</span>
                                                 <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" 
                                                     style="height: 40px;" 
-                                                    href="#" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#ticketModal" 
-                                                    onclick="populateModal(${ticket.id})">View Ticket</a>
+                                                    href="{{ route('ticket.empView', ['ticket' => $ticket->id]) }}">
+                                                        View Ticket
+                                                    </a>
                                             </div>
                                             <p class="card-text mb-1">
                                                 <strong>Status:</strong> ${ticketStatus}
@@ -98,13 +97,10 @@
                                     `;
                                     // Footer part
                                     let footerHTML = `
-                                        <div class="card-footer">
-                                            <h6 class="mb-3">Add a Comment:</h6>
-                                            <div class="input-group">
-                                                <textarea class="form-control" id="commentInput" placeholder="Write your comment here..." rows="2"></textarea>
-                                                <button class="btn btn-primary" id="submitComment" type="button">Submit</button>
-                                            </div>
-                                        </div>
+                                    <div class="card-footer d-flex justify-content-between">
+                                        <span><strong>Due Date:</strong> ${ticket.due_date}</span>
+                                        <span><strong>Assignees:</strong> ${assigneeName} | <strong>Job Role:</strong> ${assigneeRole}</span>
+                                    </div>
                                     `;
                                     // Combine all parts into a complete ticket card
                                     let ticketHTML = `

@@ -94,5 +94,11 @@ class TicketController extends Controller
         return view('tickets.empTickets', compact('tickets'));
     }
 
+    public function empView(Ticket $ticket)
+    {
+        return view('tickets.empView', compact('ticket'));
+    }
+    
+
     
 }
