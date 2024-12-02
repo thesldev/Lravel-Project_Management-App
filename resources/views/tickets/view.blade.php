@@ -134,80 +134,81 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="updateButton">Update</button>
-                    <button type="button" class="btn btn-danger" id="deleteButton">Delete</button>
+                    <form method="POST" action="{{ route('ticket.destroy', $ticket->id) }}" style="display: inline;" id="deleteForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" id="deleteButton" onclick="return confirm('Are you sure you want to delete this ticket?');">
+                            Delete
+                        </button>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
 
     <!-- Update Ticket Modal -->
-<div class="modal fade" id="updateTicketModal" tabindex="-1" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="updateTicketModal" tabindex="-1" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="updateTicketForm" method="POST" action="/tickets/{ticket}/update">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="ticket_id" id="ticket_id">
+                    <div class="modal-body">
+                        <!-- Form fields as provided -->
+                        <div class="mb-3">
+                            <label for="update_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="update_title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="update_description" name="description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_priority" class="form-label">Priority</label>
+                            <select class="form-select" id="update_priority" name="priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_status_id" class="form-label">Ticket Status</label>
+                            <select class="form-select" id="update_status_id" name="status_id" required>
+                                <!-- Options populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_type_id" class="form-label">Ticket Type</label>
+                            <select class="form-select" id="update_type_id" name="type_id" required>
+                                <!-- Options populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_project_id" class="form-label">Project</label>
+                            <select class="form-select" id="update_project_id" name="project_id">
+                                <!-- Options populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_due_date" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="update_due_date" name="due_date">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
             </div>
-            <form id="updateTicketForm" method="POST" action="/tickets/{ticket}/update">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="ticket_id" id="ticket_id">
-                <div class="modal-body">
-                    <!-- Form fields as provided -->
-                    <div class="mb-3">
-                        <label for="update_title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="update_title" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="update_description" name="description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_priority" class="form-label">Priority</label>
-                        <select class="form-select" id="update_priority" name="priority" required>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_status_id" class="form-label">Ticket Status</label>
-                        <select class="form-select" id="update_status_id" name="status_id" required>
-                            <!-- Options populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_type_id" class="form-label">Ticket Type</label>
-                        <select class="form-select" id="update_type_id" name="type_id" required>
-                            <!-- Options populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_assignee_id" class="form-label">Assignee</label>
-                        <select class="form-select" id="update_assignee_id" name="assignee_id">
-                            <!-- Options populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_project_id" class="form-label">Project</label>
-                        <select class="form-select" id="update_project_id" name="project_id">
-                            <!-- Options populated dynamically -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="update_due_date" class="form-label">Due Date</label>
-                        <input type="date" class="form-control" id="update_due_date" name="due_date">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 
 
@@ -222,23 +223,6 @@
     <!-- fetch dynamic data for disply update form -->
     <script>
         $(document).ready(function () {
-            // Fetch and populate the Assignee dropdown
-            $.ajax({
-                url: '/tickets/all',
-                method: 'GET',
-                success: function (data) {
-                    let assigneeDropdown = $('#update_assignee_id');
-                    assigneeDropdown.empty();
-                    assigneeDropdown.append('<option value="">Select Assignee</option>');
-                    data.forEach(function (employee) {
-                        assigneeDropdown.append('<option value="' + employee.id + '">' + employee.name + '</option>');
-                    });
-                },
-                error: function (error) {
-                    console.error('Error fetching employees:', error);
-                }
-            });
-
             // Fetch and populate the Project dropdown
             $.ajax({
                 url: '/api/projects',
@@ -302,7 +286,6 @@
                 $('#update_priority').val(data.priority || '{{ $ticket->priority }}');
                 $('#update_status_id').val(data.status_id || '{{ $ticket->status_id }}');
                 $('#update_type_id').val(data.type_id || '{{ $ticket->type_id }}');
-                $('#update_assignee_id').val(data.assignee_id || '{{ $ticket->assignee_id }}');
                 $('#update_project_id').val(data.project_id || '{{ $ticket->project_id }}');
                 $('#update_due_date').val(data.due_date || '{{ $ticket->due_date }}');
             }
@@ -316,7 +299,6 @@
                     priority: '{{ $ticket->priority }}',
                     status_id: '{{ $ticket->status_id }}',
                     type_id: '{{ $ticket->type_id }}',
-                    assignee_id: '{{ $ticket->assignee_id }}',
                     project_id: '{{ $ticket->project_id }}',
                     due_date: '{{ $ticket->due_date }}',
                 };
@@ -333,26 +315,6 @@
 
             // Function to dynamically populate dropdown fields
             function populateDropdowns() {
-                // Populate Assignee dropdown
-                $.ajax({
-                    url: '/employees/all',
-                    method: 'GET',
-                    success: function (data) {
-                        let assigneeDropdown = $('#update_assignee_id');
-                        assigneeDropdown.empty();
-                        assigneeDropdown.append('<option value="">Select Assignee</option>');
-                        data.forEach(function (employee) {
-                            assigneeDropdown.append(
-                                `<option value="${employee.id}" ${employee.id == '{{ $ticket->assignee_id }}' ? 'selected' : ''}>
-                                    ${employee.name}
-                                </option>`
-                            );
-                        });
-                    },
-                    error: function (error) {
-                        console.error('Error fetching employees:', error);
-                    },
-                });
 
                 // Populate Status dropdown
                 $.ajax({
@@ -422,7 +384,7 @@
             $('#updateTicketModal').on('hidden.bs.modal', function () {
                 $('#updateTicketForm')[0].reset();
                 // Clear dropdowns
-                $('#update_assignee_id, #update_status_id, #update_type_id, #update_project_id').empty();
+                $(' #update_status_id, #update_type_id, #update_project_id').empty();
             });
 
 
@@ -438,7 +400,6 @@
                         priority: $('#update_priority').val(),
                         status_id: $('#update_status_id').val(),
                         type_id: $('#update_type_id').val(),
-                        assignee_id: $('#update_assignee_id').val(),
                         project_id: $('#update_project_id').val(),
                         due_date: $('#update_due_date').val(),
                         reporter_id: $('#update_reporter_id').val()
@@ -454,7 +415,6 @@
                             priority: $('#update_priority').val(),
                             status_id: $('#update_status_id').val(),
                             type_id: $('#update_type_id').val(),
-                            assignee_id: $('#update_assignee_id').val(),
                             project_id: $('#update_project_id').val(),
                             due_date: $('#update_due_date').val(),
                             reporter_id: $('#update_reporter_id').val()

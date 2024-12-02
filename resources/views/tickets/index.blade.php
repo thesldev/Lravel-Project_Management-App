@@ -163,20 +163,28 @@
     <script>
         // fetch values for assignee drop down
         $.ajax({
-            url: '/tickets/all',
-            method: 'GET',
-            success: function(data) {
-                let assigneeDropdown = $('#assignee_id');
-                assigneeDropdown.empty();
-                assigneeDropdown.append('<option value="">Select Assignee</option>');
-                data.forEach(function(employee) {
-                    assigneeDropdown.append('<option value="' + employee.id + '">' + employee.name + '</option>');
-                });
-            },
-            error: function(error) {
-                console.error('Error fetching employees:', error);
-            }
-        });
+                url: '/api/employees', // Updated URL for employee data
+                method: 'GET',
+                success: function(employees) {
+                    let assigneeDropdown = $('#assignee_id');
+                    assigneeDropdown.empty();
+                    assigneeDropdown.append('<option value="">Select Assignee</option>');
+
+
+                    if (employees && employees.length > 0) {
+                        employees.forEach(function(employee) {
+                            assigneeDropdown.append('<option value="' + employee.id + '">' + employee.name + '</option>');
+                        });
+                    } else {
+                        console.warn('No employees returned by the API.');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error fetching employees:', error);
+                    alert('Failed to fetch employee data. Please try again later.');
+                }
+            });
+
 
         // fetch values for project data
         $.ajax({
