@@ -45,9 +45,6 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-2 text-gray-800">My Tickets</h1>
-                        <div class="ms-auto">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTicketModal">Create Ticket</button>
-                        </div>
                     </div>
 
                     <div class="container mt-4">
@@ -55,17 +52,17 @@
                         <div id="ticketList" class="row">
                             @foreach($tickets as $ticket)
                                 <script>
-                                    // Convert PHP ticket to JSON and embed it in JavaScript
-                                    let ticket = @json($ticket);
+                                    // Safely pass PHP data to JavaScript
+                                    let ticket = JSON.parse('@json($ticket)');
 
                                     // Format the date
                                     let createdAt = new Date(ticket.created_at).toLocaleString();
                                     let dueDate = new Date(ticket.due_date).toLocaleDateString();
                                     
-                                    // Extract data from the ticket object
+                                    // Extract data from the ticket object with checks
                                     let reporterName = ticket.reporter ? ticket.reporter.name : 'Unknown';
                                     let ticketType = ticket.type ? ticket.type.name : 'N/A';
-                                    let ticketPriority = ticket.priority ? ticket.priority.name : 'N/A';
+                                    let ticketPriority = ticket.priority ? ticket.priority : 'N/A';
                                     let projectName = ticket.project ? ticket.project.name : 'N/A';
                                     let ticketStatus = ticket.status ? ticket.status.name : 'N/A';
                                     let assigneeName = ticket.assignee ? ticket.assignee.name : 'N/A';
@@ -75,27 +72,25 @@
                                     let headerHTML = `
                                         <div class="card-body pt-3 pb-1">
                                             <h6 class="card-title">
-                                                Created By: <span class="fw-bold">${reporterName}</span>
-                                                | At: <span class="fw-bold">${createdAt}</span>
+                                                Assigned By: <span class="fw-bold">${reporterName}</span>
+                                                | At: <span class="fw-bold">${createdAt.replace(',', '&nbsp; |')}</span>
                                                 <span class="float-end">${ticketType} | ${ticketPriority}</span>
                                             </h6>
                                         </div>
                                     `;
-
                                     // Body part with flex layout for alignment
                                     let bodyHTML = `
                                         <div class="card-body pt-1 pb-3">
                                             <h5 class="card-title">${ticket.title}</h5>
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <span><strong>Project:</strong> ${projectName}</span>
-                                                <a class="btn btn-primary btn-sm" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a>
+                                                <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a>
                                             </div>
                                             <p class="card-text mb-1">
                                                 <strong>Status:</strong> ${ticketStatus}
                                             </p>
                                         </div>
                                     `;
-
                                     // Footer part
                                     let footerHTML = `
                                         <div class="card-footer d-flex justify-content-between">
