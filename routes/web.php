@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -329,6 +330,48 @@ Route::put('/comments/{id}', [CommentController::class, 'update'])
     ->middleware('auth', 'verified')
     ->name('comments.update');
 
+
+
+
+// routes for handle claender functions
+Route::get('/calendar', [ScheduleController::class, 'index'])
+    ->middleware('auth', 'verified')
+    ->name('calender.index');
+
+// route for create event
+Route::post('/add-event', [ScheduleController::class, 'store'])
+    ->middleware('auth', 'verified')
+    ->name('calender.store');
+
+// route for get the events
+Route::get('/events', [ScheduleController::class, 'getEvents'])
+    ->middleware('auth', 'verified')
+    ->name('calender.getEvents');
+
+// route for update the event
+Route::post('/schedule/{eventId}', [ScheduleController::class, 'update'])
+    ->middleware('auth', 'verified')
+    ->name('calender.update');
+
+// route for delete the event
+Route::delete('/events/{id}', [ScheduleController::class, 'deleteEvent'])
+    ->middleware('auth', 'verified')
+    ->name('calender.deleteEvent');
+
+// route for get selected event data
+Route::get('/event/{id}', [ScheduleController::class, 'show'])
+    ->middleware('auth', 'verified')
+    ->name('event.show');
+
+// route for resize the devent duration
+Route::post('/schedule/{id}/resize', [ScheduleController::class, 'resize'])
+    ->middleware('auth', 'verified')
+    ->name('calender.resize');
+
+// route for search events
+Route::get('/events/search', [ScheduleController::class, 'search'])
+    ->middleware('auth', 'verified')
+    ->name('calender.search');
 
 
 require __DIR__.'/auth.php';
