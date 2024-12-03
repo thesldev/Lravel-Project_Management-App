@@ -94,5 +94,34 @@ class TicketController extends Controller
         return view('tickets.empTickets', compact('tickets'));
     }
 
+    // function for display selected data in employee side
+    public function empView(Ticket $ticket)
+    {
+        return view('tickets.empView', compact('ticket'));
+    }
     
+
+    // function for change the status of the ticket
+    public function changeStatus(Ticket $ticket)
+    {
+        return view('tickets.changeStatus', compact('ticket'));
+    }
+
+    // update function for change the ticket status
+    public function updateStatus(Request $request, Ticket $ticket)
+    {
+        // Validate the status_id field
+        $request->validate([
+            'status_id' => 'required|exists:ticket_statuses,id',
+        ]);
+
+        // Update the ticket's status_id column with the new value from the request
+        $ticket->status_id = $request->status_id;
+        $ticket->save();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Ticket status updated successfully.');
+    }
+
+
 }
