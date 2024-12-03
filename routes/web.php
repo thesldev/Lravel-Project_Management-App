@@ -318,5 +318,11 @@ Route::get('/tickets/{ticket}/adminComments', [CommentController::class, 'getAdm
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('comments.getAdminComments');
 
+// route for delete the comments-employee side
+// In routes/web.php or routes/api.php
+Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('comments.destroy');
+
 
 require __DIR__.'/auth.php';

@@ -22,6 +22,7 @@
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 <body id="page-top">
 
@@ -248,9 +249,9 @@
                             <div class="ks-avatar me-2">
                                 <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
                             </div>
-                            <div class="ks-comment-box flex-grow-1">
+                            <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
                                 <div class="ks-header d-flex justify-content-between">
-                                    <p>Commented By:<span class="ks-name fw-bold">  ${comment.user?.name || 'Unknown User'}</span></p>
+                                    <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
                                     <span class="ks-datetime">
                                         ${new Date(comment.created_at).toLocaleString()}
                                         ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
@@ -276,7 +277,6 @@
                                 </div>
                             </div>
                         `;
-
                         container.appendChild(li);
                     });
                 })
@@ -290,8 +290,26 @@
         }
 
         function deleteComment(commentId) {
-            console.log('Delete comment with ID:', commentId);
-            // Implement the delete logic
+            if (confirm('Are you sure you want to delete this comment?')) {
+                fetch(`/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment deleted successfully.');
+                        // Optionally remove the comment from the DOM
+                        document.getElementById(`comment-${commentId}`).remove();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error deleting comment:', error));
+            }
         }
     </script>
 
