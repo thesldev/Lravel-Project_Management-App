@@ -230,58 +230,69 @@
     <!-- script for display the comments related to the ticket -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const ticketId = JSON.parse('@json($ticket->id)');
-            
-            fetch(`/tickets/${ticketId}/comments`)
-                .then(response => response.json())
-                .then(comments => {
-                    const container = document.getElementById('comments-container');
-                    comments.forEach(comment => {
-                        const li = document.createElement('li');
-                        li.classList.add('ks-item', 'd-flex', 'mb-3');
+    const ticketId = JSON.parse('@json($ticket->id)');
+    
+    fetch(`/tickets/${ticketId}/comments`)
+        .then(response => response.json())
+        .then(comments => {
+            const container = document.getElementById('comments-container');
+            if (comments.length === 0) {
+                const noCommentsMessage = document.createElement('p');
+                noCommentsMessage.classList.add('text-center', 'text-muted');
+                noCommentsMessage.textContent = 'No comments yet.';
+                container.appendChild(noCommentsMessage);
+            } else {
+                comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.classList.add('ks-item', 'd-flex', 'mb-3');
 
-                        // Check if the current user is the comment owner
-                        const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
+                    // Check if the current user is the comment owner
+                    const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
 
-                        // Create the profile image and comment structure
-                        const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
-                        li.innerHTML = `
-                            <div class="ks-avatar me-2">
-                                <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
+                    // Create the profile image and comment structure
+                    const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
+                    li.innerHTML = `
+                        <div class="ks-avatar me-2">
+                            <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
+                        </div>
+                        <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
+                            <div class="ks-header d-flex justify-content-between align-items-center">          
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">Commented By:</span>
+                                    <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
+                                </div>
+                                <span class="ks-datetime">
+                                    ${new Date(comment.created_at).toLocaleString()}
+                                    ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
+                                </span>
                             </div>
-                            <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
-                                <div class="ks-header d-flex justify-content-between">          
-                                    <p>Comment Id: <span class="ks-name fw-bold"> #${comment.id}</span> | Commented By: <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span></p>
-                                    <span class="ks-datetime">
-                                        ${new Date(comment.created_at).toLocaleString()}
-                                        ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
-                                    </span>
-                                </div>
-                                <div class="ks-body mt-1">
-                                    <p>${comment.content}</p>
-                                </div>
-                                <div class="ks-footer mt-2">
-                                    <div class="btn-group">
-                                        ${isOwner ? `
-                                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
-                                                <i class="bi bi-pencil"></i> Update
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        ` : ''}
-                                        <button class="btn btn-outline-info btn-sm">
-                                            <i class="bi bi-reply"></i> Reply
+                            <div class="ks-body mt-1">
+                                <p>${comment.content}</p>
+                            </div>
+                            <div class="ks-footer mt-2">
+                                <div class="btn-group">
+                                    ${isOwner ? `
+                                        <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
+                                            <i class="bi bi-pencil"></i> Update
                                         </button>
-                                    </div>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-outline-info btn-sm">
+                                        <i class="bi bi-reply"></i> Reply
+                                    </button>
                                 </div>
                             </div>
-                        `;
-                        container.appendChild(li);
-                    });
-                })
-                .catch(error => console.error('Error fetching comments:', error));
-        });
+                        </div>
+                    `;
+                    container.appendChild(li);
+                });
+            }
+        })
+        .catch(error => console.error('Error fetching comments:', error));
+});
+
 
         // Placeholder functions for comment actions
         function updateComment(commentId) {
