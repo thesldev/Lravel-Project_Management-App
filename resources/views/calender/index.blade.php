@@ -187,7 +187,6 @@
         });
 
         var calendarEl = document.getElementById('calendar');
-        var events = [];
         var calendar = new FullCalendar.Calendar(calendarEl, {
             headerToolbar: {
                 left: 'prev,next today',
@@ -196,12 +195,39 @@
             },
             initialView: 'dayGridMonth',
             timeZone: 'UTC',
-            events: '/events',
+            events: '/events', // Endpoint to fetch events
             editable: true,
-        });
-        
-        calendar.render();
+            eventContent: function(info) {
+                // Create a custom event element
+                var eventTitle = info.event.title;
+                var eventElement = document.createElement('div');
+                eventElement.innerHTML = '<span style="cursor: pointer;">❌</span> ' + eventTitle;
 
+                // Add click event to delete button
+                eventElement.querySelector('span').addEventListener('click', function() {
+                    if (confirm("Are you sure you want to delete this event?")) {
+                        var eventId = info.event.id;
+                        $.ajax({
+                            method: 'DELETE', // HTTP method must match the Laravel route
+                            url: '/events/' + eventId, // URL to delete the event
+                            success: function(response) {
+                                console.log(response.message);
+                                calendar.refetchEvents(); // Refresh the calendar events
+                            },
+                            error: function(error) {
+                                console.error('Error deleting event:', error);
+                            }
+                        });
+                    }
+                });
+
+                return {
+                    domNodes: [eventElement]
+                };
+            }
+        });
+
+        calendar.render();
     </script>
 
 </body>

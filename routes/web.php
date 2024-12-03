@@ -350,6 +350,7 @@ Route::get('/events', [ScheduleController::class, 'getEvents'])
 
 // route for delete the event
 Route::delete('/events/{id}', [ScheduleController::class, 'deleteEvent'])
+    ->middleware('auth', 'verified')
     ->name('calender.deleteEvent');
 
 require __DIR__.'/auth.php';

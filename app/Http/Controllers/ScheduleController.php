@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -45,9 +46,20 @@ class ScheduleController extends Controller
     // get event details
     public function getEvents()
     {
-        $schedules = Schedule::all();
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $userId = Auth::id();
+        $schedules = Schedule::where('user_id', $userId)->get();
+
+        if ($schedules->isEmpty()) {
+            return response()->json(['message' => 'No events found'], 200);
+        }
+
         return response()->json($schedules);
     }
+
 
     // function for delete event
     public function deleteEvent($id)
