@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -330,5 +331,25 @@ Route::put('/comments/{id}', [CommentController::class, 'update'])
     ->name('comments.update');
 
 
+
+
+// routes for handle claender functions
+Route::get('/calendar', [ScheduleController::class, 'index'])
+    ->middleware('auth', 'verified')
+    ->name('calender.index');
+
+// route for create event
+Route::post('/add-event', [ScheduleController::class, 'store'])
+    ->middleware('auth', 'verified')
+    ->name('calender.store');
+
+// route for get the events
+Route::get('/events', [ScheduleController::class, 'getEvents'])
+    ->middleware('auth', 'verified')
+    ->name('calender.getEvents');
+
+// route for delete the event
+Route::delete('/events/{id}', [ScheduleController::class, 'deleteEvent'])
+    ->name('calender.deleteEvent');
 
 require __DIR__.'/auth.php';
