@@ -38,6 +38,25 @@ class CommentController extends Controller
     }
 
 
+    // function for store coments in admin side..
+    public function storeAdmin(Request $request, Ticket $ticket){
+        // Validate the request
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        // Create a new comment
+        $comment = new Comment();
+        $comment->ticket_id = $ticket->id;
+        $comment->user_id = Auth::id(); // Get the currently authenticated user ID
+        $comment->content = $request->content;
+        $comment->save();
+
+        // Redirect back to the ticket page with a success message
+        return redirect()->route('ticket.view', $ticket->id)
+            ->with('success', 'Comment added successfully.');
+    }
+
     // function for get all commets related to the selected ticket
     public function getComments(Ticket $ticket)
     {

@@ -303,6 +303,11 @@ Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('comments.store');
 
+// create comments for tickets, from admin side
+Route::post('/tickets/{ticket}/adminComments', [CommentController::class, 'storeAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.storeAdmin');
+
 // route for get all comments related to the ticket
 Route::get('/tickets/{ticket}/comments', [CommentController::class, 'getComments'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
