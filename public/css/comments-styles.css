@@ -1,0 +1,84 @@
+.ks-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.ks-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.ks-comment-box {
+    flex-grow: 1;
+    margin-left: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.ks-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.ks-name {
+    font-weight: bold;
+}
+
+.ks-datetime {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.ks-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-link {
+    padding: 0;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.btn-link:hover {
+    text-decoration: underline;
+}
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.btn-outline-primary,
+.btn-outline-danger,
+.btn-outline-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-group-vertical .btn {
+    border-radius: 5px;
+}
+
+.ks-footer .btn-group {
+    display: flex;
+    gap: 10px; /* Adjust this value to control the space between buttons */
+}
+
+.btn-outline-primary,
+.btn-outline-danger,
+.btn-outline-info {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between icon and text */
+    border-radius: 5px;
+}

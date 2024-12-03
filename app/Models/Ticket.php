@@ -67,4 +67,10 @@ class Ticket extends Model
     {
         return $this->hasMany(Ticket::class, 'parent_ticket_id');
     }
+
+    // define relationship for the comments
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

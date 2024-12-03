@@ -52,69 +52,71 @@
                         <div id="ticketList" class="row">
                             @foreach($tickets as $ticket)
                                 <script>
-                                    // Safely pass PHP data to JavaScript
-                                    let ticket = JSON.parse('@json($ticket)');
+                                    (function() {
+                                        // Safely pass PHP data to JavaScript
+                                        let ticket = JSON.parse('@json($ticket)');
 
-                                    // Format the date
-                                    let createdAt = new Date(ticket.created_at).toLocaleString();
-                                    let dueDate = new Date(ticket.due_date).toLocaleDateString();
-                                    
-                                    // Extract data from the ticket object with checks
-                                    let reporterName = ticket.reporter ? ticket.reporter.name : 'Unknown';
-                                    let ticketType = ticket.type ? ticket.type.name : 'N/A';
-                                    let ticketPriority = ticket.priority ? ticket.priority : 'N/A';
-                                    let projectName = ticket.project ? ticket.project.name : 'N/A';
-                                    let ticketStatus = ticket.status ? ticket.status.name : 'N/A';
-                                    let assigneeName = ticket.assignee ? ticket.assignee.name : 'N/A';
-                                    let assigneeRole = ticket.assignee ? ticket.assignee.job_role : 'N/A';
+                                        // Format the date
+                                        let createdAt = new Date(ticket.created_at).toLocaleString();
+                                        let dueDate = new Date(ticket.due_date).toLocaleDateString();
+                                        
+                                        // Extract data from the ticket object with checks
+                                        let reporterName = ticket.reporter ? ticket.reporter.name : 'Unknown';
+                                        let ticketType = ticket.type ? ticket.type.name : 'N/A';
+                                        let ticketPriority = ticket.priority ? ticket.priority : 'N/A';
+                                        let projectName = ticket.project ? ticket.project.name : 'N/A';
+                                        let ticketStatus = ticket.status ? ticket.status.name : 'N/A';
+                                        let assigneeName = ticket.assignee ? ticket.assignee.name : 'N/A';
+                                        let assigneeRole = ticket.assignee ? ticket.assignee.job_role : 'N/A';
 
-                                    // Header part
-                                    let headerHTML = `
-                                        <div class="card-body pt-3 pb-1">
-                                            <h6 class="card-title">
-                                                Assigned By: <span class="fw-bold">${reporterName}</span>
-                                                | At: <span class="fw-bold">${createdAt.replace(',', '&nbsp; |')}</span>
-                                                <span class="float-end">${ticketType} | ${ticketPriority}</span>
-                                            </h6>
-                                        </div>
-                                    `;
-                                    // Body part with flex layout for alignment
-                                    let bodyHTML = `
-                                        <div class="card-body pt-1 pb-3">
-                                            <h5 class="card-title">${ticket.title}</h5>
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <span><strong>Project:</strong> ${projectName}</span>
-                                                <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" 
-                                                    style="height: 40px;" 
-                                                    href="{{ route('ticket.empView', ['ticket' => $ticket->id]) }}">
-                                                        View Ticket
-                                                    </a>
+                                        // Header part
+                                        let headerHTML = `
+                                            <div class="card-body pt-3 pb-1">
+                                                <h6 class="card-title">
+                                                    Assigned By: <span class="fw-bold">${reporterName}</span>
+                                                    | At: <span class="fw-bold">${createdAt.replace(',', '&nbsp; |')}</span>
+                                                    <span class="float-end">${ticketType} | ${ticketPriority}</span>
+                                                </h6>
                                             </div>
-                                            <p class="card-text mb-1">
-                                                <strong>Status:</strong> ${ticketStatus}
-                                            </p>
-                                        </div>
-                                    `;
-                                    // Footer part
-                                    let footerHTML = `
-                                    <div class="card-footer d-flex justify-content-between">
-                                        <span><strong>Due Date:</strong> ${ticket.due_date}</span>
-                                        <span><strong>Assignees:</strong> ${assigneeName} | <strong>Job Role:</strong> ${assigneeRole}</span>
-                                    </div>
-                                    `;
-                                    // Combine all parts into a complete ticket card
-                                    let ticketHTML = `
-                                        <div class="col-md-6 col-lg-12 mb-4">
-                                            <div class="card shadow-sm border-0">
-                                                ${headerHTML}
-                                                ${bodyHTML}
-                                                ${footerHTML}
+                                        `;
+                                        // Body part with flex layout for alignment
+                                        let bodyHTML = `
+                                            <div class="card-body pt-1 pb-3">
+                                                <h5 class="card-title">${ticket.title}</h5>
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span><strong>Project:</strong> ${projectName}</span>
+                                                    <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" 
+                                                        style="height: 40px;" 
+                                                        href="{{ route('ticket.empView', ['ticket' => $ticket->id]) }}">
+                                                            View Ticket
+                                                        </a>
+                                                </div>
+                                                <p class="card-text mb-1">
+                                                    <strong>Status:</strong> ${ticketStatus}
+                                                </p>
                                             </div>
+                                        `;
+                                        // Footer part
+                                        let footerHTML = `
+                                        <div class="card-footer d-flex justify-content-between">
+                                            <span><strong>Due Date:</strong> ${ticket.due_date}</span>
+                                            <span><strong>Assignees:</strong> ${assigneeName} | <strong>Job Role:</strong> ${assigneeRole}</span>
                                         </div>
-                                    `;
+                                        `;
+                                        // Combine all parts into a complete ticket card
+                                        let ticketHTML = `
+                                            <div class="col-md-6 col-lg-12 mb-4">
+                                                <div class="card shadow-sm border-0">
+                                                    ${headerHTML}
+                                                    ${bodyHTML}
+                                                    ${footerHTML}
+                                                </div>
+                                            </div>
+                                        `;
 
-                                    // Append the ticket card to the ticket list container
-                                    document.getElementById('ticketList').innerHTML += ticketHTML;
+                                        // Append the ticket card to the ticket list container
+                                        document.getElementById('ticketList').innerHTML += ticketHTML;
+                                    })();
                                 </script>
                             @endforeach
                         </div>

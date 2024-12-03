@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
 use App\Http\Controllers\TicketTypeController;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -295,6 +297,38 @@ Route::get('/my-tickets', [TicketController::class, 'empTickets'])
 Route::get('/tickets/{ticket}/emp-view', [TicketController::class, 'empView'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('ticket.empView');
+
+// create comments for tickets, from employee side
+Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('comments.store');
+
+// create comments for tickets, from admin side
+Route::post('/tickets/{ticket}/adminComments', [CommentController::class, 'storeAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.storeAdmin');
+
+// route for get all comments related to the ticket
+Route::get('/tickets/{ticket}/comments', [CommentController::class, 'getComments'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('comments.getComments');
+
+// route for get all comments related to the ticket (admin)
+Route::get('/tickets/{ticket}/adminComments', [CommentController::class, 'getAdminComments'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.getAdminComments');
+
+// route for delete the comments-employee side
+// In routes/web.php or routes/api.php
+Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
+    ->middleware('auth', 'verified')
+    ->name('comments.destroy');
+
+// In routes/web.php or routes/api.php
+Route::put('/comments/{id}', [CommentController::class, 'update'])
+    ->middleware('auth', 'verified')
+    ->name('comments.update');
+
 
 
 require __DIR__.'/auth.php';
