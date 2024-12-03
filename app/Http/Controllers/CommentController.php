@@ -67,4 +67,15 @@ class CommentController extends Controller
 
         return response()->json($comments);
     }
+    
+    // function for get all commets related to the selected ticket
+    public function getAdminComments(Ticket $ticket)
+    {
+        // Fetch comments for the given ticket with related user data
+        $comments = Comment::with('user') // Eager load the related user
+            ->where('ticket_id', $ticket->id)
+            ->get();
+
+        return response()->json($comments);
+    }
 }

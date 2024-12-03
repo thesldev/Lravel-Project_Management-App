@@ -16,6 +16,7 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
 
+    <link href="{{ asset('css/comments-styles.css') }}" rel="stylesheet" />
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -112,8 +113,26 @@
                     </div>
 
                     <!-- ticket history section -->
-                    <h1 class="h3 mb-4 text-gray-800">Ticket {{ $ticket->id }} History</h1>
-
+                    <h1 class="h3 mb-4 text-gray-800">Ticket #{{ $ticket->id }} Comment History</h1>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="ks-messages ks-messenger__messages">
+                                    <div
+                                        class="ks-body ks-scrollable jspScrollable"
+                                        data-auto-height=""
+                                        data-reduce-height=".ks-footer"
+                                        data-fix-height="32"
+                                        style="height: 480px; overflow-y: auto; padding: 0;"
+                                    >
+                                        <ul class="ks-items" id="comments-container">
+                                            <!-- Comments will be dynamically injected here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -459,6 +478,51 @@
 
     <!-- Font Awesome (optional, for icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- script for display the comments related to the ticket -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ticketId = JSON.parse('@json($ticket->id)');
+            
+            fetch(`/tickets/${ticketId}/adminComments`)
+                .then(response => response.json())
+                .then(comments => {
+                    const container = document.getElementById('comments-container');
+                    comments.forEach(comment => {
+                        const li = document.createElement('li');
+                        li.classList.add('ks-item', comment.is_from_user ? 'ks-self' : 'ks-from');
+
+                        const avatarSrc = comment.is_from_user 
+                            ? 'https://bootdey.com/img/Content/avatar/avatar1.png' 
+                            : 'https://bootdey.com/img/Content/avatar/avatar2.png';
+
+                        li.innerHTML = `
+                            <span class="ks-avatar ${comment.is_from_user ? 'ks-offline' : 'ks-online'}">
+                                <img src="${avatarSrc}" width="36" height="36" class="rounded-circle" />
+                            </span>
+                            <div class="ks-body">
+                                <div class="ks-header">
+                                    <span class="ks-name">${comment.user?.name || 'Unknown User'}</span>
+                                    <span class="ks-datetime">${new Date(comment.created_at).toLocaleString()}</span>
+                                </div>
+                                <div class="ks-message">
+                                    ${comment.content}
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching comments:', error));
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $('.jspContainer').jScrollPane();
+        });
+    </script>
+
 
 </body>
 </html>

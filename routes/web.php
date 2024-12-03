@@ -313,5 +313,10 @@ Route::get('/tickets/{ticket}/comments', [CommentController::class, 'getComments
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('comments.getComments');
 
+// route for get all comments related to the ticket (admin)
+Route::get('/tickets/{ticket}/adminComments', [CommentController::class, 'getAdminComments'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.getAdminComments');
+
 
 require __DIR__.'/auth.php';
