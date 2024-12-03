@@ -321,12 +321,12 @@ Route::get('/tickets/{ticket}/adminComments', [CommentController::class, 'getAdm
 // route for delete the comments-employee side
 // In routes/web.php or routes/api.php
 Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
-    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->middleware('auth', 'verified')
     ->name('comments.destroy');
 
 // In routes/web.php or routes/api.php
 Route::put('/comments/{id}', [CommentController::class, 'update'])
-    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->middleware('auth', 'verified')
     ->name('comments.update');
 
 

@@ -477,12 +477,18 @@
     <!-- script for display the comments related to the ticket -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const ticketId = JSON.parse('@json($ticket->id)');
-            
-            fetch(`/tickets/${ticketId}/adminComments`)
-                .then(response => response.json())
-                .then(comments => {
-                    const container = document.getElementById('comments-container');
+        const ticketId = JSON.parse('@json($ticket->id)');
+        
+        fetch(`/tickets/${ticketId}/adminComments`)
+            .then(response => response.json())
+            .then(comments => {
+                const container = document.getElementById('comments-container');
+                if (comments.length === 0) {
+                    const noCommentsMessage = document.createElement('p');
+                    noCommentsMessage.classList.add('text-center', 'text-muted');
+                    noCommentsMessage.textContent = 'No comments yet.';
+                    container.appendChild(noCommentsMessage);
+                } else {
                     comments.forEach(comment => {
                         const li = document.createElement('li');
                         li.classList.add('ks-item', 'd-flex', 'mb-3');
@@ -496,9 +502,12 @@
                             <div class="ks-avatar me-2">
                                 <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
                             </div>
-                            <div class="ks-comment-box flex-grow-1">
-                                <div class="ks-header d-flex justify-content-between">
-                                    <p>Commented By:<span class="ks-name fw-bold">  ${comment.user?.name || 'Unknown User'}</span></p>
+                            <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
+                                <div class="ks-header d-flex justify-content-between align-items-center">          
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">Commented By:</span>
+                                        <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
+                                    </div>
                                     <span class="ks-datetime">
                                         ${new Date(comment.created_at).toLocaleString()}
                                         ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
@@ -524,23 +533,124 @@
                                 </div>
                             </div>
                         `;
-
                         container.appendChild(li);
                     });
-                })
-                .catch(error => console.error('Error fetching comments:', error));
-        });
+                }
+            })
+            .catch(error => console.error('Error fetching comments:', error));
+    });
 
-        // Placeholder functions for comment actions
-        function updateComment(commentId) {
+       // Placeholder functions for comment actions
+       function updateComment(commentId) {
             console.log('Update comment with ID:', commentId);
             // Implement the update logic
         }
 
+        // function for delete the comment
         function deleteComment(commentId) {
-            console.log('Delete comment with ID:', commentId);
-            // Implement the delete logic
+            if (confirm('Are you sure you want to delete this comment?')) {
+                fetch(`/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment deleted successfully.');
+                        // Optionally remove the comment from the DOM
+                        document.getElementById(`comment-${commentId}`).remove();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error deleting comment:', error));
+            }
         }
+
+        // Function to handle the update button click
+        function updateComment(commentId) {
+            const commentElement = document.getElementById(`comment-${commentId}`);
+            const commentContent = commentElement.querySelector('.ks-body p');
+
+            // Convert the comment content into an editable text area
+            const editableContent = document.createElement('textarea');
+            editableContent.classList.add('form-control');
+            editableContent.style.width = '100%';
+            editableContent.style.height = '100px';
+            editableContent.value = commentContent.textContent.trim();
+
+            // Replace the paragraph with the editable text area
+            commentContent.replaceWith(editableContent);
+
+            // Hide existing buttons and show the 'Save changes' button
+            const footer = commentElement.querySelector('.ks-footer');
+            footer.innerHTML = `
+                <button class="btn btn-outline-success btn-sm" onclick="saveComment(${commentId}, this)">
+                    <i class="bi bi-save"></i> Save changes
+                </button>
+            `;
+        }
+
+        // Function to handle saving the comment changes
+        function saveComment(commentId, buttonElement) {
+            const commentElement = document.getElementById(`comment-${commentId}`);
+            const editableContent = commentElement.querySelector('textarea');
+
+            if (!editableContent) {
+                console.error('Error: Editable content not found');
+                return;
+            }
+
+            // Get the new content from the textarea
+            const newContent = editableContent.value.trim();
+
+            if (newContent === '') {
+                alert('Comment content cannot be empty.');
+                return;
+            }
+
+            fetch(`/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: newContent })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Comment updated successfully.');
+
+                    // Replace the textarea with the updated content
+                    const updatedCommentContent = document.createElement('p');
+                    updatedCommentContent.textContent = newContent;
+                    editableContent.replaceWith(updatedCommentContent);
+
+                    // Replace the 'Save changes' button with the original buttons
+                    buttonElement.closest('.ks-footer').innerHTML = `
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${commentId})">
+                                <i class="bi bi-pencil"></i> Update
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${commentId})">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                            <button class="btn btn-outline-info btn-sm">
+                                <i class="bi bi-reply"></i> Reply
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => console.error('Error updating comment:', error));
+        }
+
     </script>
 
     <script>
