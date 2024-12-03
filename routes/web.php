@@ -324,5 +324,11 @@ Route::delete('/comments/{id}', [CommentController::class, 'destroy'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('comments.destroy');
 
+// In routes/web.php or routes/api.php
+Route::put('/comments/{id}', [CommentController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('comments.update');
+
+
 
 require __DIR__.'/auth.php';

@@ -93,5 +93,26 @@ class CommentController extends Controller
         return response()->json(['success' => false, 'error' => 'Comment not found'], 404);
     }
 
-    
+
+    // function for update comments
+    public function update(Request $request, $id)
+    {
+        $comment = Comment::find($id);
+
+        if (!$comment) {
+            return response()->json(['success' => false, 'error' => 'Comment not found'], 404);
+        }
+
+        // Validate the new content
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        // Update the comment
+        $comment->content = $request->input('content');
+        $comment->save();
+
+        return response()->json(['success' => true]);
+    }
+
 }
