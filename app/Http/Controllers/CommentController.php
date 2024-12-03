@@ -41,8 +41,10 @@ class CommentController extends Controller
     // function for get all commets related to the selected ticket
     public function getComments(Ticket $ticket)
     {
-        // Eager load comments related to the ticket
-        $comments = $ticket->comments()->get();
+        // Fetch comments for the given ticket with related user data
+        $comments = Comment::with('user') // Eager load the related user
+            ->where('ticket_id', $ticket->id)
+            ->get();
 
         return response()->json($comments);
     }
