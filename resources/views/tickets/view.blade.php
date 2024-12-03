@@ -114,21 +114,16 @@
 
                     <!-- ticket history section -->
                     <h1 class="h3 mb-4 text-gray-800">Ticket #{{ $ticket->id }} Comment History</h1>
-                    <div class="card">
+                    <div class="card shadow mb-4">
                         <div class="card-body">
-                            <div class="row">
-                                <div class="ks-messages ks-messenger__messages">
-                                    <div
-                                        class="ks-body ks-scrollable jspScrollable"
-                                        data-auto-height=""
-                                        data-reduce-height=".ks-footer"
-                                        data-fix-height="32"
-                                        style="height: 480px; overflow-y: auto; padding: 0;"
-                                    >
-                                        <ul class="ks-items" id="comments-container">
-                                            <!-- Comments will be dynamically injected here -->
-                                        </ul>
-                                    </div>
+                            <div class="ks-messages ks-messenger__messages">
+                                <div
+                                    class="ks-body ks-scrollable"
+                                    style="height: 480px; overflow-y: auto; padding: 0;"
+                                >
+                                    <ul class="ks-items" id="comments-container">
+                                        <!-- Comments will be dynamically injected here -->
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -490,31 +485,62 @@
                     const container = document.getElementById('comments-container');
                     comments.forEach(comment => {
                         const li = document.createElement('li');
-                        li.classList.add('ks-item', comment.is_from_user ? 'ks-self' : 'ks-from');
+                        li.classList.add('ks-item', 'd-flex', 'mb-3');
 
-                        const avatarSrc = comment.is_from_user 
-                            ? 'https://bootdey.com/img/Content/avatar/avatar1.png' 
-                            : 'https://bootdey.com/img/Content/avatar/avatar2.png';
+                        // Check if the current user is the comment owner
+                        const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
 
+                        // Create the profile image and comment structure
+                        const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
                         li.innerHTML = `
-                            <span class="ks-avatar ${comment.is_from_user ? 'ks-offline' : 'ks-online'}">
-                                <img src="${avatarSrc}" width="36" height="36" class="rounded-circle" />
-                            </span>
-                            <div class="ks-body">
-                                <div class="ks-header">
-                                    <span class="ks-name">${comment.user?.name || 'Unknown User'}</span>
-                                    <span class="ks-datetime">${new Date(comment.created_at).toLocaleString()}</span>
+                            <div class="ks-avatar me-2">
+                                <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
+                            </div>
+                            <div class="ks-comment-box flex-grow-1">
+                                <div class="ks-header d-flex justify-content-between">
+                                    <p>Commented By:<span class="ks-name fw-bold">  ${comment.user?.name || 'Unknown User'}</span></p>
+                                    <span class="ks-datetime">
+                                        ${new Date(comment.created_at).toLocaleString()}
+                                        ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
+                                    </span>
                                 </div>
-                                <div class="ks-message">
-                                    ${comment.content}
+                                <div class="ks-body mt-1">
+                                    <p>${comment.content}</p>
+                                </div>
+                                <div class="ks-footer mt-2">
+                                    <div class="btn-group">
+                                        ${isOwner ? `
+                                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
+                                                <i class="bi bi-pencil"></i> Update
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-reply"></i> Reply
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         `;
+
                         container.appendChild(li);
                     });
                 })
                 .catch(error => console.error('Error fetching comments:', error));
         });
+
+        // Placeholder functions for comment actions
+        function updateComment(commentId) {
+            console.log('Update comment with ID:', commentId);
+            // Implement the update logic
+        }
+
+        function deleteComment(commentId) {
+            console.log('Delete comment with ID:', commentId);
+            // Implement the delete logic
+        }
     </script>
 
     <script>
