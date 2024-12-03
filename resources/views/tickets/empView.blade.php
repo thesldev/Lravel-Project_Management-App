@@ -29,7 +29,7 @@
     <div id="wrapper">
 
         <!-- Include Sidebar -->
-        <x-side-bar />
+        <x-employee-side-bar />
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
