@@ -116,34 +116,26 @@
 
                     <!-- ticket history section -->
                     <h1 class="h3 mb-4 text-gray-800">Ticket #{{ $ticket->id }} Comment History</h1>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="ks-messages ks-messenger__messages">
-                                <div
-                                    class="ks-body ks-scrollable jspScrollable"
-                                    data-auto-height=""
-                                    data-reduce-height=".ks-footer"
-                                    data-fix-height="32"
-                                    style="height: 480px; overflow: hidden; padding: 0px; width: 701px;"
-                                    tabindex="0"
-                                >
-                                    <div class="jspContainer" style="width: 701px; height: 481px">
-                                        <div class="row">
-                                            <div
-                                                class="jspPane"
-                                                style="padding: 0px; top: 0px; width: 691px"
-                                            >
-                                                <ul class="ks-items" id="comments-container">
-                                                    <!-- Comments will be dynamically injected here -->
-                                                </ul>
-                                            </div>
-                                        </div>                                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="ks-messages ks-messenger__messages">
+                                    <div
+                                        class="ks-body ks-scrollable jspScrollable"
+                                        data-auto-height=""
+                                        data-reduce-height=".ks-footer"
+                                        data-fix-height="32"
+                                        style="height: 480px; overflow-y: auto; padding: 0;"
+                                    >
+                                        <ul class="ks-items" id="comments-container">
+                                            <!-- Comments will be dynamically injected here -->
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
