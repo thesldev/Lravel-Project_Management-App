@@ -348,9 +348,30 @@ Route::get('/events', [ScheduleController::class, 'getEvents'])
     ->middleware('auth', 'verified')
     ->name('calender.getEvents');
 
+// route for update the event
+Route::post('/schedule/{eventId}', [ScheduleController::class, 'update'])
+    ->middleware('auth', 'verified')
+    ->name('calender.update');
+
 // route for delete the event
 Route::delete('/events/{id}', [ScheduleController::class, 'deleteEvent'])
     ->middleware('auth', 'verified')
     ->name('calender.deleteEvent');
+
+// route for get selected event data
+Route::get('/event/{id}', [ScheduleController::class, 'show'])
+    ->middleware('auth', 'verified')
+    ->name('event.show');
+
+// route for resize the devent duration
+Route::post('/schedule/{id}/resize', [ScheduleController::class, 'resize'])
+    ->middleware('auth', 'verified')
+    ->name('calender.resize');
+
+// route for search events
+Route::get('/events/search', [ScheduleController::class, 'search'])
+    ->middleware('auth', 'verified')
+    ->name('calender.search');
+
 
 require __DIR__.'/auth.php';

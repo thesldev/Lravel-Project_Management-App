@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
@@ -60,6 +61,19 @@ class ScheduleController extends Controller
         return response()->json($schedules);
     }
 
+    // function for update the event data
+    public function update(Request $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+
+        $schedule->update([
+            'start' => Carbon::parse($request->input('start_date'))->setTimezone('UTC'),
+            'end' => Carbon::parse($request->input('end_date'))->setTimezone('UTC'),
+        ]);
+
+        return response()->json(['message' => 'Event moved successfully']);
+    }
+
 
     // function for delete event
     public function deleteEvent($id)
@@ -69,4 +83,44 @@ class ScheduleController extends Controller
 
         return response()->json(['message' => 'Event deleted successfully']);
     }
+
+
+    //function for get selected event data
+    public function show($id)
+    {
+        try {
+            $event = Schedule::findOrFail($id);
+            return response()->json($event);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Event not found.'], 404);
+        }
+    }
+
+    // function for resize the event duration
+    public function resize(Request $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+
+        $newEndDate = Carbon::parse($request->input('end_date'))->setTimezone('UTC');
+        $schedule->update(['end' => $newEndDate]);
+
+        return response()->json(['message' => 'Event resized successfully.']);
+    }
+
+
+    // functions for search events 
+    public function search(Request $request)
+    {
+        $searchKeywords = $request->input('title');
+        $userId = Auth::id(); 
+
+        // Filter events by title and user ID
+        $matchingEvents = Schedule::where('title', 'like', '%' . $searchKeywords . '%')
+                                ->where('user_id', $userId)
+                                ->get();
+
+        return response()->json($matchingEvents);
+    }
+
+
 }

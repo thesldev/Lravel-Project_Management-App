@@ -49,9 +49,6 @@
                     <div class="container mt-4">
                         <!-- Ticket List -->
                         <div class="row">
-                            <!-- Dynamic Tickets -->
-                            <!-- Add dynamically generated tickets here -->
-
                             <!-- Merged Code Part -->
                             <div class="container mt-5">
                                 {{-- For Search --}}
@@ -109,7 +106,7 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Modal -->
+    <!-- Modal for create event -->
     <div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -157,6 +154,22 @@
         </div>
     </div>
 
+    <!-- Modal for display the selecyed event data -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Event details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -179,6 +192,7 @@
     <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
 
+    <!-- functions for handle claender -->
     <script>
         $.ajaxSetup({
             headers: {
@@ -196,23 +210,92 @@
             initialView: 'dayGridMonth',
             timeZone: 'UTC',
             events: '/events', // Endpoint to fetch events
-            editable: true,
+            editable: true, // Allows event drag-and-drop and resizing
+            eventDrop: function(info) {
+                var eventId = info.event.id;
+                var newStartDate = info.event.start;
+                var newEndDate = info.event.end || newStartDate;
+                var newStartDateUTC = newStartDate.toISOString().slice(0, 10);
+                var newEndDateUTC = newEndDate.toISOString().slice(0, 10);
+
+                // Make AJAX call to update the event on the server
+                $.ajax({
+                    method: 'post',
+                    url: `/schedule/${eventId}`,
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        start_date: newStartDateUTC,
+                        end_date: newEndDateUTC,
+                    },
+                    success: function() {
+                        console.log('Event moved successfully.');
+                        alert('Event moved successfully');
+                    },
+                    error: function(error) {
+                        console.error('Error moving event:', error);
+                        alert('Error moving event');
+                    }
+                });
+            },
+            eventResize: function(info) {
+                var eventId = info.event.id;
+                var newEndDate = info.event.end;
+                var newEndDateUTC = newEndDate.toISOString().slice(0, 10);
+
+                // Make AJAX call to update the event duration on the server
+                $.ajax({
+                    method: 'post',
+                    url: `/schedule/${eventId}/resize`,
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        end_date: newEndDateUTC,
+                    },
+                    success: function() {
+                        console.log('Event resized successfully.');
+                        alert('Event resized successfully');
+                    },
+                    error: function(error) {
+                        console.error('Error resizing event:', error);
+                        alert('Error resizing event');
+                    }
+                });
+            },
+            eventClick: function(info) {
+                var eventId = info.event.id;
+
+                // Fetch event details from the server
+                $.ajax({
+                    method: 'get',
+                    url: `/event/${eventId}`,
+                    success: function(event) {
+                        // Populate modal with event details
+                        $('#eventModal .modal-title').text(event.title);
+                        $('#eventModal .modal-body').html(`
+                            <p><strong>Start Date:</strong> ${event.start}</p>
+                            <p><strong>End Date:</strong> ${event.end}</p>
+                            <p><strong>Description:</strong> ${event.description}</p>
+                        `);
+                        $('#eventModal').modal('show');
+                    },
+                    error: function() {
+                        alert('Error fetching event details');
+                    }
+                });
+            },
             eventContent: function(info) {
-                // Create a custom event element
                 var eventTitle = info.event.title;
                 var eventElement = document.createElement('div');
                 eventElement.innerHTML = '<span style="cursor: pointer;">❌</span> ' + eventTitle;
 
-                // Add click event to delete button
                 eventElement.querySelector('span').addEventListener('click', function() {
                     if (confirm("Are you sure you want to delete this event?")) {
                         var eventId = info.event.id;
                         $.ajax({
-                            method: 'DELETE', // HTTP method must match the Laravel route
-                            url: '/events/' + eventId, // URL to delete the event
+                            method: 'DELETE',
+                            url: '/events/' + eventId,
                             success: function(response) {
                                 console.log(response.message);
-                                calendar.refetchEvents(); // Refresh the calendar events
+                                calendar.refetchEvents();
                             },
                             error: function(error) {
                                 console.error('Error deleting event:', error);
@@ -228,7 +311,29 @@
         });
 
         calendar.render();
+
+        // Add search functionality
+        document.getElementById('searchButton').addEventListener('click', function() {
+            var searchKeywords = document.getElementById('searchInput').value.toLowerCase();
+            filterAndDisplayEvents(searchKeywords);
+        });
+
+        function filterAndDisplayEvents(searchKeywords) {
+            $.ajax({
+                method: 'GET',
+                url: `/events/search?title=${searchKeywords}`,
+                success: function(response) {
+                    calendar.removeAllEvents();
+                    calendar.addEventSource(response);
+                },
+                error: function(error) {
+                    console.error('Error searching events:', error);
+                }
+            });
+        }
     </script>
+
+
 
 </body>
 
