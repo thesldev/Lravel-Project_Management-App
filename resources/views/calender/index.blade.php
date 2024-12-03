@@ -57,25 +57,29 @@
                                         <div class="input-group mb-3">
                                             <input type="text" id="searchInput" class="form-control" placeholder="Search events">
                                             <div class="input-group-append">
-                                                <button id="searchButton" class="btn btn-primary">{{__('Search')}}</button>
+                                                <button id="searchButton" class="btn btn-primary">
+                                                    <i class="fas fa-search"></i> {{__('Search')}}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <!-- Container to align buttons to the right -->
+                                    <div class="col-md-6 d-flex justify-content-end">
                                         <div class="btn-group mb-3" role="group" aria-label="Calendar Actions">
-                                            <button id="exportButton" class="btn btn-success">{{__('Export Calendar')}}</button>
+                                            <button id="exportButton" class="btn btn-success">
+                                                <i class="fas fa-file-export"></i> {{__('Export Calendar')}}
+                                            </button>
                                         </div>
-                                        <div class="btn-group mb-3" role="group" aria-label="Calendar Actions">
+                                        <div class="btn-group mb-3 ms-2" role="group" aria-label="Calendar Actions">
                                             <!-- Button trigger modal -->
                                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addScheduleModal">
-                                                {{__('Add')}}
+                                                <i class="fas fa-calendar-plus"></i> {{__('Add Events')}}
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="card">
+                              <div class="card">
                                     <div class="card-body">
                                         <div id="calendar" style="width: 100%;height:100vh"></div>
                                     </div>
