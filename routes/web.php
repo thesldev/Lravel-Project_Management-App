@@ -381,6 +381,11 @@ Route::get('/sprints', [SprintController::class, 'index'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('sprint.index');
 
+//  route for go to manage sprits page
+Route::get('/manage-sprints', [SprintController::class, 'managePage'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.managePage');
+
 // route for store sprint data
 Route::post('/sprints/new', [SprintController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')

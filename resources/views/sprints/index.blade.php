@@ -43,7 +43,7 @@
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-2 text-gray-800">Manage Sprints</h1>
+                        <h1 class="h3 mb-2 text-gray-800">All Sprints</h1>
                         
                         <div class="ms-auto">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTicketModal">Create Sprint</button>
@@ -51,9 +51,25 @@
                     </div>
 
                     <div class="container mt-4">
-                        <!-- Ticket List -->
                         <div class="row">
-                            
+                            @foreach($sprints as $sprint)
+                                <div class="col-md-4">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $sprint->title }}</h5>
+                                            <p class="card-text">{{ $sprint->description }}</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    Project: {{ $sprint->project->name ?? 'N/A' }}<br>
+                                                    Duration: {{ $sprint->duration_weeks }} weeks<br>
+                                                    Start Date: {{ $sprint->start_date }}<br>
+                                                    End Date: {{ $sprint->end_date }}
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>                  
                 </div>

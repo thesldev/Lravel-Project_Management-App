@@ -13,12 +13,18 @@ class SprintController extends Controller
 
         // Fetch all projects from the database
         $projects = Project::all();
+        $sprints = Sprint::with('project')->get();
 
-        return view('sprints.index', compact('projects'));
+        return view('sprints.index', compact('projects', 'sprints'));
+    }
+
+    // function for got to manage sprint page..
+    public function managePage(){
+        $sprints = Sprint::with('project')->get();
+        return view('sprints.selectSprint', compact( 'sprints'));
     }
 
     // function for store sprint data in db
-
     public function store(Request $request)
     {
         $validated = $request->validate([

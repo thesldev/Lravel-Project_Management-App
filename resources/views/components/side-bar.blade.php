@@ -158,8 +158,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Sprints:</h6>
-                <a class="collapse-item" href="">View All Sprints</a>
-                <a class="collapse-item" href="{{route('sprint.index')}}">Create New Sprint</a>
+                <a class="collapse-item" href="{{route('sprint.index')}}">View All Sprints</a>
+                <a class="collapse-item" href="{{ route('sprint.managePage') }}">Manage Sprints</a>
                 <div class="dropdown-divider"></div>
                 <h6 class="collapse-header">Backlog Management:</h6>
                 <a class="collapse-item" href="">View Backlog</a>
