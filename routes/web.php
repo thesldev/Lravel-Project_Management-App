@@ -7,6 +7,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SprintController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -373,5 +374,16 @@ Route::get('/events/search', [ScheduleController::class, 'search'])
     ->middleware('auth', 'verified')
     ->name('calender.search');
 
+// routes for handle sprints
+
+// rout for go to create new sprint 
+Route::get('/sprints', [SprintController::class, 'index'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.index');
+
+// route for store sprint data
+Route::post('/sprints/new', [SprintController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.store');
 
 require __DIR__.'/auth.php';
