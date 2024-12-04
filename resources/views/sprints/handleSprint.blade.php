@@ -260,33 +260,6 @@
     </script>
 
 
-    <!-- Add JavaScript to handle drag-and-drop -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const dropZone = document.getElementById("dropZone");
-            const fileInput = document.getElementById("fileInput");
-            const filePreview = document.getElementById("filePreview");
-
-            // Highlight dropZone on drag events
-            dropZone.addEventListener("dragover", (event) => {
-                event.preventDefault();
-                dropZone.style.backgroundColor = "#e2e6ea";
-            });
-
-            dropZone.addEventListener("dragleave", () => {
-                dropZone.style.backgroundColor = "#f8f9fc";
-            });
-
-            // Handle file drop
-            dropZone.addEventListener("drop", (event) => {
-                event.preventDefault();
-                dropZone.style.backgroundColor = "#f8f9fc";
-                const files = event.dataTransfer.files;
-                handleFiles(files);
-            });
-        });
-    </script>
-
     <!-- add issues into Issue table. -->
     <script>
         $(document).ready(function() {
