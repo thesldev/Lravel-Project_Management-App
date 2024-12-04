@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackLogController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentController;
@@ -386,9 +387,20 @@ Route::get('/manage-sprints', [SprintController::class, 'managePage'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('sprint.managePage');
 
+// route for go to manage selected sprint page
+Route::get('/sprints/{id}/view', [SprintController::class, 'manage'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('sprint.manage');
+
 // route for store sprint data
 Route::post('/sprints/new', [SprintController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('sprint.store');
+
+// route for create backlog issue
+Route::post('/issue/create', [BackLogController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('backlog.store');
+
 
 require __DIR__.'/auth.php';

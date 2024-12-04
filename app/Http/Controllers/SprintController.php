@@ -24,6 +24,17 @@ class SprintController extends Controller
         return view('sprints.selectSprint', compact( 'sprints'));
     }
 
+    // function for go to manage sprints page..
+    public function manage($id)
+    {
+        // Fetch the sprint by ID
+        $sprint = Sprint::with('project')->findOrFail($id);
+
+        // Return the manage view with the sprint data
+        return view('sprints.handleSprint', compact('sprint'));
+    }
+
+
     // function for store sprint data in db
     public function store(Request $request)
     {

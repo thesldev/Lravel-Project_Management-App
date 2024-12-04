@@ -68,7 +68,7 @@
                                         <h5 class="card-title">{{ $sprint->title }}</h5>
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span><strong>Project:</strong> {{ $sprint->project->name ?? 'Unknown' }}</span>
-                                            <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="/sprints/{{ $sprint->id }}/view">View Sprint</a>
+                                            <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="{{ route('sprint.manage', $sprint->id) }}">View Sprint</a>
                                         </div>
                                         <p class="card-text mb-1">
                                             <strong>Description:</strong> {{ $sprint->description }}
