@@ -17,8 +17,9 @@ class Sprint extends Model
         'duration_weeks',
         'start_date',
         'end_date',
-    ];
-
+        'created_by',
+    ];    
+    
     // Casts for date attributes
     protected $casts = [
         'start_date' => 'date',

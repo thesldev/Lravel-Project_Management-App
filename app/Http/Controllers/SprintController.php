@@ -19,8 +19,8 @@ class SprintController extends Controller
 
     // function for store sprint data in db
 
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -28,12 +28,13 @@ class SprintController extends Controller
             'duration_weeks' => 'required|integer|min:2|max:4',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'created_by' => 'required|integer|exists:users,id',
         ]);
-    
-        // Save sprint to the database
-        Sprint::create($validated);
-    
-        return redirect()->route('sprint.index')->with('success', 'Sprint created successfully.');
 
+        // Save the sprint
+        Sprint::create($validated);
+
+        return redirect()->route('sprint.index')->with('success', 'Sprint created successfully.');
     }
+
 }

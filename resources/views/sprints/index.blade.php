@@ -133,7 +133,11 @@
                             <label for="end_date" class="form-label">End Date</label>
                             <input type="date" class="form-control" id="end_date" name="end_date" readonly>
                         </div>
-                        
+
+                        <div class="mb-3">
+                            <label for="created_by" class="form-label">Created By</label>
+                            <input type="text" class="form-control" id="created_by" name="created_by" value="{{ auth()->user()->id }}" readonly>
+                        </div>             
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
