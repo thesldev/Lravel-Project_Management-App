@@ -290,15 +290,22 @@
     <!-- add issues into Issue table. -->
     <script>
         $(document).ready(function() {
+            // Pass the project ID from Blade to JavaScript
+            let projectId = JSON.parse('@json($sprint->project->id)');
+            
             $.ajax({
                 url: '{{ route("backlog.getIssues") }}', 
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
                     let issuesHtml = '';
-                    response.forEach(issue => {
+                    // Filter issues based on project_id
+                    let filteredIssues = response.filter(issue => issue.project_id === projectId);
+                    
+                    filteredIssues.forEach(issue => {
                         issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
                     });
+
                     $('#issue-list').html(issuesHtml);
                     // Initialize sortable after loading data
                     $('#issue-list').sortable({
@@ -330,8 +337,6 @@
                 }
             });
         });
-
-        
     </script>
 
     <!-- add issues into sprint -->
