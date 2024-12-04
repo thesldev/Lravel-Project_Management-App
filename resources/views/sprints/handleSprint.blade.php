@@ -290,50 +290,66 @@
     <!-- add issues into Issue table. -->
     <script>
         $(document).ready(function() {
-            // Pass the project ID from Blade to JavaScript
             let projectId = JSON.parse('@json($sprint->project->id)');
-            
+            let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade template
+
+            // Fetch issues already in the sprint
             $.ajax({
-                url: '{{ route("backlog.getIssues") }}', 
+                url: '{{ route("issuesInSprint.getIssues") }}',
                 type: 'GET',
+                data: { sprint_id: sprintId },
                 dataType: 'json',
                 success: function(response) {
-                    let issuesHtml = '';
-                    // Filter issues based on project_id
-                    let filteredIssues = response.filter(issue => issue.project_id === projectId);
-                    
-                    filteredIssues.forEach(issue => {
-                        issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
-                    });
+                    // Extract the IDs of issues already in the sprint
+                    let sprintIssueIds = response.map(issue => issue.issue.id);
 
-                    $('#issue-list').html(issuesHtml);
-                    // Initialize sortable after loading data
-                    $('#issue-list').sortable({
-                        placeholder: 'sortable-placeholder',
-                        items: 'li' // Ensure only `li` elements can be dragged
-                    }).on('sortupdate', function() {
-                        let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                        console.log('New order:', sortedIds);
+                    // Fetch all issues from the backlog
+                    $.ajax({
+                        url: '{{ route("backlog.getIssues") }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(issues) {
+                            let issuesHtml = '';
+                            // Filter out issues that are already in the sprint
+                            let filteredIssues = issues.filter(issue => issue.project_id === projectId && !sprintIssueIds.includes(issue.id));
 
-                        // Send the new order to the server
-                        $.ajax({
-                            url: '{{ route("backlog.updateOrder") }}',
-                            type: 'POST',
-                            data: {
-                                order: sortedIds,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                alert(response.message);
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('Failed to update order:', error);
-                            }
-                        });
+                            filteredIssues.forEach(issue => {
+                                issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
+                            });
+
+                            $('#issue-list').html(issuesHtml);
+                            // Initialize sortable after loading data
+                            $('#issue-list').sortable({
+                                placeholder: 'sortable-placeholder',
+                                items: 'li' // Ensure only `li` elements can be dragged
+                            }).on('sortupdate', function() {
+                                let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                                console.log('New order:', sortedIds);
+
+                                // Send the new order to the server
+                                $.ajax({
+                                    url: '{{ route("backlog.updateOrder") }}',
+                                    type: 'POST',
+                                    data: {
+                                        order: sortedIds,
+                                        _token: '{{ csrf_token() }}'
+                                    },
+                                    success: function(response) {
+                                        alert(response.message);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Failed to update order:', error);
+                                    }
+                                });
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to load issues:', error);
+                        }
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.error('Failed to load issues:', error);
+                    console.error('Failed to load sprint issues:', error);
                 }
             });
         });
@@ -343,59 +359,84 @@
     <script>
         $(document).ready(function() {
             $('#fetchIssuesBtn').on('click', function() {
-                // Make AJAX request to fetch issues
-                $.ajax({
-                    url: '{{ route("backlog.getIssues") }}',
-                    type: 'GET',
-                    success: function(response) {
-                        // Clear the loading message and populate the modal with issues
-                        $('#issuesContainer').html('');
+                let projectId = JSON.parse('@json($sprint->project->id)'); // Get the project ID from Blade
+                let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade
 
-                        if (response && response.length > 0) {
-                            let issuesList = '<ul class="list-group">';
-                            response.forEach(issue => {
-                                issuesList += `
-                                    <li class="list-group-item" data-id="${issue.id}" style="cursor: pointer;">
-                                        ${issue.title}
-                                    </li>
-                                `;
-                            });
-                            issuesList += '</ul>';
-                            $('#issuesContainer').html(issuesList);
-                        } else {
-                            $('#issuesContainer').html('<p>No issues found.</p>');
-                        }
+                // First AJAX request: Fetch issues already in the sprint
+                $.ajax({
+                    url: '{{ route("issuesInSprint.getIssues") }}',
+                    type: 'GET',
+                    data: { sprint_id: sprintId },
+                    dataType: 'json',
+                    success: function(sprintIssues) {
+                        // Extract the IDs of issues already in the sprint
+                        let sprintIssueIds = sprintIssues.map(issue => issue.issue.id);
+
+                        // Second AJAX request: Fetch issues from the backlog
+                        $.ajax({
+                            url: '{{ route("backlog.getIssues") }}',
+                            type: 'GET',
+                            success: function(response) {
+                                // Clear the loading message and populate the modal with issues
+                                $('#issuesContainer').html('');
+
+                                // Filter issues based on the project ID and exclude issues already in the sprint
+                                let filteredIssues = response.filter(issue => 
+                                    issue.project_id === projectId && !sprintIssueIds.includes(issue.id)
+                                );
+
+                                if (filteredIssues.length > 0) {
+                                    let issuesList = '<ul class="list-group">';
+                                    filteredIssues.forEach(issue => {
+                                        issuesList += `
+                                            <li class="list-group-item" data-id="${issue.id}" style="cursor: pointer;">
+                                                ${issue.title}
+                                            </li>
+                                        `;
+                                    });
+                                    issuesList += '</ul>';
+                                    $('#issuesContainer').html(issuesList);
+                                } else {
+                                    $('#issuesContainer').html('<p>No issues found for this project.</p>');
+                                }
+                            },
+                            error: function() {
+                                $('#issuesContainer').html('<p>Failed to load issues. Please try again later.</p>');
+                            }
+                        });
                     },
                     error: function() {
-                        $('#issuesContainer').html('<p>Failed to load issues. Please try again later.</p>');
-                    }
-                });
-            });
-
-            // Handle issue click to add it to the sprint
-            $('#issuesContainer').on('click', '.list-group-item', function() {
-                let issueId = $(this).data('id');
-                let sprintId = '{{ $sprint->id }}'; // Make sure $sprint is available in the Blade view
-
-                $.ajax({
-                    url: '{{ route("issuesInSprint.store") }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}', // CSRF token for security
-                        issue_id: issueId,
-                        sprint_id: sprintId
-                    },
-                    success: function(response) {
-                        alert(response.message);
-                        // Optionally refresh or update the UI after successful addition
-                    },
-                    error: function(xhr) {
-                        let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
-                        alert(errorMessage);
+                        $('#issuesContainer').html('<p>Failed to load sprint issues. Please try again later.</p>');
                     }
                 });
             });
         });
+
+
+        // Handle issue click to add it to the sprint
+        $('#issuesContainer').on('click', '.list-group-item', function() {
+            let issueId = $(this).data('id');
+            let sprintId = '{{ $sprint->id }}'; // Make sure $sprint is available in the Blade view
+
+            $.ajax({
+                url: '{{ route("issuesInSprint.store") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    issue_id: issueId,
+                    sprint_id: sprintId
+                },
+                success: function(response) {
+                    alert(response.message);
+                    // Optionally refresh or update the UI after successful addition
+                },
+                error: function(xhr) {
+                    let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
+                    alert(errorMessage);
+                }
+            });
+        });
+        
 
         $(document).ready(function() {
         // Replace 'sprintId' with the actual sprint ID to fetch issues
