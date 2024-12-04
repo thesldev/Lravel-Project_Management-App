@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Controllers\BackLogController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\IssuesInSprint;
+use App\Http\Controllers\IssuesInSprintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SprintController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -372,6 +376,60 @@ Route::post('/schedule/{id}/resize', [ScheduleController::class, 'resize'])
 Route::get('/events/search', [ScheduleController::class, 'search'])
     ->middleware('auth', 'verified')
     ->name('calender.search');
+
+// routes for handle sprints
+
+// rout for go to create new sprint 
+Route::get('/sprints', [SprintController::class, 'index'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.index');
+
+//  route for go to manage sprits page
+Route::get('/manage-sprints', [SprintController::class, 'managePage'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.managePage');
+
+// route for go to manage selected sprint page
+Route::get('/sprints/{id}/view', [SprintController::class, 'manage'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('sprint.manage');
+
+// route for store sprint data
+Route::post('/sprints/new', [SprintController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('sprint.store');
+
+// route for create backlog issue
+Route::post('/issue/create', [BackLogController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('backlog.store');
+
+// route for get issues
+Route::get('/issues', [BackLogController::class, 'getIssues'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('backlog.getIssues');
+
+// route for get issues in sprint
+Route::get('/issues-in-sprint', [IssuesInSprintController::class, 'getIssues'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issuesInSprint.getIssues');
+
+// In your web.php or api.php routes file
+Route::post('/issues-in-sprint/update-order', [IssuesInSprintController::class, 'updateOrder'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issuesInSprint.updateOrder');
+
+// route for update the order list
+Route::post('/backlog/update-order', [BacklogController::class, 'updateOrder'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('backlog.updateOrder');
+
+// route for drag & drop issues into drop zone..
+Route::post('/issues-in-sprint/store', [IssuesInSprintController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issuesInSprint.store');
+
+
 
 
 require __DIR__.'/auth.php';
