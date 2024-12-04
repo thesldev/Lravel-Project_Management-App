@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
      <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/draopZone.css') }}" rel="stylesheet" />
@@ -45,32 +47,43 @@
                     <h1 class="h3 mb-2 text-gray-800">Sprint #{{ $sprint->id }} | Project: {{$sprint->project->name}}</h1>
 
                     <p class="mb-4">{{$sprint->description}}</p>
-                    <!-- DataTales Example -->
+
+                    <!-- issues in sprint -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | {{ $sprint->title }}</h6>
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issueses In Sprint</h6>
+                            <button id="fetchIssuesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issuesModal">
+                             Add In To Sprint
+                            </button>
+
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <!-- DropZone Area -->
-                                <div id="dropZone" class="dropzone">
-                                    <p class="dropzone-text">Drag & Drop issues here </p>
-                                </div>
-                                <!-- Hidden file input for manual uploads -->
-                                <input type="file" id="fileInput" multiple style="display: none;" />
-                                <!-- Uploaded files preview -->
-                                <div id="filePreview" class="mt-3"></div>
-                            </div> 
-                            <div class="row">
-                                <!-- Create Issue Button -->
-                                <div class="col text-right">
-                                    <button id="createIssueBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createIssueModal">
-                                        <i class="fas fa-plus"></i> New Issue
-                                    </button>
-                                </div>
-                            </div>                          
+                                <ul id="issue-In-Sprint-list" class="list-group list-group-sortable">
+                                    <!-- Issues will be populated dynamically -->
+                                </ul>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- card for display issue list -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issues List</h6>
+                            <!-- Create Issue Button -->
+                            <button id="createIssueBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createIssueModal">
+                                <i class="fas fa-plus"></i> New Issue
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <ul id="issue-list" class="list-group list-group-sortable">
+                                    <!-- Issues will be populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -145,6 +158,22 @@
         </div>
     </div>
 
+    <!-- Modal to display all issues -->
+    <div class="modal fade" id="issuesModal" tabindex="-1" aria-labelledby="issuesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="issuesModalLabel">Issues List</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="issuesContainer">
+                    <!-- Issues will be populated here -->
+                    <p>Loading issues...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -160,8 +189,11 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
+    <script src="path/to/jquery.sortable.js"></script>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
     <!-- ajax & jquery for store issues in database -->
     <script>
@@ -255,6 +287,160 @@
         });
     </script>
 
+    <!-- add issues into Issue table. -->
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '{{ route("backlog.getIssues") }}', 
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    let issuesHtml = '';
+                    response.forEach(issue => {
+                        issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
+                    });
+                    $('#issue-list').html(issuesHtml);
+                    // Initialize sortable after loading data
+                    $('#issue-list').sortable({
+                        placeholder: 'sortable-placeholder',
+                        items: 'li' // Ensure only `li` elements can be dragged
+                    }).on('sortupdate', function() {
+                        let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                        console.log('New order:', sortedIds);
+
+                        // Send the new order to the server
+                        $.ajax({
+                            url: '{{ route("backlog.updateOrder") }}',
+                            type: 'POST',
+                            data: {
+                                order: sortedIds,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                alert(response.message);
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Failed to update order:', error);
+                            }
+                        });
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to load issues:', error);
+                }
+            });
+        });
+
+        
+    </script>
+
+    <!-- add issues into sprint -->
+    <script>
+        $(document).ready(function() {
+            $('#fetchIssuesBtn').on('click', function() {
+                // Make AJAX request to fetch issues
+                $.ajax({
+                    url: '{{ route("backlog.getIssues") }}',
+                    type: 'GET',
+                    success: function(response) {
+                        // Clear the loading message and populate the modal with issues
+                        $('#issuesContainer').html('');
+
+                        if (response && response.length > 0) {
+                            let issuesList = '<ul class="list-group">';
+                            response.forEach(issue => {
+                                issuesList += `
+                                    <li class="list-group-item" data-id="${issue.id}" style="cursor: pointer;">
+                                        ${issue.title}
+                                    </li>
+                                `;
+                            });
+                            issuesList += '</ul>';
+                            $('#issuesContainer').html(issuesList);
+                        } else {
+                            $('#issuesContainer').html('<p>No issues found.</p>');
+                        }
+                    },
+                    error: function() {
+                        $('#issuesContainer').html('<p>Failed to load issues. Please try again later.</p>');
+                    }
+                });
+            });
+
+            // Handle issue click to add it to the sprint
+            $('#issuesContainer').on('click', '.list-group-item', function() {
+                let issueId = $(this).data('id');
+                let sprintId = '{{ $sprint->id }}'; // Make sure $sprint is available in the Blade view
+
+                $.ajax({
+                    url: '{{ route("issuesInSprint.store") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // CSRF token for security
+                        issue_id: issueId,
+                        sprint_id: sprintId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        // Optionally refresh or update the UI after successful addition
+                    },
+                    error: function(xhr) {
+                        let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
+                        alert(errorMessage);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+        // Replace 'sprintId' with the actual sprint ID to fetch issues
+        let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade template
+
+        // Fetch issues from the 'issues_in_sprint' table
+        $.ajax({
+            url: '{{ route("issuesInSprint.getIssues") }}',
+            type: 'GET',
+            data: { sprint_id: sprintId },
+            dataType: 'json',
+            success: function(response) {
+                let issuesHtml = '';
+                response.forEach(issue => {
+                    issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.issue.title}</li>`;
+                });
+                $('#issue-In-Sprint-list').html(issuesHtml);
+
+                // Initialize sortable after loading data
+                $('#issue-In-Sprint-list').sortable({
+                    placeholder: 'sortable-placeholder',
+                    items: 'li' // Ensure only `li` elements can be dragged
+                }).on('sortupdate', function() {
+                    let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                    console.log('New order:', sortedIds);
+
+                    // Send the new order to the server
+                    $.ajax({
+                        url: '{{ route("issuesInSprint.updateOrder") }}', // Create this route for updating order
+                        type: 'POST',
+                        data: {
+                            order: sortedIds,
+                            _token: '{{ csrf_token() }}',
+                            sprint_id: sprintId
+                        },
+                        success: function(response) {
+                            alert(response.message);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to update order:', error);
+                        }
+                    });
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to load issues:', error);
+            }
+        });
+    });
+    </script>
 
 </body>
 
