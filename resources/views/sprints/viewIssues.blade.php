@@ -54,10 +54,10 @@
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Issue In: {{ $issue->sprint->title }} | Priority: {{ $issue->priority }}</h6>
                     <div class="ms-auto">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubtaskModal" id="addSubtaskButton">
-                            <i class="bi bi-person-fill-gear  mr-2"></i>
-                            Add Subtask
-                        </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubtaskModal" id="addSubtaskButton">
+                        <i class="bi bi-person-fill-gear  mr-2"></i>
+                        Add Subtask
+                    </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -145,6 +145,67 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Modal for Adding Subtask -->
+    <div class="modal fade" id="addSubtaskModal" tabindex="-1" aria-labelledby="addSubtaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubtaskModalLabel">Add New Subtask</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Subtask Form -->
+                    <form action="{{ route('subtasks.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Subtask Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assignee" class="form-label">Assign Employee</label>
+                            <select class="form-select" id="assignee" name="assignee_id" required>
+                                <option value="">Select an Employee</option>
+                                @if(isset($employees) && $employees->isNotEmpty())
+                                    @foreach($employees as $employee)
+                                        <option value="{{ $employee->id }}">{{ $employee->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option value="">No employees available</option>
+                                @endif
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="To Do">To Do</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="created_by" class="form-label">Created By</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="created_by" 
+                                name="created_by" 
+                                value="{{ auth()->user()->name ?? 'Unknown User' }}" 
+                                readonly
+                            >
+                        </div>
+                        <input type="hidden" name="created_by_id" value="{{ auth()->id() }}">
+                        <input type="hidden" name="issue_id" value="{{ $issue->id }}">
+                        <button type="submit" class="btn btn-primary">Add Subtask</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Bootstrap core JavaScript-->

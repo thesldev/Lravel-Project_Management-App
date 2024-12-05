@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable(); // Description, can be null
             $table->foreignId('assignee_id')->constrained('users'); // Foreign key referencing 'users'
             $table->enum('status', ['To Do', 'In Progress', 'Completed'])->default('To Do'); // Status of the subtask
-            $table->foreignId('created_by')->constrained('users'); // Foreign key referencing 'users'
+            $table->unsignedBigInteger('created_by')->nullable()->default(null); // Foreign key referencing 'users'
             $table->timestamps(0); // Created and updated timestamps
 
         });

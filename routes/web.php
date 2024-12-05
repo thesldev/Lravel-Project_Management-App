@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -439,6 +440,11 @@ Route::delete('/issues-in-sprint/{issueId}', [IssuesInSprintController::class, '
 Route::get('/issues/{id}/viewIssue', [BacklogController::class, 'view'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('issuesInSprint.view');
+
+// route for create sub task
+Route::post('/subtasks', [SubtaskController::class, 'store'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('subtasks.store');
 
 
 

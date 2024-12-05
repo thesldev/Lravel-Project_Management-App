@@ -48,4 +48,9 @@ class BacklogIssue extends Model
     {
         return $this->hasMany(IssuesInSprint::class, 'issue_id');
     }
+
+    public function subtasks()
+    {
+        return $this->hasMany(Subtask::class, 'issue_id');
+    }
 }

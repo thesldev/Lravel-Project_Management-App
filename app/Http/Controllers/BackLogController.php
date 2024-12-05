@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BacklogIssue;
+use App\Models\Employees;
 use Illuminate\Http\Request;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -13,8 +14,8 @@ class BackLogController extends Controller
     {
         // Assuming 'Issue' is the model representing the issues table.
         $issue = BacklogIssue::findOrFail($id);
-
-        return view('sprints.viewIssues', ['issue' => $issue]);
+        $employees = Employees::all();
+        return view('sprints.viewIssues', compact('issue', 'employees'));
     }
 
 
