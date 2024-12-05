@@ -49,7 +49,7 @@
 
             <p class="mb-4">{{ $issue->description }}</p>
 
-            <!-- issues in sprint -->
+            <!-- selected issues in sprint -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Issue In: {{ $issue->sprint->title }} | Priority: {{ $issue->priority }}</h6>
@@ -63,9 +63,48 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="card-body">
-                            <p><strong>Title:</strong> {{ $issue->title }}</p>
-                            <p><strong>Status:</strong> {{ $issue->status }}</p>
-                            <p><strong>Priority:</strong> {{ $issue->priority }}</p>
+                            <!-- Display Issue Title, Status, and Priority inline -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <p><strong>Issue Title:</strong> {{ $issue->title }}</p>
+                                <!-- Issue Status with color badge -->
+                                <p class="text-center">
+                                    <strong>Issue Status:</strong>
+                                    <span class="badge {{ 
+                                        ($issue->status === 'Low') ? 'bg-success' : 
+                                        (($issue->status === 'Medium') ? 'bg-warning' : 
+                                        (($issue->status === 'High') ? 'bg-danger' : 
+                                        (($issue->status === 'Critical') ? 'bg-dark' : 'bg-secondary'))) 
+                                    }}">
+                                        {{ $issue->status }}
+                                    </span>
+                                </p>
+                                <!-- Priority with color badge -->
+                                <p class="text-end">
+                                    <strong>Priority:</strong>
+                                    <span class="badge {{ 
+                                        ($issue->priority === 'Low') ? 'bg-success' : 
+                                        (($issue->priority === 'Medium') ? 'bg-warning' : 
+                                        (($issue->priority === 'High') ? 'bg-danger' : 
+                                        (($issue->priority === 'Critical') ? 'bg-dark' : 'bg-secondary'))) 
+                                    }}">
+                                        {{ $issue->priority }}
+                                    </span>
+                                </p>
+                            </div>
+                            <!-- Display Created By and Created At with left and right alignment -->
+                            <div class="d-flex justify-content-start mb-3">
+                                <p class="me-4"><strong>Created By:</strong> {{ $issue->sprint->createdBy->name }}</p>
+                                <p class="me-4">|</p>
+                                <p class="text-end"><strong>Created At:</strong> {{ $issue->created_at }}</p>
+                            </div>
+
+                            <!-- Display Project Details one after the other -->
+                            <p><strong>Project Name:</strong> {{ $issue->project->name }}</p>
+                            <p><strong>Project Type:</strong> {{ $issue->project->project_type }}</p>
+                            <div class="d-flex justify-content-between">
+                                <p><strong>Project Priority:</strong> {{ $issue->project->priority }}</p>
+                                <p><strong>Project Deadline:</strong> {{ $issue->project->end_date }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
