@@ -31,6 +31,12 @@ class Subtask extends Model
         return $this->belongsTo(BacklogIssue::class, 'issue_id');
     }
 
+    public function backlogIssue()
+    {
+        return $this->belongsTo(BacklogIssue::class, 'issue_id', 'id');
+    }
+
+
     // Define the relationship with the User model for the assignee
     public function assignee()
     {

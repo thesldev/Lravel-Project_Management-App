@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BacklogIssue;
 use App\Models\IssuesInSprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IssuesInSprintController extends Controller
 {
+
+    // function for store the issues into sprint 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -40,18 +45,21 @@ class IssuesInSprintController extends Controller
         ]);
     }
 
-
+    // function for get issue in the sprint
     public function getIssues(Request $request)
     {
         // Fetch the issues in the sprint
         $sprintId = $request->input('sprint_id'); // Assuming sprint ID is sent in the request
         $issuesInSprint = IssuesInSprint::where('sprint_id', $sprintId)
-                                        ->with('issue') // Assuming there's a relationship set up
+                                        ->with('issue') 
+                                        ->orderBy('order_index')
                                         ->get();
 
+        
         return response()->json($issuesInSprint);
     }
 
+    // update order list in sprint's issue list
     public function updateOrder(Request $request)
     {
         $validatedData = $request->validate([
@@ -69,4 +77,20 @@ class IssuesInSprintController extends Controller
         return response()->json(['message' => 'Order updated successfully']);
     }
 
+    // function for remove issue from the sprint
+    public function destroy($id)
+    {
+        // Adjusting the query to match by 'issue_id'
+        $issue = IssuesInSprint::where('issue_id', $id)->first();
+
+        if (!$issue) {
+            return response()->json(['error' => 'Issue not found with ID: ' . $id], 404);
+        }
+
+        $issue->delete();
+        return response()->json(['success' => 'Issue deleted successfully.'], 200);
+    }
+
+
+    
 }
