@@ -189,6 +189,25 @@
         </div>
     </div>
 
+    <!-- View Issue Modal -->
+    <div class="modal fade" id="viewIssueModal" tabindex="-1" aria-labelledby="viewIssueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewIssueModalLabel">Select an Issue to View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="viewIssuesContainer">
+                    <!-- Issues will be dynamically populated here -->
+                    <p>Loading issues...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Remove Issue Modal -->
     <div class="modal fade" id="removeIssueModal" tabindex="-1" aria-labelledby="removeIssueModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -625,8 +644,6 @@
             });
         });
     </script>
-
-
 
 </body>
 
