@@ -10,25 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class IssuesInSprintController extends Controller
 {
-    
-    // function for view selected issue in sprint
-    // public function view($id)
-    // {
-    //     // Fetch the issue with the given ID from the database
-    //     $issue = IssuesInSprint::findOrFail($id);
 
-    //     // Pass the issue details to the view
-    //     return view('sprints.viewIssues', compact('issue'));
-    // }
-
-
-    public function show($id)
-    {
-        $issue = IssuesInSprint::findOrFail($id);
-        return response()->json(['issue' => $issue]);
-    }
-
-    
     // function for store the issues into sprint 
     public function store(Request $request)
     {

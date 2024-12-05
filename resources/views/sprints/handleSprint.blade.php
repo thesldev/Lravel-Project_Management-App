@@ -370,10 +370,16 @@
                                             <span class="badge ${priorityColor}">${issue.priority}</span>
                                             <!-- Dropdown button for actions -->
                                             <div class="dropdown">
-                                                <button class="btn btn-light btn-sm " type="button" id="dropdownMenuButton${issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${issue.id}">
+                                                    <li>
+                                                        <button class="dropdown-item btn-view" data-id="${issue.id}" onclick="window.location.href='/issues/${issue.id}/viewIssue'">
+                                                            <i class="bi bi-eye"></i>
+                                                            <span class="ms-2">View</span>
+                                                        </button>
+                                                    </li>
                                                     <li>
                                                         <button class="dropdown-item btn-update" data-id="${issue.id}">
                                                             <i class="bi bi-save2-fill"></i>
@@ -385,7 +391,7 @@
                                                             <i class="bi bi-trash-fill"></i>
                                                             <span class="ms-2">Delete</span>
                                                         </button>
-                                                    </li>
+                                                    </li>                       
                                                 </ul>
                                             </div>
                                         </span>

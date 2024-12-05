@@ -8,6 +8,16 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 class BackLogController extends Controller
 {
+
+    public function view($id)
+    {
+        // Assuming 'Issue' is the model representing the issues table.
+        $issue = BacklogIssue::findOrFail($id);
+
+        return view('sprints.viewIssues', ['issue' => $issue]);
+    }
+
+
     // function for create issue
     public function store(Request $request)
     {

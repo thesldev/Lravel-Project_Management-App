@@ -28,54 +28,62 @@
 
 <body id="page-top">
 
-    <div id="wrapper">
+<div id="wrapper">
 
-        <!-- Include Sidebar -->
-        <x-side-bar />
+<!-- Include Sidebar -->
+<x-side-bar />
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
-            <div id="content">
+    <!-- Main Content -->
+    <div id="content">
 
-                <!-- Topbar -->
-                <x-topbar />
-                <!-- End of Topbar -->
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-2 text-gray-800">All Sprints</h1>
-                        
-                        <div class="ms-auto">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTicketModal">Create Sprint</button>
-                        </div>
-                    </div>   
-                    <div class="card">
-                    <div class="card-body">
-                        <p><strong>Title:</strong> {{ $issue->issue->title }}</p>
-                        <p><strong>Description:</strong> {{ $issue->issue->description }}</p>
-                        <p><strong>Status:</strong> {{ $issue->issue->status }}</p>
-                        <p><strong>Priority:</strong> {{ $issue->issue->priority }}</p>
-                        <p><strong>Created At:</strong> {{ $issue->created_at->format('d M Y, h:i A') }}</p>
-                        <p><strong>Updated At:</strong> {{ $issue->updated_at->format('d M Y, h:i A') }}</p>
-                        <a href="{{ route('sprints.show', $issue->sprint_id) }}" class="btn btn-primary">Back to Sprint</a>
-                    </div>                      
+        <!-- Topbar -->
+        <x-topbar />
+        <!-- End of Topbar -->
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <h1 class="h3 mb-2 text-gray-800">Issue #{{ $issue->id }} | Project: {{ $issue->project->name }}</h1>
+
+            <p class="mb-4">{{ $issue->description }}</p>
+
+            <!-- issues in sprint -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Issue In: {{ $issue->sprint->title }} | Priority: {{ $issue->priority }}</h6>
+                    <div class="ms-auto">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubtaskModal" id="addSubtaskButton">
+                            <i class="bi bi-person-fill-gear  mr-2"></i>
+                            Add Subtask
+                        </button>
+                    </div>
                 </div>
-                <!-- /.container-fluid -->
-
+                <div class="card-body">
+                    <div class="row">
+                        <div class="card-body">
+                            <p><strong>Title:</strong> {{ $issue->title }}</p>
+                            <p><strong>Status:</strong> {{ $issue->status }}</p>
+                            <p><strong>Priority:</strong> {{ $issue->priority }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <x-footer />
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- /.container-fluid -->
 
     </div>
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+    <x-footer />
+    <!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
     <!-- End of Wrapper -->
 
 
