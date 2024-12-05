@@ -50,6 +50,7 @@ class IssuesInSprintController extends Controller
                                         ->orderBy('order_index')
                                         ->get();
 
+        
         return response()->json($issuesInSprint);
     }
 

@@ -16,7 +16,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <!-- Include Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- jQuery UI CSS -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
      <!-- Custom styles for this template-->
@@ -50,13 +51,12 @@
 
                     <!-- issues in sprint -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issueses In Sprint</h6>
-                            <button id="fetchIssuesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issuesModal">
-                             Add In To Sprint
-                            </button>
-
-                        </div>
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issues in Sprint</h6>
+                        <button id="fetchIssuesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issuesModal">
+                            <i class="bi bi-bookmark-plus"></i> Add New
+                        </button>
+                    </div>
                         <div class="card-body">
                             <div class="row">
                                 <ul id="issue-In-Sprint-list" class="list-group list-group-sortable">
@@ -288,7 +288,55 @@
 
                             // Render issues dynamically
                             filteredIssues.forEach(issue => {
-                                issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
+                                // Determine the priority badge color
+                                let priorityColor;
+                                switch (issue.priority) {
+                                    case 'Low':
+                                        priorityColor = 'bg-success'; 
+                                        break;
+                                    case 'Medium':
+                                        priorityColor = 'bg-warning';
+                                        break;
+                                    case 'High':
+                                        priorityColor = 'bg-danger';
+                                        break;
+                                    case 'Critical':
+                                        priorityColor = 'bg-dark'; 
+                                        break;
+                                    default:
+                                        priorityColor = 'bg-secondary'; 
+                                }
+
+                                // Generate the HTML for each issue
+                                issuesHtml += `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.id}">
+                                        <span>${issue.title}</span>
+                                        <span class="d-flex gap-3 align-items-center">
+                                            <span class="badge bg-info">${issue.status}</span>
+                                            <span class="badge ${priorityColor}">${issue.priority}</span>
+                                            <!-- Dropdown button for actions -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-light btn-sm " type="button" id="dropdownMenuButton${issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${issue.id}">
+                                                    <li>
+                                                        <button class="dropdown-item btn-update" data-id="${issue.id}">
+                                                            <i class="bi bi-save2-fill"></i>
+                                                            <span class="ms-2">Update</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item btn-delete" data-id="${issue.id}">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                            <span class="ms-2">Delete</span>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </li>
+                                `;
                             });
 
                             $('#issue-list').html(issuesHtml);
@@ -427,8 +475,52 @@
                 success: function (response) {
                     let issuesHtml = '';
                     response.forEach(issue => {
-                        issuesHtml += `<li class="list-group-item" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
-                            ${issue.issue.title}
+                        // Determine priority badge color
+                        let priorityColor;
+                        switch (issue.issue.priority) {
+                            case 'Low':
+                                priorityColor = 'bg-success';
+                                break;
+                            case 'Medium':
+                                priorityColor = 'bg-warning';
+                                break;
+                            case 'High':
+                                priorityColor = 'bg-danger';
+                                break;
+                            case 'Critical':
+                                priorityColor = 'bg-dark';
+                                break;
+                            default:
+                                priorityColor = 'bg-secondary';
+                        }
+
+                        // Render the issue item
+                        issuesHtml += `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
+                            <span>${issue.issue.title}</span>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-info me-2">${issue.issue.status}</span>
+                                <span class="badge ${priorityColor} me-2">${issue.issue.priority || 'N/A'}</span>
+                                <!-- Dropdown button for actions -->
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${issue.issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${issue.issue.id}">
+                                        <li>
+                                            <button class="dropdown-item btn-view" data-id="${issue.issue.id}">
+                                                <i class="bi bi-eye-fill"></i>
+                                                <span class="ms-2">View</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item btn-remove" data-id="${issue.issue.id}">
+                                                <i class="bi bi-trash-fill"></i>
+                                                <span class="ms-2">Remove</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </li>`;
                     });
                     $('#issue-In-Sprint-list').html(issuesHtml);
@@ -470,7 +562,7 @@
         // Fetch and load issues on page load
         loadIssuesInSprint();
     });
-    </script>
+</script>
 
 </body>
 
