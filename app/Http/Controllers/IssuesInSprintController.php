@@ -46,7 +46,8 @@ class IssuesInSprintController extends Controller
         // Fetch the issues in the sprint
         $sprintId = $request->input('sprint_id'); // Assuming sprint ID is sent in the request
         $issuesInSprint = IssuesInSprint::where('sprint_id', $sprintId)
-                                        ->with('issue') // Assuming there's a relationship set up
+                                        ->with('issue') 
+                                        ->orderBy('order_index')
                                         ->get();
 
         return response()->json($issuesInSprint);

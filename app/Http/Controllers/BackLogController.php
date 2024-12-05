@@ -31,7 +31,7 @@ class BackLogController extends Controller
     public function getIssues(Request $request){
 
         
-        $issues = BacklogIssue::all();
+        $issues = BacklogIssue::orderBy('order')->get();
 
         return response()->json($issues);
     }

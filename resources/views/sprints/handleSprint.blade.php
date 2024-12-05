@@ -189,7 +189,9 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-    <script src="path/to/jquery.sortable.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="jquery.sortable.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- jQuery UI -->
@@ -273,7 +275,6 @@
                 data: { sprint_id: sprintId },
                 dataType: 'json',
                 success: function(response) {
-                    // Extract the IDs of issues already in the sprint
                     let sprintIssueIds = response.map(issue => issue.issue.id);
 
                     // Fetch all issues from the backlog
@@ -283,37 +284,39 @@
                         dataType: 'json',
                         success: function(issues) {
                             let issuesHtml = '';
-                            // Filter out issues that are already in the sprint
                             let filteredIssues = issues.filter(issue => issue.project_id === projectId && !sprintIssueIds.includes(issue.id));
 
+                            // Render issues dynamically
                             filteredIssues.forEach(issue => {
                                 issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
                             });
 
                             $('#issue-list').html(issuesHtml);
+
                             // Initialize sortable after loading data
                             $('#issue-list').sortable({
-                                placeholder: 'sortable-placeholder',
-                                items: 'li' // Ensure only `li` elements can be dragged
-                            }).on('sortupdate', function() {
-                                let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                                console.log('New order:', sortedIds);
+                                placeholderClass: 'sortable-placeholder',
+                                items: 'li',
+                                update: function(event, ui) {
+                                    let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                                    console.log('New order:', sortedIds);
 
-                                // Send the new order to the server
-                                $.ajax({
-                                    url: '{{ route("backlog.updateOrder") }}',
-                                    type: 'POST',
-                                    data: {
-                                        order: sortedIds,
-                                        _token: '{{ csrf_token() }}'
-                                    },
-                                    success: function(response) {
-                                        alert(response.message);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Failed to update order:', error);
-                                    }
-                                });
+                                    // Update the order on the server
+                                    $.ajax({
+                                        url: '{{ route("backlog.updateOrder") }}',
+                                        type: 'POST',
+                                        data: {
+                                            order: sortedIds,
+                                            _token: '{{ csrf_token() }}'
+                                        },
+                                        success: function(response) {
+                                            alert(response.message || 'Order updated successfully!');
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Failed to update order:', error);
+                                        }
+                                    });
+                                }
                             });
                         },
                         error: function(xhr, status, error) {
@@ -411,53 +414,61 @@
         });
         
 
-        $(document).ready(function() {
-        // Replace 'sprintId' with the actual sprint ID to fetch issues
-        let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade template
+        $(document).ready(function () {
+        const sprintId = '{{ $sprint->id }}'; // Sprint ID from Blade
 
-        // Fetch issues from the 'issues_in_sprint' table
-        $.ajax({
-            url: '{{ route("issuesInSprint.getIssues") }}',
-            type: 'GET',
-            data: { sprint_id: sprintId },
-            dataType: 'json',
-            success: function(response) {
-                let issuesHtml = '';
-                response.forEach(issue => {
-                    issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.issue.title}</li>`;
-                });
-                $('#issue-In-Sprint-list').html(issuesHtml);
-
-                // Initialize sortable after loading data
-                $('#issue-In-Sprint-list').sortable({
-                    placeholder: 'sortable-placeholder',
-                    items: 'li' // Ensure only `li` elements can be dragged
-                }).on('sortupdate', function() {
-                    let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                    console.log('New order:', sortedIds);
-
-                    // Send the new order to the server
-                    $.ajax({
-                        url: '{{ route("issuesInSprint.updateOrder") }}', // Create this route for updating order
-                        type: 'POST',
-                        data: {
-                            order: sortedIds,
-                            _token: '{{ csrf_token() }}',
-                            sprint_id: sprintId
-                        },
-                        success: function(response) {
-                            alert(response.message);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Failed to update order:', error);
-                        }
+        // Fetch and render issues in the sprint
+        function loadIssuesInSprint() {
+            $.ajax({
+                url: '{{ route("issuesInSprint.getIssues") }}',
+                type: 'GET',
+                data: { sprint_id: sprintId },
+                dataType: 'json',
+                success: function (response) {
+                    let issuesHtml = '';
+                    response.forEach(issue => {
+                        issuesHtml += `<li class="list-group-item" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
+                            ${issue.issue.title}
+                        </li>`;
                     });
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Failed to load issues:', error);
-            }
-        });
+                    $('#issue-In-Sprint-list').html(issuesHtml);
+
+                    // Initialize sortable list after rendering
+                    $('#issue-In-Sprint-list').sortable({
+                        placeholder: 'sortable-placeholder',
+                        items: 'li',
+                    }).on('sortupdate', function () {
+                        const sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                        updateOrder(sortedIds);
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load sprint issues.');
+                }
+            });
+        }
+
+        // Update the order on the server
+        function updateOrder(sortedIds) {
+            $.ajax({
+                url: '{{ route("issuesInSprint.updateOrder") }}',
+                type: 'POST',
+                data: {
+                    order: sortedIds,
+                    _token: '{{ csrf_token() }}',
+                    sprint_id: sprintId
+                },
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function () {
+                    alert('Failed to update the order. Please try again.');
+                }
+            });
+        }
+
+        // Fetch and load issues on page load
+        loadIssuesInSprint();
     });
     </script>
 
