@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -424,10 +425,31 @@ Route::post('/backlog/update-order', [BacklogController::class, 'updateOrder'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('backlog.updateOrder');
 
-// route for drag & drop issues into drop zone..
+// route for drag & drop issues into sprint..
 Route::post('/issues-in-sprint/store', [IssuesInSprintController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('issuesInSprint.store');
+
+// route for remove issue from the sprint
+Route::delete('/issues-in-sprint/{issueId}', [IssuesInSprintController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issuesInSprint.destroy');
+
+
+// route for go to view issue page...
+Route::get('/issues/{id}/viewIssue', [BacklogController::class, 'view'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('issuesInSprint.view');
+
+// route for create sub task
+Route::post('/subtasks', [SubtaskController::class, 'store'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('subtasks.store');
+
+// route for display sub tasks according to the issue
+Route::get('/issues/{issue_id}/subtasks', [SubtaskController::class, 'getSubtasksByIssue'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('subtasks.byIssue');
 
 
 

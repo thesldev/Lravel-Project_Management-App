@@ -11,12 +11,14 @@
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <!-- Include Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- jQuery UI CSS -->
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
      <!-- Custom styles for this template-->
@@ -51,11 +53,24 @@
                     <!-- issues in sprint -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issueses In Sprint</h6>
-                            <button id="fetchIssuesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issuesModal">
-                             Add In To Sprint
-                            </button>
-
+                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issues in Sprint</h6>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#issuesModal">
+                                            <i class="bi bi-bookmark-plus"></i> Add Issue
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
+                                            <i class="bi bi-trash-fill"></i> Remove Issue
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -174,6 +189,45 @@
         </div>
     </div>
 
+    <!-- View Issue Modal -->
+    <div class="modal fade" id="viewIssueModal" tabindex="-1" aria-labelledby="viewIssueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewIssueModalLabel">Select an Issue to View</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="viewIssuesContainer">
+                    <!-- Issues will be dynamically populated here -->
+                    <p>Loading issues...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Issue Modal -->
+    <div class="modal fade" id="removeIssueModal" tabindex="-1" aria-labelledby="removeIssueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeIssueModalLabel">Select an Issue to Remove</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="removeIssuesContainer">
+                    <!-- Issues will be dynamically populated here -->
+                    <p>Loading issues...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
@@ -189,7 +243,9 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-    <script src="path/to/jquery.sortable.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="jquery.sortable.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- jQuery UI -->
@@ -273,7 +329,6 @@
                 data: { sprint_id: sprintId },
                 dataType: 'json',
                 success: function(response) {
-                    // Extract the IDs of issues already in the sprint
                     let sprintIssueIds = response.map(issue => issue.issue.id);
 
                     // Fetch all issues from the backlog
@@ -283,37 +338,93 @@
                         dataType: 'json',
                         success: function(issues) {
                             let issuesHtml = '';
-                            // Filter out issues that are already in the sprint
                             let filteredIssues = issues.filter(issue => issue.project_id === projectId && !sprintIssueIds.includes(issue.id));
 
+                            // Render issues dynamically
                             filteredIssues.forEach(issue => {
-                                issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.title}</li>`;
+                                // Determine the priority badge color
+                                let priorityColor;
+                                switch (issue.priority) {
+                                    case 'Low':
+                                        priorityColor = 'bg-success'; 
+                                        break;
+                                    case 'Medium':
+                                        priorityColor = 'bg-warning';
+                                        break;
+                                    case 'High':
+                                        priorityColor = 'bg-danger';
+                                        break;
+                                    case 'Critical':
+                                        priorityColor = 'bg-dark'; 
+                                        break;
+                                    default:
+                                        priorityColor = 'bg-secondary'; 
+                                }
+
+                                // Generate the HTML for each issue
+                                issuesHtml += `
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.id}">
+                                        <span>${issue.title}</span>
+                                        <span class="d-flex gap-3 align-items-center">
+                                            <span class="badge bg-info">${issue.status}</span>
+                                            <span class="badge ${priorityColor}">${issue.priority}</span>
+                                            <!-- Dropdown button for actions -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${issue.id}">
+                                                    <li>
+                                                        <button class="dropdown-item btn-view" data-id="${issue.id}" onclick="window.location.href='/issues/${issue.id}/viewIssue'">
+                                                            <i class="bi bi-eye"></i>
+                                                            <span class="ms-2">View</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item btn-update" data-id="${issue.id}">
+                                                            <i class="bi bi-save2-fill"></i>
+                                                            <span class="ms-2">Update</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item btn-delete" data-id="${issue.id}">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                            <span class="ms-2">Delete</span>
+                                                        </button>
+                                                    </li>                       
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </li>
+                                `;
                             });
 
                             $('#issue-list').html(issuesHtml);
+
                             // Initialize sortable after loading data
                             $('#issue-list').sortable({
-                                placeholder: 'sortable-placeholder',
-                                items: 'li' // Ensure only `li` elements can be dragged
-                            }).on('sortupdate', function() {
-                                let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                                console.log('New order:', sortedIds);
+                                placeholderClass: 'sortable-placeholder',
+                                items: 'li',
+                                update: function(event, ui) {
+                                    let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                                    console.log('New order:', sortedIds);
 
-                                // Send the new order to the server
-                                $.ajax({
-                                    url: '{{ route("backlog.updateOrder") }}',
-                                    type: 'POST',
-                                    data: {
-                                        order: sortedIds,
-                                        _token: '{{ csrf_token() }}'
-                                    },
-                                    success: function(response) {
-                                        alert(response.message);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Failed to update order:', error);
-                                    }
-                                });
+                                    // Update the order on the server
+                                    $.ajax({
+                                        url: '{{ route("backlog.updateOrder") }}',
+                                        type: 'POST',
+                                        data: {
+                                            order: sortedIds,
+                                            _token: '{{ csrf_token() }}'
+                                        },
+                                        success: function(response) {
+                                            alert(response.message || 'Order updated successfully!');
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Failed to update order:', error);
+                                        }
+                                    });
+                                }
                             });
                         },
                         error: function(xhr, status, error) {
@@ -328,33 +439,34 @@
         });
     </script>
 
-    <!-- add issues into sprint -->
+    <!-- script to manage issues inside the sprint -->
     <script>
         $(document).ready(function() {
-            $('#fetchIssuesBtn').on('click', function() {
-                let projectId = JSON.parse('@json($sprint->project->id)'); // Get the project ID from Blade
-                let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade
+            // Add issues in sprint when the 'Add Issue' button is clicked
+            $('#issuesModal').on('show.bs.modal', function () {
+                $('#issuesContainer').html('<p>Loading issues...</p>');
 
-                // First AJAX request: Fetch issues already in the sprint
+                // Fetch issues already in the sprint
+                let projectId = JSON.parse('@json($sprint->project->id)');
+                let sprintId = '{{ $sprint->id }}';
+
                 $.ajax({
                     url: '{{ route("issuesInSprint.getIssues") }}',
                     type: 'GET',
                     data: { sprint_id: sprintId },
                     dataType: 'json',
                     success: function(sprintIssues) {
-                        // Extract the IDs of issues already in the sprint
                         let sprintIssueIds = sprintIssues.map(issue => issue.issue.id);
 
-                        // Second AJAX request: Fetch issues from the backlog
+                        // Fetch issues from the backlog
                         $.ajax({
                             url: '{{ route("backlog.getIssues") }}',
                             type: 'GET',
                             success: function(response) {
-                                // Clear the loading message and populate the modal with issues
                                 $('#issuesContainer').html('');
 
-                                // Filter issues based on the project ID and exclude issues already in the sprint
-                                let filteredIssues = response.filter(issue => 
+                                // Filter issues based on project ID and sprint issues
+                                let filteredIssues = response.filter(issue =>
                                     issue.project_id === projectId && !sprintIssueIds.includes(issue.id)
                                 );
 
@@ -383,82 +495,160 @@
                     }
                 });
             });
+
+            // Handle issue click to add it to the sprint
+            $('#issuesContainer').on('click', '.list-group-item', function() {
+                let issueId = $(this).data('id');
+                let sprintId = '{{ $sprint->id }}';
+
+                $.ajax({
+                    url: '{{ route("issuesInSprint.store") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        issue_id: issueId,
+                        sprint_id: sprintId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        // Optionally refresh or update the UI after successful addition
+                    },
+                    error: function(xhr) {
+                        let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
+                        alert(errorMessage);
+                    }
+                });
+            });
+
+            // Load issues in sprint when the page loads
+            const sprintId = '{{ $sprint->id }}';
+
+            function loadIssuesInSprint() {
+                $.ajax({
+                    url: '{{ route("issuesInSprint.getIssues") }}',
+                    type: 'GET',
+                    data: { sprint_id: sprintId },
+                    dataType: 'json',
+                    success: function(response) {
+                        let issuesHtml = '';
+                        response.forEach(issue => {
+                            let priorityColor;
+                            switch (issue.issue.priority) {
+                                case 'Low': priorityColor = 'bg-success'; break;
+                                case 'Medium': priorityColor = 'bg-warning'; break;
+                                case 'High': priorityColor = 'bg-danger'; break;
+                                case 'Critical': priorityColor = 'bg-dark'; break;
+                                default: priorityColor = 'bg-secondary';
+                            }
+
+                            issuesHtml += `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
+                                <span>${issue.issue.title}</span>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info me-2">${issue.issue.status}</span>
+                                    <span class="badge ${priorityColor} me-2">${issue.issue.priority || 'N/A'}</span>
+                                </div>
+                            </li>`;
+                        });
+                        $('#issue-In-Sprint-list').html(issuesHtml);
+
+                        // Make the list sortable
+                        $('#issue-In-Sprint-list').sortable({
+                            placeholder: 'sortable-placeholder',
+                            items: 'li',
+                        }).on('sortupdate', function() {
+                            const sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                            updateOrder(sortedIds);
+                        });
+
+                        // Add event listener for remove buttons
+                        $('.btn-remove').on('click', function() {
+                            const issueId = $(this).data('id');
+                            removeIssueFromSprint(issueId);
+                        });
+                    },
+                    error: function() {
+                        console.error('Failed to load sprint issues.');
+                    }
+                });
+            }
+
+            function updateOrder(sortedIds) {
+                $.ajax({
+                    url: '{{ route("issuesInSprint.updateOrder") }}',
+                    type: 'POST',
+                    data: {
+                        order: sortedIds,
+                        _token: '{{ csrf_token() }}',
+                        sprint_id: sprintId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function() {
+                        alert('Failed to update the order. Please try again.');
+                    }
+                });
+            }
+            // Load issues on page load
+            loadIssuesInSprint();
         });
+    </script>
 
+    <!-- script for add & remove issues into sprint -->
+    <script>
+        $(document).ready(function() {
+            $('#removeIssueModal').on('show.bs.modal', function() {
+                let sprintId = '{{ $sprint->id }}'; // Get sprint ID from Blade
 
-        // Handle issue click to add it to the sprint
-        $('#issuesContainer').on('click', '.list-group-item', function() {
-            let issueId = $(this).data('id');
-            let sprintId = '{{ $sprint->id }}'; // Make sure $sprint is available in the Blade view
+                $.ajax({
+                    url: '{{ route("issuesInSprint.getIssues") }}',
+                    type: 'GET',
+                    data: { sprint_id: sprintId },
+                    dataType: 'json',
+                    success: function(response) {
+                        let issuesHtml = '';
+                        if (response && response.length > 0) {
+                            response.forEach(issue => {
+                                issuesHtml += `
+                                    <div class="issue-item d-flex justify-content-between align-items-center mb-3">
+                                        <span>${issue.issue.title} (ID: ${issue.issue.id})</span>
+                                        <button class="btn btn-danger btn-sm me-2 remove-issue-btn" data-id="${issue.issue.id}">Remove</button>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            issuesHtml = '<p>No issues found in the sprint.</p>';
+                        }
+                        $('#removeIssuesContainer').html(issuesHtml);
+                    },
+                    error: function() {
+                        $('#removeIssuesContainer').html('<p>Failed to load issues. Please try again later.</p>');
+                    }
+                });
+            });
 
-            $.ajax({
-                url: '{{ route("issuesInSprint.store") }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // CSRF token for security
-                    issue_id: issueId,
-                    sprint_id: sprintId
-                },
-                success: function(response) {
-                    alert(response.message);
-                    // Optionally refresh or update the UI after successful addition
-                },
-                error: function(xhr) {
-                    let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
-                    alert(errorMessage);
+            $('#removeIssuesContainer').on('click', '.remove-issue-btn', function() {
+                let issueId = $(this).data('id');
+                let confirmation = confirm('Are you sure you want to remove this issue?');
+
+                if (confirmation) {
+                    $.ajax({
+                        url: '{{ route("issuesInSprint.destroy", ["issueId" => "__issueId__"]) }}'.replace("__issueId__", issueId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            alert('Issue removed successfully.');
+                            $('#removeIssueModal').modal('hide');
+                        },
+                        error: function(xhr) {
+                            alert('An error occurred while removing the issue.');
+                        }
+                    });
                 }
             });
         });
-        
-
-        $(document).ready(function() {
-        // Replace 'sprintId' with the actual sprint ID to fetch issues
-        let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade template
-
-        // Fetch issues from the 'issues_in_sprint' table
-        $.ajax({
-            url: '{{ route("issuesInSprint.getIssues") }}',
-            type: 'GET',
-            data: { sprint_id: sprintId },
-            dataType: 'json',
-            success: function(response) {
-                let issuesHtml = '';
-                response.forEach(issue => {
-                    issuesHtml += `<li class="list-group-item" data-id="${issue.id}">${issue.issue.title}</li>`;
-                });
-                $('#issue-In-Sprint-list').html(issuesHtml);
-
-                // Initialize sortable after loading data
-                $('#issue-In-Sprint-list').sortable({
-                    placeholder: 'sortable-placeholder',
-                    items: 'li' // Ensure only `li` elements can be dragged
-                }).on('sortupdate', function() {
-                    let sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                    console.log('New order:', sortedIds);
-
-                    // Send the new order to the server
-                    $.ajax({
-                        url: '{{ route("issuesInSprint.updateOrder") }}', // Create this route for updating order
-                        type: 'POST',
-                        data: {
-                            order: sortedIds,
-                            _token: '{{ csrf_token() }}',
-                            sprint_id: sprintId
-                        },
-                        success: function(response) {
-                            alert(response.message);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Failed to update order:', error);
-                        }
-                    });
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Failed to load issues:', error);
-            }
-        });
-    });
     </script>
 
 </body>

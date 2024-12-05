@@ -3,11 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\BacklogIssue;
+use App\Models\Employees;
 use Illuminate\Http\Request;
 use Symfony\Contracts\Service\Attribute\Required;
 
 class BackLogController extends Controller
 {
+
+    public function view($id)
+    {
+        // Assuming 'Issue' is the model representing the issues table.
+        $issue = BacklogIssue::findOrFail($id);
+        $employees = Employees::all();
+        return view('sprints.viewIssues', compact('issue', 'employees'));
+    }
+
+
     // function for create issue
     public function store(Request $request)
     {
@@ -31,7 +42,7 @@ class BackLogController extends Controller
     public function getIssues(Request $request){
 
         
-        $issues = BacklogIssue::all();
+        $issues = BacklogIssue::orderBy('order')->get();
 
         return response()->json($issues);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IssuesInSprint;
 use App\Models\Project;
 use App\Models\Sprint;
 use Illuminate\Http\Request;
@@ -20,19 +21,18 @@ class SprintController extends Controller
 
     // function for got to manage sprint page..
     public function managePage(){
-        $sprints = Sprint::with('project')->get();
+        $sprints = Sprint::with(['project', 'issues'])->get();
         return view('sprints.selectSprint', compact( 'sprints'));
     }
 
     // function for go to manage sprints page..
     public function manage($id)
     {
-        // Fetch the sprint by ID
-        $sprint = Sprint::with('project')->findOrFail($id);
-
-        // Return the manage view with the sprint data
-        return view('sprints.handleSprint', compact('sprint'));
+        $sprint = Sprint::with(['project', 'issuesInSprint.issue'])->findOrFail($id);
+        $issuesInSprint = IssuesInSprint::where('sprint_id', $id)->get();
+        return view('sprints.handleSprint', compact('sprint', 'issuesInSprint'));
     }
+    
 
 
     // function for store sprint data in db
