@@ -109,6 +109,21 @@
                     </div>
                 </div>
             </div>
+
+            <!-- display project sub tasks -->
+            <h1 class="h3 mb-2 text-gray-800 mt-5">Issue #{{ $issue->id }} | Sub Tasks</h1>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Sub Tasks In: {{ $issue->title }}</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="card-body">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.container-fluid -->
 
