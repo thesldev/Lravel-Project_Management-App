@@ -37,4 +37,15 @@ class Sprint extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function issuesInSprint()
+    {
+        return $this->hasMany(IssuesInSprint::class, 'sprint_id');
+    }
+
+    public function issues()
+    {
+        return $this->hasManyThrough(BacklogIssue::class, IssuesInSprint::class, 'sprint_id', 'id', 'id', 'issue_id');
+    }
+
 }

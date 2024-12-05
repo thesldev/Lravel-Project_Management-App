@@ -43,4 +43,9 @@ class BacklogIssue extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function issuesInSprint()
+    {
+        return $this->hasMany(IssuesInSprint::class, 'issue_id');
+    }
 }

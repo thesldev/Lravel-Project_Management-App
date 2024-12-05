@@ -21,20 +21,18 @@ class SprintController extends Controller
 
     // function for got to manage sprint page..
     public function managePage(){
-        $sprints = Sprint::with('project')->get();
+        $sprints = Sprint::with(['project', 'issues'])->get();
         return view('sprints.selectSprint', compact( 'sprints'));
     }
 
     // function for go to manage sprints page..
     public function manage($id)
     {
-        // Fetch the sprint by ID
-        $sprint = Sprint::with('project')->findOrFail($id);
-        // Retrieve all issues associated with the sprints
-        $issuesInSprint = IssuesInSprint::whereIn('sprint_id', $sprint->pluck('id'))->get();
-        // Return the manage view with the sprint data
-        return view('sprints.handleSprint', compact('sprint','issuesInSprint'));
+        $sprint = Sprint::with(['project', 'issuesInSprint.issue'])->findOrFail($id);
+        $issuesInSprint = IssuesInSprint::where('sprint_id', $id)->get();
+        return view('sprints.handleSprint', compact('sprint', 'issuesInSprint'));
     }
+    
 
 
     // function for store sprint data in db

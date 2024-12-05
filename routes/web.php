@@ -435,5 +435,10 @@ Route::delete('/issues-in-sprint/{issueId}', [IssuesInSprintController::class, '
     ->name('issuesInSprint.destroy');
 
 
+// route for go to view issue page...
+Route::get('/issues/{id}/viewIssue', [IssuesInSprintController::class, 'view'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('issuesInSprint.view');
+
 
 require __DIR__.'/auth.php';

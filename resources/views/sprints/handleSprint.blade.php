@@ -52,12 +52,26 @@
 
                     <!-- issues in sprint -->
                     <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issues in Sprint</h6>
-                        <button id="fetchIssuesBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issuesModal">
-                            <i class="bi bi-bookmark-plus"></i> Add New
-                        </button>
-                    </div>
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Sprint #{{ $sprint->id }} | Issues in Sprint</h6>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#issuesModal">
+                                            <i class="bi bi-bookmark-plus"></i> Add Issue
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
+                                            <i class="bi bi-trash-fill"></i> Remove Issue
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <ul id="issue-In-Sprint-list" class="list-group list-group-sortable">
@@ -174,6 +188,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Remove Issue Modal -->
+    <div class="modal fade" id="removeIssueModal" tabindex="-1" aria-labelledby="removeIssueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeIssueModalLabel">Select an Issue to Remove</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="removeIssuesContainer">
+                    <!-- Issues will be dynamically populated here -->
+                    <p>Loading issues...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
@@ -380,33 +414,34 @@
         });
     </script>
 
-    <!-- add issues into sprint -->
+    <!-- script to manage issues inside the sprint -->
     <script>
         $(document).ready(function() {
-            $('#fetchIssuesBtn').on('click', function() {
-                let projectId = JSON.parse('@json($sprint->project->id)'); // Get the project ID from Blade
-                let sprintId = '{{ $sprint->id }}'; // Pass the sprint ID from Blade
+            // Add issues in sprint when the 'Add Issue' button is clicked
+            $('#issuesModal').on('show.bs.modal', function () {
+                $('#issuesContainer').html('<p>Loading issues...</p>');
 
-                // First AJAX request: Fetch issues already in the sprint
+                // Fetch issues already in the sprint
+                let projectId = JSON.parse('@json($sprint->project->id)');
+                let sprintId = '{{ $sprint->id }}';
+
                 $.ajax({
                     url: '{{ route("issuesInSprint.getIssues") }}',
                     type: 'GET',
                     data: { sprint_id: sprintId },
                     dataType: 'json',
                     success: function(sprintIssues) {
-                        // Extract the IDs of issues already in the sprint
                         let sprintIssueIds = sprintIssues.map(issue => issue.issue.id);
 
-                        // Second AJAX request: Fetch issues from the backlog
+                        // Fetch issues from the backlog
                         $.ajax({
                             url: '{{ route("backlog.getIssues") }}',
                             type: 'GET',
                             success: function(response) {
-                                // Clear the loading message and populate the modal with issues
                                 $('#issuesContainer').html('');
 
-                                // Filter issues based on the project ID and exclude issues already in the sprint
-                                let filteredIssues = response.filter(issue => 
+                                // Filter issues based on project ID and sprint issues
+                                let filteredIssues = response.filter(issue =>
                                     issue.project_id === projectId && !sprintIssueIds.includes(issue.id)
                                 );
 
@@ -435,149 +470,163 @@
                     }
                 });
             });
-        });
 
+            // Handle issue click to add it to the sprint
+            $('#issuesContainer').on('click', '.list-group-item', function() {
+                let issueId = $(this).data('id');
+                let sprintId = '{{ $sprint->id }}';
 
-        // Handle issue click to add it to the sprint
-        $('#issuesContainer').on('click', '.list-group-item', function() {
-            let issueId = $(this).data('id');
-            let sprintId = '{{ $sprint->id }}'; // Make sure $sprint is available in the Blade view
-
-            $.ajax({
-                url: '{{ route("issuesInSprint.store") }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}', // CSRF token for security
-                    issue_id: issueId,
-                    sprint_id: sprintId
-                },
-                success: function(response) {
-                    alert(response.message);
-                    // Optionally refresh or update the UI after successful addition
-                },
-                error: function(xhr) {
-                    let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
-                    alert(errorMessage);
-                }
+                $.ajax({
+                    url: '{{ route("issuesInSprint.store") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        issue_id: issueId,
+                        sprint_id: sprintId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        // Optionally refresh or update the UI after successful addition
+                    },
+                    error: function(xhr) {
+                        let errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'An error occurred';
+                        alert(errorMessage);
+                    }
+                });
             });
-        });
-        
 
-        $(document).ready(function () {
-        const sprintId = '{{ $sprint->id }}'; // Sprint ID from Blade
+            // Load issues in sprint when the page loads
+            const sprintId = '{{ $sprint->id }}';
 
-        // Fetch and render issues in the sprint
-        function loadIssuesInSprint() {
-            $.ajax({
-                url: '{{ route("issuesInSprint.getIssues") }}',
-                type: 'GET',
-                data: { sprint_id: sprintId },
-                dataType: 'json',
-                success: function (response) {
-                    let issuesHtml = '';
-                    response.forEach(issue => {
-                        // Determine priority badge color
-                        let priorityColor;
-                        switch (issue.issue.priority) {
-                            case 'Low':
-                                priorityColor = 'bg-success';
-                                break;
-                            case 'Medium':
-                                priorityColor = 'bg-warning';
-                                break;
-                            case 'High':
-                                priorityColor = 'bg-danger';
-                                break;
-                            case 'Critical':
-                                priorityColor = 'bg-dark';
-                                break;
-                            default:
-                                priorityColor = 'bg-secondary';
-                        }
+            function loadIssuesInSprint() {
+                $.ajax({
+                    url: '{{ route("issuesInSprint.getIssues") }}',
+                    type: 'GET',
+                    data: { sprint_id: sprintId },
+                    dataType: 'json',
+                    success: function(response) {
+                        let issuesHtml = '';
+                        response.forEach(issue => {
+                            let priorityColor;
+                            switch (issue.issue.priority) {
+                                case 'Low': priorityColor = 'bg-success'; break;
+                                case 'Medium': priorityColor = 'bg-warning'; break;
+                                case 'High': priorityColor = 'bg-danger'; break;
+                                case 'Critical': priorityColor = 'bg-dark'; break;
+                                default: priorityColor = 'bg-secondary';
+                            }
 
-                        // Render the issue item
-                        issuesHtml += `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
-                            <span>${issue.issue.title}</span>
-                            <div class="d-flex align-items-center">
-                                <span class="badge bg-info me-2">${issue.issue.status}</span>
-                                <span class="badge ${priorityColor} me-2">${issue.issue.priority || 'N/A'}</span>
-                                <!-- Dropdown button for actions -->
-                                <div class="dropdown">
-                                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${issue.issue.id}" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${issue.issue.id}">
-                                        <li>
-                                            <button class="dropdown-item btn-view" data-id="${issue.issue.id}">
-                                                <i class="bi bi-eye-fill"></i>
-                                                <span class="ms-2">View</span>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <!-- Delete Button -->
-                                            @foreach ($issuesInSprint as $issue)
-                                            <form action="{{ route('issuesInSprint.destroy', $issue->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="dropdown-item btn-remove" type="submit" onclick="return confirm('Are you sure you want to remove this issue from the sprint?');">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                    <span class="ms-2">Remove</span>
-                                                </button>
-                                            </form>
-                                        @endforeach
-                                        </li>
-                                    </ul>
+                            issuesHtml += `<li class="list-group-item d-flex justify-content-between align-items-center" data-id="${issue.issue.id}" id="issue-${issue.issue.id}">
+                                <span>${issue.issue.title}</span>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info me-2">${issue.issue.status}</span>
+                                    <span class="badge ${priorityColor} me-2">${issue.issue.priority || 'N/A'}</span>
                                 </div>
-                            </div>
-                        </li>`;
-                    });
-                    $('#issue-In-Sprint-list').html(issuesHtml);
+                            </li>`;
+                        });
+                        $('#issue-In-Sprint-list').html(issuesHtml);
 
-                    // Initialize sortable list after rendering
-                    $('#issue-In-Sprint-list').sortable({
-                        placeholder: 'sortable-placeholder',
-                        items: 'li',
-                    }).on('sortupdate', function () {
-                        const sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
-                        updateOrder(sortedIds);
-                    });
+                        // Make the list sortable
+                        $('#issue-In-Sprint-list').sortable({
+                            placeholder: 'sortable-placeholder',
+                            items: 'li',
+                        }).on('sortupdate', function() {
+                            const sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
+                            updateOrder(sortedIds);
+                        });
 
-                    // Add event listener for remove buttons
-                    $('.btn-remove').on('click', function () {
-                        const issueId = $(this).data('id');
-                        removeIssueFromSprint(issueId);
-                    });
-                },
-                error: function () {
-                    console.error('Failed to load sprint issues.');
-                }
-            });
-        }
-        // Update the order on the server
-        function updateOrder(sortedIds) {
-            $.ajax({
-                url: '{{ route("issuesInSprint.updateOrder") }}',
-                type: 'POST',
-                data: {
-                    order: sortedIds,
-                    _token: '{{ csrf_token() }}',
-                    sprint_id: sprintId
-                },
-                success: function (response) {
-                    alert(response.message);
-                },
-                error: function () {
-                    alert('Failed to update the order. Please try again.');
-                }
-            });
-        }
+                        // Add event listener for remove buttons
+                        $('.btn-remove').on('click', function() {
+                            const issueId = $(this).data('id');
+                            removeIssueFromSprint(issueId);
+                        });
+                    },
+                    error: function() {
+                        console.error('Failed to load sprint issues.');
+                    }
+                });
+            }
 
-
-
-        // Fetch and load issues on page load
-        loadIssuesInSprint();
-    });
+            function updateOrder(sortedIds) {
+                $.ajax({
+                    url: '{{ route("issuesInSprint.updateOrder") }}',
+                    type: 'POST',
+                    data: {
+                        order: sortedIds,
+                        _token: '{{ csrf_token() }}',
+                        sprint_id: sprintId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function() {
+                        alert('Failed to update the order. Please try again.');
+                    }
+                });
+            }
+            // Load issues on page load
+            loadIssuesInSprint();
+        });
     </script>
+
+    <!-- script for add & remove issues into sprint -->
+    <script>
+        $(document).ready(function() {
+            $('#removeIssueModal').on('show.bs.modal', function() {
+                let sprintId = '{{ $sprint->id }}'; // Get sprint ID from Blade
+
+                $.ajax({
+                    url: '{{ route("issuesInSprint.getIssues") }}',
+                    type: 'GET',
+                    data: { sprint_id: sprintId },
+                    dataType: 'json',
+                    success: function(response) {
+                        let issuesHtml = '';
+                        if (response && response.length > 0) {
+                            response.forEach(issue => {
+                                issuesHtml += `
+                                    <div class="issue-item d-flex justify-content-between align-items-center mb-3">
+                                        <span>${issue.issue.title} (ID: ${issue.issue.id})</span>
+                                        <button class="btn btn-danger btn-sm me-2 remove-issue-btn" data-id="${issue.issue.id}">Remove</button>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            issuesHtml = '<p>No issues found in the sprint.</p>';
+                        }
+                        $('#removeIssuesContainer').html(issuesHtml);
+                    },
+                    error: function() {
+                        $('#removeIssuesContainer').html('<p>Failed to load issues. Please try again later.</p>');
+                    }
+                });
+            });
+
+            $('#removeIssuesContainer').on('click', '.remove-issue-btn', function() {
+                let issueId = $(this).data('id');
+                let confirmation = confirm('Are you sure you want to remove this issue?');
+
+                if (confirmation) {
+                    $.ajax({
+                        url: '{{ route("issuesInSprint.destroy", ["issueId" => "__issueId__"]) }}'.replace("__issueId__", issueId),
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            alert('Issue removed successfully.');
+                            $('#removeIssueModal').modal('hide');
+                        },
+                        error: function(xhr) {
+                            alert('An error occurred while removing the issue.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
 
 </body>
 

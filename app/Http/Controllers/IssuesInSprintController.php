@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BacklogIssue;
 use App\Models\IssuesInSprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,24 @@ use Illuminate\Support\Facades\Log;
 
 class IssuesInSprintController extends Controller
 {
+    
+    // function for view selected issue in sprint
+    public function view($id)
+    {
+            // Fetch the issue from the database
+        $issue = DB::table('issues_in_sprint')->where('id', $id)->first();
+
+        // Check if the issue exists
+        if (!$issue) {
+            return abort(404); // Issue not found
+        }
+
+        // Return the view with the issue data
+        return view('issues.view', compact('issue'));
+    }
+
+    
+    
     // function for store the issues into sprint 
     public function store(Request $request)
     {
@@ -78,14 +97,17 @@ class IssuesInSprintController extends Controller
     // function for remove issue from the sprint
     public function destroy($id)
     {
-        $issueInSprint = IssuesInSprint::findOrFail($id);
-        $issueInSprint->delete();
+        // Adjusting the query to match by 'issue_id'
+        $issue = IssuesInSprint::where('issue_id', $id)->first();
 
-        return redirect()->route('sprint.manage', ['id' => $issueInSprint->sprint_id])
-            ->with('success', 'Issue removed from the sprint.');
+        if (!$issue) {
+            return response()->json(['error' => 'Issue not found with ID: ' . $id], 404);
+        }
+
+        $issue->delete();
+        return response()->json(['success' => 'Issue deleted successfully.'], 200);
     }
+
+
     
-
-
-
 }
