@@ -446,6 +446,10 @@ Route::post('/subtasks', [SubtaskController::class, 'store'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('subtasks.store');
 
+// route for display sub tasks according to the issue
+Route::get('/issues/{issue_id}/subtasks', [SubtaskController::class, 'getSubtasksByIssue'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('subtasks.byIssue');
 
 
 

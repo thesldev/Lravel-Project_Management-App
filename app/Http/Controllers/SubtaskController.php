@@ -29,4 +29,18 @@ class SubtaskController extends Controller
     }
 
 
+    public function getSubtasksByIssue($issue_id)
+    {
+        $subtasks = Subtask::with('backlogIssue') // Eager load the related backlog issue
+                            ->where('issue_id', $issue_id)
+                            ->get();
+    
+        return view('sprints.viewIssues', compact('subtasks'));
+    }
+    
+
+    
+
+
+
 }

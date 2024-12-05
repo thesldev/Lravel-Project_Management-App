@@ -119,7 +119,20 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="card-body">
-                            
+                            @if (isset($subtasks) && $subtasks->isNotEmpty())
+                                <ul class="list-group">
+                                    @foreach ($subtasks as $subtask)
+                                        <li class="list-group-item">
+                                            <strong>{{ $subtask->title }}</strong><br>
+                                            <small>{{ $subtask->description }}</small><br>
+                                            <span class="badge bg-info">{{ $subtask->status }}</span>
+                                            <span class="badge bg-secondary">Assigned to: {{ $subtask->assignee->name ?? 'N/A' }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p>No subtasks available for this issue.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
