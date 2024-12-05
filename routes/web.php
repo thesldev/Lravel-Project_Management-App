@@ -424,11 +424,15 @@ Route::post('/backlog/update-order', [BacklogController::class, 'updateOrder'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('backlog.updateOrder');
 
-// route for drag & drop issues into drop zone..
+// route for drag & drop issues into sprint..
 Route::post('/issues-in-sprint/store', [IssuesInSprintController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('issuesInSprint.store');
 
+// route for remove issue from the sprint
+Route::delete('/issues-in-sprint/{issueId}', [IssuesInSprintController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issuesInSprint.destroy');
 
 
 

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\IssuesInSprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IssuesInSprintController extends Controller
 {
+    // function for store the issues into sprint 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -40,7 +43,7 @@ class IssuesInSprintController extends Controller
         ]);
     }
 
-
+    // function for get issue in the sprint
     public function getIssues(Request $request)
     {
         // Fetch the issues in the sprint
@@ -54,6 +57,7 @@ class IssuesInSprintController extends Controller
         return response()->json($issuesInSprint);
     }
 
+    // update order list in sprint's issue list
     public function updateOrder(Request $request)
     {
         $validatedData = $request->validate([
@@ -70,5 +74,18 @@ class IssuesInSprintController extends Controller
 
         return response()->json(['message' => 'Order updated successfully']);
     }
+
+    // function for remove issue from the sprint
+    public function destroy($id)
+    {
+        $issueInSprint = IssuesInSprint::findOrFail($id);
+        $issueInSprint->delete();
+
+        return redirect()->route('sprint.manage', ['id' => $issueInSprint->sprint_id])
+            ->with('success', 'Issue removed from the sprint.');
+    }
+    
+
+
 
 }

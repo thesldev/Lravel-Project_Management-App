@@ -11,7 +11,8 @@
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
@@ -513,10 +514,17 @@
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="dropdown-item btn-remove" data-id="${issue.issue.id}">
-                                                <i class="bi bi-trash-fill"></i>
-                                                <span class="ms-2">Remove</span>
-                                            </button>
+                                            <!-- Delete Button -->
+                                            @foreach ($issuesInSprint as $issue)
+                                            <form action="{{ route('issuesInSprint.destroy', $issue->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="dropdown-item btn-remove" type="submit" onclick="return confirm('Are you sure you want to remove this issue from the sprint?');">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                    <span class="ms-2">Remove</span>
+                                                </button>
+                                            </form>
+                                        @endforeach
                                         </li>
                                     </ul>
                                 </div>
@@ -533,13 +541,18 @@
                         const sortedIds = $(this).sortable('toArray', { attribute: 'data-id' });
                         updateOrder(sortedIds);
                     });
+
+                    // Add event listener for remove buttons
+                    $('.btn-remove').on('click', function () {
+                        const issueId = $(this).data('id');
+                        removeIssueFromSprint(issueId);
+                    });
                 },
                 error: function () {
                     console.error('Failed to load sprint issues.');
                 }
             });
         }
-
         // Update the order on the server
         function updateOrder(sortedIds) {
             $.ajax({
@@ -559,10 +572,12 @@
             });
         }
 
+
+
         // Fetch and load issues on page load
         loadIssuesInSprint();
     });
-</script>
+    </script>
 
 </body>
 
