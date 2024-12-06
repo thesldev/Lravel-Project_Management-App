@@ -235,130 +235,222 @@
         });
     </script>
 
-    <!-- scripts for handle sub tasks -->
-    <script>
-        // display subtasks related to the issue
-        $(document).ready(function () {
-            let issueId = JSON.parse('@json($issue->id)');
+    <!-- scripts for handling sub tasks -->
+<script>
+    $(document).ready(function () {
+        let issueId = JSON.parse('@json($issue->id)');
 
-            $.ajax({
-                url: "{{ route('subtask.getAll') }}",
-                method: 'GET',
-                data: { issue_id: issueId },
-                success: function (response) {
-                    let subtaskList = $('#subtask-list');
-                    subtaskList.empty();
+        $.ajax({
+            url: "{{ route('subtask.getAll') }}",
+            method: 'GET',
+            data: { issue_id: issueId },
+            success: function (response) {
+                let subtaskList = $('#subtask-list');
+                subtaskList.empty();
 
-                    if (response.length === 0) {
-                        subtaskList.append('<div class="text-muted">No subtasks found.</div>');
-                    } else {
-                        response.forEach(function (subtask) {
-                            let tags = Array.isArray(subtask.tags) ? subtask.tags : [];
-                            let assigneeName = subtask.assignee ? subtask.assignee.name : 'Unassigned';
-                            let assigneeId = subtask.assignee ? subtask.assignee.id : 'N/A';
-                            let jobRole = subtask.assignee ? subtask.assignee.job_role : 'N/A';
+                if (response.length === 0) {
+                    subtaskList.append('<div class="text-muted">No subtasks found.</div>');
+                } else {
+                    response.forEach(function (subtask) {
+                        let tags = Array.isArray(subtask.tags) ? subtask.tags : [];
+                        let assigneeName = subtask.assignee ? subtask.assignee.name : 'Unassigned';
+                        let assigneeId = subtask.assignee ? subtask.assignee.id : 'N/A';
+                        let jobRole = subtask.assignee ? subtask.assignee.job_role : 'N/A';
 
-                            let statusClass = '';
-                            switch (subtask.status) {
-                                case 'To Do':
-                                    statusClass = 'bg-secondary';
-                                    break;
-                                case 'In Progress':
-                                    statusClass = 'bg-warning';
-                                    break;
-                                case 'Completed':
-                                    statusClass = 'bg-success';
-                                    break;
-                                default:
-                                    statusClass = 'bg-primary';
-                            }
-                            let statusTag = subtask.status ? `<span class="badge ${statusClass} fs-14 mt-1">${subtask.status}</span>` : '';
-                            if (statusTag) {
-                                tags.push(statusTag);
-                            }
+                        let statusClass = '';
+                        switch (subtask.status) {
+                            case 'To Do':
+                                statusClass = 'bg-secondary';
+                                break;
+                            case 'In Progress':
+                                statusClass = 'bg-warning';
+                                break;
+                            case 'Completed':
+                                statusClass = 'bg-success';
+                                break;
+                            default:
+                                statusClass = 'bg-primary';
+                        }
+                        let statusTag = subtask.status ? `<span class="badge ${statusClass} fs-14 mt-1">${subtask.status}</span>` : '';
+                        if (statusTag) {
+                            tags.push(statusTag);
+                        }
 
-                            let subtaskHTML = `
-                                <div class="candidate-list-box card mt-4">
-                                    <div class="p-4 card-body">
-                                        <div class="align-items-center row">
-                                            <div class="col-auto">
-                                                <div class="candidate-list-images">
-                                                    <a href="#"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-md img-thumbnail rounded-circle" /></a>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-5">
-                                                <div class="candidate-list-content mt-3 mt-lg-0">
-                                                    <h5 class="fs-19 mb-0">
-                                                        <a class="primary-link" href="#">${subtask.title}</a><span class="badge bg-success ms-1"><i class="mdi mdi-star align-middle"></i>${subtask.priority || 'N/A'}</span>
-                                                    </h5>
-                                                    <p>${jobRole}</p>
-                                                    <ul class="list-inline mb-0 text-muted">
-                                                        <li class="list-inline-item"><i class="mdi mdi-calendar"></i> ${subtask.title || 'No title available'}</li>
-                                                        <li class="list-inline-item"><i class="mdi mdi-account"></i> ${assigneeName}</li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
-                                                    status: ${tags.map(tag => tag).join('')}
-                                                </div>
+                        let subtaskHTML = `
+                            <div class="candidate-list-box card mt-4">
+                                <div class="p-4 card-body">
+                                    <div class="align-items-center row">
+                                        <div class="col-auto">
+                                            <div class="candidate-list-images">
+                                                <a href="#"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-md img-thumbnail rounded-circle" /></a>
                                             </div>
                                         </div>
-                                        <div class="favorite-icon">
-                                            <div class="dropdown">
-                                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${subtask.id}" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical fs-18"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${subtask.id}">
-                                                    <li>
-                                                        <button class="dropdown-item btn-view" data-id="${subtask.id}" onclick="window.location.href='/subtasks/${subtask.id}/view'">
-                                                            <i class="bi bi-eye"></i>
-                                                            <span class="ms-2">View</span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button class="dropdown-item btn-remove" data-id="${subtask.id}">
-                                                            <i class="bi bi-trash-fill"></i>
-                                                            <span class="ms-2">Remove</span>
-                                                        </button>
-                                                    </li>
+                                        <div class="col-lg-5">
+                                            <div class="candidate-list-content mt-3 mt-lg-0">
+                                                <h5 class="fs-19 mb-0">
+                                                    <a class="primary-link" href="#">${subtask.title}</a><span class="badge bg-success ms-1"><i class="mdi mdi-star align-middle"></i>${subtask.priority || 'N/A'}</span>
+                                                </h5>
+                                                <p>${jobRole}</p>
+                                                <ul class="list-inline mb-0 text-muted">
+                                                    <li class="list-inline-item"><i class="mdi mdi-calendar"></i> ${subtask.title || 'No title available'}</li>
+                                                    <li class="list-inline-item"><i class="mdi mdi-account"></i> ${assigneeName}</li>
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div class="col-lg-4">
+                                            <div class="mt-2 mt-lg-0 d-flex flex-wrap align-items-start gap-1">
+                                                status: ${tags.map(tag => tag).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="favorite-icon">
+                                        <div class="dropdown">
+                                            <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton${subtask.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical fs-18"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${subtask.id}">
+                                                <li>
+                                                    <button class="dropdown-item btn-view" data-id="${subtask.id}" onclick="showSubtaskDetails(${subtask.id})">
+                                                        <i class="bi bi-eye"></i>
+                                                        <span class="ms-2">View</span>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item btn-remove" data-id="${subtask.id}">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                        <span class="ms-2">Remove</span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            `;
+                            </div>
+                        `;
 
-                            subtaskList.append(subtaskHTML);
-                        });
+                        subtaskList.append(subtaskHTML);
+                    });
 
-                        // Rebind the click event for remove buttons
-                        $('.btn-remove').off('click').on('click', function () {
-                            let subtaskId = $(this).data('id');
-                            if (confirm('Are you sure you want to remove this subtask?')) {
-                                $.ajax({
-                                    url: `/subtasks/${subtaskId}/delete`,
-                                    method: 'POST',
-                                    data: { _method: 'DELETE', _token: '{{ csrf_token() }}' }, // Ensure CSRF token is included
-                                    success: function (response) {
-                                        alert('Subtask removed successfully');
-                                        location.reload(); // Refresh to show changes
-                                    },
-                                    error: function (error) {
-                                        console.error('Error removing subtask:', error);
-                                        alert('Failed to remove subtask');
-                                    }
-                                });
-                            }
-                        });
-                    }
-                },
-                error: function (error) {
-                    console.error('Error fetching subtasks:', error);
+                    // Rebind the click event for remove buttons
+                    $('.btn-remove').off('click').on('click', function () {
+                        let subtaskId = $(this).data('id');
+                        if (confirm('Are you sure you want to remove this subtask?')) {
+                            $.ajax({
+                                url: `/subtasks/${subtaskId}/delete`,
+                                method: 'POST',
+                                data: { _method: 'DELETE', _token: '{{ csrf_token() }}' },
+                                success: function (response) {
+                                    alert('Subtask removed successfully');
+                                    location.reload();
+                                },
+                                error: function (error) {
+                                    console.error('Error removing subtask:', error);
+                                    alert('Failed to remove subtask');
+                                }
+                            });
+                        }
+                    });
                 }
-            });
+            },
+            error: function (error) {
+                console.error('Error fetching subtasks:', error);
+            }
         });
-    </script>
+    });
+
+    // Function to show subtask details in a modal
+    function showSubtaskDetails(subtaskId) {
+        $.ajax({
+            url: `/subtasks/${subtaskId}`,
+            method: 'GET',
+            success: function (subtask) {
+                let modalContent = `
+                    <div class="modal fade" id="subtaskModal" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="subtaskModalLabel">View Subtask #${subtask.id}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="subtaskForm">
+                                        <div class="mb-3">
+                                            <label for="title" class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="title" value="${subtask.title}" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" readonly>${subtask.description}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="assignee" class="form-label">Assignee</label>
+                                            <select class="form-select" id="assignee" disabled>
+                                                <option value="${subtask.assignee ? subtask.assignee.id : ''}">${subtask.assignee ? subtask.assignee.name : 'Unassigned'}</option>
+                                                <!-- Add more options if needed -->
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status</label>
+                                            <input type="text" class="form-control" id="status" value="${subtask.status}" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="createdBy" class="form-label">Created By</label>
+                                            <input type="text" class="form-control" id="createdBy" value="${subtask.created_by ? subtask.created_by.name : 'N/A'}" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="createdAt" class="form-label">Created At</label>
+                                            <input type="text" class="form-control" id="createdAt" value="${new Date(subtask.created_at).toLocaleString()}" readonly>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="updateSubtask(${subtask.id})">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Append the modal to the body and show it
+                $('body').append(modalContent);
+                $('#subtaskModal').modal('show');
+            },
+            error: function (error) {
+                console.error('Error fetching subtask details:', error);
+            }
+        });
+    }
+
+    // Function to update subtask details
+    function updateSubtask(subtaskId) {
+        let title = $('#title').val();
+        let description = $('#description').val();
+        let assigneeId = $('#assignee').val();
+
+        $.ajax({
+            url: `/subtasks/${subtaskId}/update`,
+            method: 'POST',
+            data: {
+                _method: 'PUT',
+                title: title,
+                description: description,
+                assignee_id: assigneeId,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (response) {
+                alert('Subtask updated successfully');
+                $('#subtaskModal').modal('hide');
+                location.reload();
+            },
+            error: function (error) {
+                console.error('Error updating subtask:', error);
+                alert('Failed to update subtask');
+            }
+        });
+    }
+</script>
+
 
 </body>
 

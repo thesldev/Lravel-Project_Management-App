@@ -50,6 +50,30 @@ class SubtaskController extends Controller
         return response()->json($subtasks);
     }
 
+    // function for display selected sub task
+    public function show(Subtask $subtask)
+    {
+        // Eager load the assignee relationship
+        $subtask->load('assignee');
+
+        // Return the subtask with the assignee name as part of the response
+        return response()->json([
+            'id' => $subtask->id,
+            'title' => $subtask->title,
+            'description' => $subtask->description,
+            'status' => $subtask->status,
+            'assignee' => $subtask->assignee ? [
+                'id' => $subtask->assignee->id,
+                'name' => $subtask->assignee->name
+            ] : null,
+             'created_by' => $subtask->createdBy ? [
+            'id' => $subtask->createdBy->id,
+            'name' => $subtask->createdBy->name
+            ] : null,
+            'created_at' => $subtask->created_at->toDateTimeString() // Or use format() to customize
+        ]);
+    }
+
 
     // function for delete sub task
     public function destroy($id)

@@ -461,5 +461,14 @@ Route::delete('/subtasks/{id}/delete', [SubtaskController::class, 'destroy'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('subtask.destroy');
 
+// route for display selected subtask
+Route::get('/subtasks/{subtask}', [SubtaskController::class, 'show'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.show');
+
+// route for update selected subtask
+Route::put('/subtasks/{subtask}/update', [SubtaskController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.show');
 
 require __DIR__.'/auth.php';
