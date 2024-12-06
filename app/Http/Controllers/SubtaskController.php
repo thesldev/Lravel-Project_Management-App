@@ -39,8 +39,37 @@ class SubtaskController extends Controller
     }
     
 
-    
+    // function for get all sub taskts
+    public function getAll(Request $request)
+    {
+        $issueId = $request->input('issue_id');
+        $subtasks = Subtask::with(['assignee' => function($query) {
+            $query->select('id', 'name', 'job_role', 'position'); 
+        }])->where('issue_id', $issueId)->get();
 
+        return response()->json($subtasks);
+    }
+
+
+    // function for delete sub task
+    public function destroy($id)
+    {
+        try {
+            $subtask = Subtask::findOrFail($id);
+            $subtask->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Subtask deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Subtask not found or could not be deleted.',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
 
 
 }

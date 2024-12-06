@@ -451,7 +451,15 @@ Route::get('/issues/{issue_id}/subtasks', [SubtaskController::class, 'getSubtask
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('subtasks.byIssue');
 
+// route display subtasks
+Route::get('/subtask.getAll', [SubtaskController::class, 'getAll'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.getAll');
 
+// route for remove sub tasks
+Route::delete('/subtasks/{id}/delete', [SubtaskController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.destroy');
 
 
 require __DIR__.'/auth.php';
