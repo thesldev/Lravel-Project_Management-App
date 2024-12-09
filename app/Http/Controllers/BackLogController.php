@@ -13,9 +13,10 @@ class BackLogController extends Controller
     public function view($id)
     {
         // Assuming 'Issue' is the model representing the issues table.
-        $issue = BacklogIssue::findOrFail($id);
+        $issue = BacklogIssue::with('subtasks')->find($id);
+        $subtaskCount = $issue->subtasks->count();
         $employees = Employees::all();
-        return view('sprints.viewIssues', compact('issue', 'employees'));
+        return view('sprints.viewIssues', compact('issue', 'employees', 'subtaskCount'));
     }
 
 

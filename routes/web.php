@@ -466,9 +466,15 @@ Route::get('/subtasks/{subtask}', [SubtaskController::class, 'show'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('subtask.show');
 
+// route for display subtasks in edit form
+Route::get('/subtasks/{id}', [SubtaskController::class, 'edit'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('subtasks.edit');
+
 // route for update selected subtask
-Route::put('/subtasks/{subtask}/update', [SubtaskController::class, 'update'])
-    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
-    ->name('subtask.show');
+Route::put('/subtasks/{id}', [SubtaskController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('subtasks.update');
+
 
 require __DIR__.'/auth.php';

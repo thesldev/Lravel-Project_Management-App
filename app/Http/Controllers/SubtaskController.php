@@ -70,7 +70,7 @@ class SubtaskController extends Controller
             'id' => $subtask->createdBy->id,
             'name' => $subtask->createdBy->name
             ] : null,
-            'created_at' => $subtask->created_at->toDateTimeString() // Or use format() to customize
+            'created_at' => $subtask->created_at->toDateTimeString()
         ]);
     }
 
@@ -93,6 +93,28 @@ class SubtaskController extends Controller
                 'error' => $e->getMessage()
             ], 404);
         }
+    }
+
+    // function for get data to edit the subtask
+    public function edit($id)
+    {
+        $subtask = Subtask::findOrFail($id);
+        return response()->json($subtask);
+    }
+
+    // function for update subtask
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|string|in:To Do,In Progress,Completed',
+        ]);
+
+        $subtask = Subtask::findOrFail($id);
+        $subtask->update($request->all());
+
+        return response()->json(['message' => 'Subtask updated successfully']);
     }
 
 
