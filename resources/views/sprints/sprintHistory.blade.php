@@ -60,6 +60,10 @@
                                         <div class="d-flex">
                                             <span class="me-2">Project Name:</span>
                                             <span>{{ $project->name }}</span>
+                                            <!-- Icon between project name and client name -->
+                                            <i class="bi bi-dash-lg mx-2" style="transform: rotate(90deg);"></i>
+                                            <span class="me-2">Client:</span>
+                                            <span>{{ $project->client->name }}</span>
                                         </div>
                                         <span class="d-flex gap-3 align-items-center">
                                             <span class="badge bg-info">{{ $project->status }}</span>
@@ -70,7 +74,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
                                                     <li>
-                                                        <button class="dropdown-item btn-view" data-id="{{ $project->id }}" onclick="window.location.href='/projects/{{ $project->id }}/view'">
+                                                        <button class="dropdown-item btn-view" data-id="{{ $project->id }}"onclick="window.location.href='{{ route('history.projectHistory', ['id' => $project->id]) }}'">
                                                             <i class="bi bi-eye"></i>
                                                             <span class="ms-2">View</span>
                                                         </button>

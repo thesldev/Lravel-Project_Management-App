@@ -59,4 +59,13 @@ class SprintController extends Controller
         return view('sprints.sprintHistory', ['projects' => $projects]);
     }
 
+    // function for view selected project's sprint history
+    public function projectHistory($id){
+
+        $projects = Project::findOrFail($id);
+        $sprints = Sprint::all();
+
+        return view('sprints.projectSprintHistory', ['projects'=>$projects, 'sprints'=>$sprints]);
+    }
+
 }

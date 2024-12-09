@@ -501,4 +501,11 @@ Route::get('/sprint-history', [SprintController::class, 'viewHistory'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('history.viewHistory');
 
+// route for view project with sprint's data
+Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('history.projectHistory');
+
+
+    
 require __DIR__.'/auth.php';
