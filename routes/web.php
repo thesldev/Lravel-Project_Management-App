@@ -494,4 +494,11 @@ Route::put('/subtasks/{id}', [SubtaskController::class, 'update'])
     ->name('subtasks.update');
 
 
+
+// routes for handle sprint history
+// go to sprint history page..
+Route::get('/sprint-history', [SprintController::class, 'viewHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('history.viewHistory');
+
 require __DIR__.'/auth.php';

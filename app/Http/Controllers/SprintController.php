@@ -11,7 +11,6 @@ class SprintController extends Controller
 {
     //function for go to sprints page
     public function index(){
-
         // Fetch all projects from the database
         $projects = Project::all();
         $sprints = Sprint::with('project')->get();
@@ -52,6 +51,12 @@ class SprintController extends Controller
         Sprint::create($validated);
 
         return redirect()->route('sprint.index')->with('success', 'Sprint created successfully.');
+    }
+
+    // function for go to sprint history page
+    public function viewHistory(){
+        $projects = Project::all(); 
+        return view('sprints.sprintHistory', ['projects' => $projects]);
     }
 
 }
