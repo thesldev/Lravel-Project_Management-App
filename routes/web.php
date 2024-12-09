@@ -451,7 +451,30 @@ Route::get('/issues/{issue_id}/subtasks', [SubtaskController::class, 'getSubtask
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('subtasks.byIssue');
 
+// route display subtasks
+Route::get('/subtask.getAll', [SubtaskController::class, 'getAll'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.getAll');
 
+// route for remove sub tasks
+Route::delete('/subtasks/{id}/delete', [SubtaskController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.destroy');
+
+// route for display selected subtask
+Route::get('/subtasks/{subtask}', [SubtaskController::class, 'show'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('subtask.show');
+
+// route for display subtasks in edit form
+Route::get('/subtasks/{id}', [SubtaskController::class, 'edit'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('subtasks.edit');
+
+// route for update selected subtask
+Route::put('/subtasks/{id}', [SubtaskController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('subtasks.update');
 
 
 require __DIR__.'/auth.php';
