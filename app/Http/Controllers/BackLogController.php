@@ -64,4 +64,38 @@ class BackLogController extends Controller
 
         return response()->json(['message' => 'Order updated successfully']);
     }
+
+    // function to show the details of a specific issue
+    public function show($id)
+    {
+        $issue = BacklogIssue::findOrFail($id);
+        return response()->json($issue);
+    }
+
+    // function to update the details of a specific issue
+    public function update(Request $request, $id)
+    {
+        $issue = BacklogIssue::findOrFail($id);
+        $issue->update($request->only(['title', 'description', 'priority', 'status']));
+        return response()->json(['message' => 'Issue updated successfully']);
+    }
+
+
+    // function for delete the issue from project
+    public function destroy(BacklogIssue $issue)
+    {
+        try {
+            // Delete the issue
+            $issue->delete();
+
+            return response()->json([
+                'message' => 'Issue deleted successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete issue.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

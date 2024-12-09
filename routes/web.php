@@ -405,6 +405,23 @@ Route::post('/issue/create', [BackLogController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('backlog.store');
 
+// route for fetch data to update issues
+Route::get('/issues/{id}', [BackLogController::class, 'show'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.show');
+
+// Route to update issue details by ID
+Route::put('/issues/{id}', [BackLogController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.update');
+
+// route for delete function in project
+// Route to handle the deletion of an issue
+Route::delete('/issues/{issue}', [BackLogController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.destroy');
+
+
 // route for get issues
 Route::get('/issues', [BackLogController::class, 'getIssues'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')

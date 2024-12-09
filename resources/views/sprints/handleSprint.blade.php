@@ -189,7 +189,7 @@
         </div>
     </div>
 
-    <!-- View Issue Modal -->
+    <!-- View Issue Modal from sprint -->
     <div class="modal fade" id="viewIssueModal" tabindex="-1" aria-labelledby="viewIssueModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -226,6 +226,46 @@
             </div>
         </div>
     </div>
+
+    <!-- Update Issue Modal -->
+    <div class="modal fade" id="updateIssueModal" tabindex="-1" aria-labelledby="updateIssueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateIssueModalLabel">Update Issue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateIssueForm">
+                        <input type="hidden" id="updateIssueId" name="issue_id">
+                        <div class="mb-3">
+                            <label for="updateTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="updateTitle" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="updateDescription" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updatePriority" class="form-label">Priority</label>
+                            <select class="form-select" id="updatePriority" name="priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="updateStatus" class="form-label">Status</label>
+                            <input type="text" class="form-control" id="updateStatus" name="status" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Issue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <!-- Scroll to Top Button-->
@@ -387,9 +427,9 @@
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item btn-delete" data-id="${issue.id}">
+                                                         <button class="dropdown-item btn-delete" data-id="${issue.id}">
                                                             <i class="bi bi-trash-fill"></i>
-                                                            <span class="ms-2">Delete</span>
+                                                            <span class="ms-2">Remove</span>
                                                         </button>
                                                     </li>                       
                                                 </ul>
@@ -426,6 +466,80 @@
                                     });
                                 }
                             });
+
+                            $(document).ready(function() {
+                                // Function to show the update modal and populate it with current issue data
+                                $('.btn-update').on('click', function() {
+                                    const issueId = $(this).data('id');
+                                    
+                                    $.ajax({
+                                        url: `/issues/${issueId}`,
+                                        method: 'GET',
+                                        success: function(response) {
+                                            $('#updateIssueId').val(response.id);
+                                            $('#updateTitle').val(response.title);
+                                            $('#updateDescription').val(response.description);
+                                            $('#updatePriority').val(response.priority);
+                                            $('#updateStatus').val(response.status);
+
+                                            // Show the modal
+                                            $('#updateIssueModal').modal('show');
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.error('Error fetching issue details:', error);
+                                            alert('Failed to fetch issue details');
+                                        }
+                                    });
+                                });
+                            });
+
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                            // Handle the form submission for updating the issue
+                            $('#updateIssueForm').on('submit', function(e) {
+                            e.preventDefault();
+
+                            const issueId = $('#updateIssueId').val();
+                            const formData = $(this).serialize();
+
+                            $.ajax({
+                                url: `/issues/${issueId}`,
+                                method: 'PUT',
+                                data: formData,
+                                success: function(response) {
+                                    alert('Issue updated successfully');
+                                    location.reload(); // Reload the page to reflect changes
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error updating issue:', error);
+                                    alert('Failed to update issue');
+                                }
+                            });                           
+
+                        });
+
+                        // Event binding for 'Delete' button (moved out of nested functions)
+                        $('.btn-delete').on('click', function() {
+                            const issueId = $(this).data('id');
+
+                            if (confirm('Are you sure you want to remove this issue?')) {
+                                $.ajax({
+                                    url: `/issues/${issueId}`,
+                                    type: 'DELETE',
+                                    success: function(response) {
+                                        alert(response.message);
+                                        location.reload(); // Reload to update the issue list
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error('Error deleting issue:', error);
+                                        alert('Failed to delete issue');
+                                    }
+                                });
+                            }
+                        });
                         },
                         error: function(xhr, status, error) {
                             console.error('Failed to load issues:', error);
