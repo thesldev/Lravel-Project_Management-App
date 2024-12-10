@@ -405,6 +405,23 @@ Route::post('/issue/create', [BackLogController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('backlog.store');
 
+// route for fetch data to update issues
+Route::get('/issues/{id}', [BackLogController::class, 'show'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.show');
+
+// Route to update issue details by ID
+Route::put('/issues/{id}', [BackLogController::class, 'update'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.update');
+
+// route for delete function in project
+// Route to handle the deletion of an issue
+Route::delete('/issues/{issue}', [BackLogController::class, 'destroy'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('issues.destroy');
+
+
 // route for get issues
 Route::get('/issues', [BackLogController::class, 'getIssues'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
@@ -476,5 +493,22 @@ Route::put('/subtasks/{id}', [SubtaskController::class, 'update'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('subtasks.update');
 
+// route for display sprint's data for employee
+Route::get('/emp-sprints', [SprintController::class, 'empView'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.empView');
 
+// routes for handle sprint history
+// go to sprint history page..
+Route::get('/sprint-history', [SprintController::class, 'viewHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('history.viewHistory');
+
+// route for view project with sprint's data
+Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('history.projectHistory');
+
+
+    
 require __DIR__.'/auth.php';

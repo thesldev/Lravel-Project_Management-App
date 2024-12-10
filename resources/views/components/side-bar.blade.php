@@ -162,8 +162,8 @@
                 <a class="collapse-item" href="{{ route('sprint.managePage') }}">Manage Sprints</a>
                 <div class="dropdown-divider"></div>
                 <h6 class="collapse-header">Backlog Management:</h6>
-                <a class="collapse-item" href="">View Backlog</a>
-                <a class="collapse-item" href="">Create New Issue</a>
+                <a class="collapse-item" href="{{route('history.viewHistory')}}">Sprint History</a>
+                <a class="collapse-item" href="">Sprint Analysis</a>
             </div>
         </div>
     </li>
