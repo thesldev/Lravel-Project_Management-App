@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -136,6 +138,25 @@ class ProjectController extends Controller
     {
         $projects = Project::select('id', 'name')->get();
         return response()->json($projects);
+    }
+
+
+    // function for download pdf
+    public function generatePDF()
+    {
+        $projects = Project::with('client')->get();
+
+        $html = view('pdf.project_pdf_template', compact('projects'))->render();
+
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream('Project_Report.pdf');
     }
 
 

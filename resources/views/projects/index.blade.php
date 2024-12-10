@@ -45,8 +45,9 @@
                     <p class="mb-4">Here is a list of projects with the respective details. You can view & change details by clicking the "View" button in Action column.</p>
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Client Data Table</h6>
+                        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                            <h6 class="m-0">Client Data Table</h6>
+                            <button class="btn btn-success" onclick="window.location.href='/projects/pdf';">Generate PDF Report</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">

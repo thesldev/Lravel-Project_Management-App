@@ -258,7 +258,7 @@
                                       <div class="card-body">
                                           <h5 class="card-title text-dark font-weight-bold">{{ $project['name'] }}</h5>
                                           <p class="card-text">
-                                              <span class="badge badge-primary">{{ $project['priority'] }} Priority</span>
+                                              <span class="badge badge-primary">{{ $project['priority'] }}</span>
                                           </p>
                                           <ul class="list-unstyled">
                                               <li>

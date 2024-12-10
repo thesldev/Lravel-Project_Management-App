@@ -510,5 +510,12 @@ Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
     ->name('history.projectHistory');
 
 
+
+// routes for generate pdf files
+Route::get('/projects/pdf', [ProjectController::class, 'generatePDF'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('projects.pdf'); 
+
+
     
 require __DIR__.'/auth.php';
