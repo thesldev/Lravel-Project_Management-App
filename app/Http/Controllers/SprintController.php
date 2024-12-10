@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\IssuesInSprint;
 use App\Models\Project;
 use App\Models\Sprint;
+use App\Models\Subtask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -85,8 +86,10 @@ class SprintController extends Controller
         // Fetch sprints for the retrieved projects
         $sprints = Sprint::whereIn('project_id', $projects->pluck('id'))->with('project')->get();
 
+        $subtasks = Subtask::where('assignee_id', $employeeId)->get();
+
         // Pass data to the view
-        return view('sprints.empIndex', compact('projects', 'sprints'));
+        return view('sprints.empIndex', compact('projects', 'sprints', 'subtasks'));
     }
 
 

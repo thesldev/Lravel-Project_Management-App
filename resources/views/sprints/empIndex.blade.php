@@ -65,13 +65,23 @@
                                 @if($projectSprints->isEmpty())
                                     <p>No sprints available for this project.</p>
                                 @else
-                                    <ul class="list-group">
-                                        @foreach($projectSprints as $sprint)
-                                            <li class="list-group-item">
-                                                Sprint: {{ $sprint->name }} | End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                <ul class="list-group">
+                                    @foreach($projectSprints as $sprint)
+                                        @php
+                                            // Count subtasks for this sprint assigned to the logged-in employee
+                                            $sprintSubtasks = $subtasks->filter(function ($subtask) use ($sprint) {
+                                                return $subtask->issue && $subtask->issue->sprint_id === $sprint->id;
+                                            });
+                                        @endphp
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                Sprint: {{ $sprint->title }} | 
+                                                End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
+                                            </span>
+                                            <p>For you: <span class="badge bg-primary">Total Sub-Tasks: {{ $sprintSubtasks->count() }}</span></p>
+                                        </li>
+                                    @endforeach
+                                </ul>
                                 @endif
                             </div>
                         </div>
