@@ -9,6 +9,7 @@ use App\Http\Controllers\IssuesInSprint;
 use App\Http\Controllers\IssuesInSprintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
@@ -512,10 +513,15 @@ Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
 
 
 // routes for generate pdf files
-Route::get('/projects/pdf', [ProjectController::class, 'generatePDF'])
+Route::get('/generate-report', [ReportController::class, 'generateReport'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
-    ->name('projects.pdf'); 
+    ->name('generate.report');
 
 
-    
+// Route for storing the report data
+Route::post('/store-report', [ReportController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('store.projectReport');
+
+
 require __DIR__.'/auth.php';
