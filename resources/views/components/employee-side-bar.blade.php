@@ -108,33 +108,32 @@
         </div>
     </li>
 
-    <!-- Nav Item - Employees Collapse Menu -->
+    <!-- Nav Item - Sprint Management Collapse Menu -->
     <li class="nav-item">
         <a
             class="nav-link collapsed"
             href="#"
             data-toggle="collapse"
-            data-target="#collapseEmployees"
+            data-target="#collapseSprintManagement"
             aria-expanded="true"
-            aria-controls="collapseEmployees"
+            aria-controls="collapseSprintManagement"
         >
-            <i class="fas fa-user-friends"></i>
-            <span>Employees</span>
+            <i class="fas fa-tasks"></i>
+            <span>Sprint</span>
         </a>
         <div
-            id="collapseEmployees"
+            id="collapseSprintManagement"
             class="collapse"
-            aria-labelledby="headingEmployees"
+            aria-labelledby="headingSprintManagement"
             data-parent="#accordionSidebar"
         >
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Manage Employees:</h6>
-                <a class="collapse-item" href="{{route('employee.index')}}">View All Employees</a>
-                <a class="collapse-item" href="{{route('employee.create')}}">Add New Employee</a>
+                <h6 class="collapse-header">Manage Sprint:</h6>
+                <a class="collapse-item" href="{{ route('sprint.empView') }}">View Sprint</a>
+                <a class="collapse-item" href="">My Sub-Tasks</a>
             </div>
         </div>
     </li>
-
 
     <!-- Divider -->
     <hr class="sidebar-divider" />

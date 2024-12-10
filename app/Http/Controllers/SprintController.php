@@ -6,6 +6,8 @@ use App\Models\IssuesInSprint;
 use App\Models\Project;
 use App\Models\Sprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SprintController extends Controller
 {
@@ -67,5 +69,25 @@ class SprintController extends Controller
 
         return view('sprints.projectSprintHistory', ['projects'=>$projects, 'sprints'=>$sprints]);
     }
+
+
+    // function for display spring to in employee interfaces
+    public function empView()
+    {
+        // Get the logged-in employee ID
+        $employeeId = Auth::id();
+
+        // Fetch projects assigned to the logged-in employee
+        $projects = Project::whereHas('employees', function ($query) use ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        })->get();
+
+        // Fetch sprints for the retrieved projects
+        $sprints = Sprint::whereIn('project_id', $projects->pluck('id'))->with('project')->get();
+
+        // Pass data to the view
+        return view('sprints.empIndex', compact('projects', 'sprints'));
+    }
+
 
 }

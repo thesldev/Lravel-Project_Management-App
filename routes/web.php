@@ -493,7 +493,10 @@ Route::put('/subtasks/{id}', [SubtaskController::class, 'update'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('subtasks.update');
 
-
+// route for display sprint's data for employee
+Route::get('/emp-sprints', [SprintController::class, 'empView'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.empView');
 
 // routes for handle sprint history
 // go to sprint history page..
