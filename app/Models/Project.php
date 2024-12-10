@@ -42,4 +42,8 @@ class Project extends Model
         return $this->belongsToMany(Employees::class, 'employee_project', 'project_id', 'employee_id');
     }
 
+    public function sprints()
+    {
+        return $this->hasMany(Sprint::class);
+    }
 }

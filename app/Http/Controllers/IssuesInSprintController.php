@@ -90,7 +90,4 @@ class IssuesInSprintController extends Controller
         $issue->delete();
         return response()->json(['success' => 'Issue deleted successfully.'], 200);
     }
-
-
-    
 }
