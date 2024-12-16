@@ -49,8 +49,27 @@
 
                     @foreach($projects as $project)
                         <div class="card shadow mb-4">
-                            <div class="card-header py-3">
+                            <div class="card-header py-3 d-flex justify-content-between align-items-center">
                                 <h6 class="m-0 font-weight-bold text-primary">Project: {{ $project->name }}</h6>
+                                <div class="dropdown">
+                                    <button class="btn btn-link p-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li>
+                                            <button class="dropdown-item btn-view" onclick="window.location.href='/projects/{{ $project->id }}/view'">
+                                                <i class="bi bi-eye"></i>
+                                                <span class="ms-2">View Project</span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item btn-my-tasks" onclick="">
+                                                <i class="bi bi-list-task"></i>
+                                                <span class="ms-2">My Tasks</span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <p>Description: {{ $project->description }}</p>
@@ -80,10 +99,22 @@
                                                 End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
                                             </span>
                                             <div class="d-flex align-items-center">
-                                                <p class="mb-0 me-2">For you: <span class="badge bg-primary">Total Sub-Tasks: {{ $sprintSubtasks->count() }}</span></p>
-                                                <button class="btn btn-link p-0">
-                                                    <i class="bi bi-three-dots-vertical"></i>
-                                                </button>
+                                                <p class="mb-0 me-2">For you: 
+                                                    <span class="badge bg-primary">Total Sub-Tasks: {{ $sprintSubtasks->count() }}</span>
+                                                </p>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-link p-0" type="button" id="dropdownMenuButtonForYou" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButtonForYou">
+                                                        <li>
+                                                            <button class="dropdown-item btn-view" onclick="window.location.href=''">
+                                                                <i class="bi bi-eye"></i>
+                                                                <span class="ms-2">View</span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </li>
                                     @endforeach
