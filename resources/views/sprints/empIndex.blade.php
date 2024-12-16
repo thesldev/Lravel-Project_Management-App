@@ -11,7 +11,8 @@
 
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Custom fonts for this template-->
@@ -78,7 +79,12 @@
                                                 Sprint: {{ $sprint->title }} | 
                                                 End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
                                             </span>
-                                            <p>For you: <span class="badge bg-primary">Total Sub-Tasks: {{ $sprintSubtasks->count() }}</span></p>
+                                            <div class="d-flex align-items-center">
+                                                <p class="mb-0 me-2">For you: <span class="badge bg-primary">Total Sub-Tasks: {{ $sprintSubtasks->count() }}</span></p>
+                                                <button class="btn btn-link p-0">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                            </div>
                                         </li>
                                     @endforeach
                                 </ul>
