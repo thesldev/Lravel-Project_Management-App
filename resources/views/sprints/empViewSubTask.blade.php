@@ -86,7 +86,12 @@
                                                 <div class="dropdown">
                                                     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <li><a class="dropdown-item" href="#">View</a></li>
+                                                        <li>
+                                                            <button class="dropdown-item view-subtask" 
+                                                                    data-url="{{ route('subtask.show', ['subtask' => $subtask->id]) }}">
+                                                                View
+                                                            </button>
+                                                        </li>
                                                         <li><a class="dropdown-item" href="#">Change</a></li>
                                                     </ul>
                                                 </div>
@@ -112,6 +117,31 @@
 
     </div>
     <!-- End of Wrapper -->
+
+    <!-- popup for display sub-task -->
+    <div class="modal fade" id="subtaskModal" tabindex="-1" aria-labelledby="subtaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subtaskModalLabel">Subtask Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Issue ID:</strong> <span id="subtask-issue-id"></span></p>
+                    <p><strong>Title:</strong> <span id="subtask-title"></span></p>
+                    <p><strong>Description:</strong> <span id="subtask-description"></span></p>
+                    <p><strong>Assignee ID:</strong> <span id="subtask-assignee-id"></span></p>
+                    <p><strong>Status:</strong> <span id="subtask-status"></span></p>
+                    <p><strong>Created By:</strong> <span id="subtask-created-by"></span></p>
+                    <p><strong>Created At:</strong> <span id="subtask-created-at"></span></p>
+                    <p><strong>Updated At:</strong> <span id="subtask-updated-at"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Scroll to Top Button-->
@@ -143,6 +173,40 @@
             $('#dataTable').DataTable();
         });
     </script>
+
+    <!-- Ajax & Jquery function for display selected subtask -->
+    <script>
+        $(document).ready(function () {
+            // Click event for "View" button
+            $('.view-subtask').on('click', function () {
+                var url = $(this).data('url'); // Get the URL from the button's data attribute
+
+                // AJAX request to fetch subtask details
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        // Populate modal with data
+                        $('#subtask-issue-id').text(data.issue_id);
+                        $('#subtask-title').text(data.title);
+                        $('#subtask-description').text(data.description);
+                        $('#subtask-assignee-id').text(data.assignee_id);
+                        $('#subtask-status').text(data.status);
+                        $('#subtask-created-by').text(data.created_by);
+                        $('#subtask-created-at').text(data.created_at);
+                        $('#subtask-updated-at').text(data.updated_at);
+
+                        // Show the modal
+                        $('#subtaskModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Failed to fetch subtask details. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+
 
 </body>
 

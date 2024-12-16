@@ -481,7 +481,7 @@ Route::delete('/subtasks/{id}/delete', [SubtaskController::class, 'destroy'])
 
 // route for display selected subtask
 Route::get('/subtasks/{subtask}', [SubtaskController::class, 'show'])
-    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->middleware('auth', 'verified')
     ->name('subtask.show');
 
 // route for display subtasks in edit form
