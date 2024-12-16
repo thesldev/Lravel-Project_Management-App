@@ -108,7 +108,7 @@
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButtonForYou">
                                                         <li>
-                                                            <button class="dropdown-item btn-view" onclick="window.location.href=''">
+                                                            <button class="dropdown-item btn-view" onclick="window.location.href='/sub-tasks/{{ $sprint->id }}/view'">
                                                                 <i class="bi bi-eye"></i>
                                                                 <span class="ms-2">View</span>
                                                             </button>

@@ -499,6 +499,12 @@ Route::get('/emp-sprints', [SprintController::class, 'empView'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('sprint.empView');
 
+// routes for manage sprint's sub tasks in employee side
+Route::get('/sub-tasks/{sprintId}/view', [SprintController::class, 'viewSubTask'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.viewSubTask');
+
+
 // routes for handle sprint history
 // go to sprint history page..
 Route::get('/sprint-history', [SprintController::class, 'viewHistory'])
