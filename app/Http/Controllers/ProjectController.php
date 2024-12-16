@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class ProjectController extends Controller
 {
@@ -20,7 +23,14 @@ class ProjectController extends Controller
         // Fetch projects with associated clients
         $projects = Project::with('client')->get();
 
-        return view('projects.index', compact('projects'));
+        // colums for generate reports
+        $columns = [
+            'id', 'name', 'description', 'client_id', 'project_type', 'budget',
+            'status', 'priority', 'start_date', 'end_date', 'extended_deadline',
+            'created_at', 'updated_at'
+        ];
+
+        return view('projects.index', compact('projects', 'columns'));
     }
 
 
@@ -137,6 +147,5 @@ class ProjectController extends Controller
         $projects = Project::select('id', 'name')->get();
         return response()->json($projects);
     }
-
 
 }
