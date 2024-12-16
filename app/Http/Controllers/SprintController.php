@@ -93,4 +93,28 @@ class SprintController extends Controller
     }
 
 
+    // function for display selected sprint's sub-tasks in employee side
+    public function viewSubTask($sprintId){
+        $employeeId = Auth::id();
+
+        // Fetch the specific sprint
+        $sprint = Sprint::where('id', $sprintId)
+            ->with('project')
+            ->first();
+
+        if (!$sprint) {
+            return redirect()->back()->with('error', 'Sprint not found.');
+        }
+
+        // Fetch only subtasks for the specific sprint assigned to the logged-in employee
+        $subtasks = Subtask::where('assignee_id', $employeeId)
+            ->whereHas('issue', function ($query) use ($sprintId) {
+                $query->where('sprint_id', $sprintId);
+            })
+            ->get();
+
+        return view('sprints.empViewSubTask', compact('sprint', 'subtasks'));
+    
+    }
+
 }

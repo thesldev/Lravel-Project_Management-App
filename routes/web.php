@@ -9,6 +9,7 @@ use App\Http\Controllers\IssuesInSprint;
 use App\Http\Controllers\IssuesInSprintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
@@ -480,7 +481,7 @@ Route::delete('/subtasks/{id}/delete', [SubtaskController::class, 'destroy'])
 
 // route for display selected subtask
 Route::get('/subtasks/{subtask}', [SubtaskController::class, 'show'])
-    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->middleware('auth', 'verified')
     ->name('subtask.show');
 
 // route for display subtasks in edit form
@@ -498,6 +499,12 @@ Route::get('/emp-sprints', [SprintController::class, 'empView'])
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('sprint.empView');
 
+// routes for manage sprint's sub tasks in employee side
+Route::get('/sub-tasks/{sprintId}/view', [SprintController::class, 'viewSubTask'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.viewSubTask');
+
+
 // routes for handle sprint history
 // go to sprint history page..
 Route::get('/sprint-history', [SprintController::class, 'viewHistory'])
@@ -510,5 +517,17 @@ Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
     ->name('history.projectHistory');
 
 
-    
+
+// routes for generate pdf files
+Route::get('/generate-report', [ReportController::class, 'generateReport'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('generate.report');
+
+
+// Route for storing the report data
+Route::post('/store-report', [ReportController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('store.projectReport');
+
+
 require __DIR__.'/auth.php';
