@@ -504,6 +504,11 @@ Route::get('/sub-tasks/{sprintId}/view', [SprintController::class, 'viewSubTask'
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('sprint.viewSubTask');
 
+// route for update subtask statuse
+Route::post('/subtasks/{subtask}/update-status', [SubtaskController::class, 'updateStatus'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('subtask.updateStatus');
+
 
 // routes for handle sprint history
 // go to sprint history page..

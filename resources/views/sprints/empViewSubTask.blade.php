@@ -72,17 +72,41 @@
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 <strong>{{ $subtask->title }}</strong>
                                                 
-                                                <span class="badge 
-                                                    @if($subtask->status == 'To Do') 
-                                                        bg-secondary 
-                                                    @elseif($subtask->status == 'In Progress') 
-                                                        bg-warning 
-                                                    @elseif($subtask->status == 'Completed') 
-                                                        bg-success 
-                                                    @endif">
-                                                    {{ $subtask->status }}
-                                                </span>
-
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge 
+                                                        @if($subtask->status == 'To Do') 
+                                                            bg-secondary 
+                                                        @elseif($subtask->status == 'In Progress') 
+                                                            bg-warning 
+                                                        @elseif($subtask->status == 'Completed') 
+                                                            bg-success 
+                                                        @endif">
+                                                        {{ $subtask->status }}
+                                                    </span>
+                                                    <!-- Dropdown Icon -->
+                                                    <div class="dropdown ms-2">
+                                                        <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bi bi-chevron-compact-down"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="To Do">To Do</button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="In Progress">In Progress</button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="Completed">Completed</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                                 <div class="dropdown">
                                                     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -203,6 +227,49 @@
                 });
             });
         });
+
+
+        $(document).ready(function () {
+            $('.change-status').on('click', function () {
+                var url = $(this).data('url'); 
+                var newStatus = $(this).data('status'); 
+                var statusBadge = $(this).closest('li').find('.badge'); 
+
+                // Send AJAX POST request to update status
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        status: newStatus,
+                        _token: '{{ csrf_token() }}' 
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Update the status badge text and class
+                            statusBadge.text(response.status);
+                            statusBadge.removeClass('bg-secondary bg-warning bg-success');
+
+                            // Update badge color based on status
+                            if (response.status === 'To Do') {
+                                statusBadge.addClass('bg-secondary');
+                            } else if (response.status === 'In Progress') {
+                                statusBadge.addClass('bg-warning');
+                            } else if (response.status === 'Completed') {
+                                statusBadge.addClass('bg-success');
+                            }
+
+                            location.reload();
+                        } else {
+                            alert('Failed to update status. Please try again.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while updating status.');
+                    }
+                });
+            });
+        });
+
     </script>
 
 
