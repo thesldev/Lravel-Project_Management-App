@@ -531,6 +531,11 @@ Route::get('/generate-report', [ReportController::class, 'generateReport'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('generate.report');
 
+// route for generate sprint report
+Route::post('/sprint/generateReport', [ReportController::class, 'generateSprintReport'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('sprint.generateReport');
+
 
 // Route for storing the report data
 Route::post('/store-report', [ReportController::class, 'store'])
