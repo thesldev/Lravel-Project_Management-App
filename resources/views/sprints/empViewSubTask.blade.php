@@ -108,7 +108,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="dropdown">
-                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                                    <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <li>
                                                             <button class="dropdown-item view-subtask" 
