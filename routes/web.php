@@ -504,6 +504,11 @@ Route::get('/sub-tasks/{sprintId}/view', [SprintController::class, 'viewSubTask'
     ->middleware('auth', 'verified', 'rolemanager:employee')
     ->name('sprint.viewSubTask');
 
+// route for update subtask statuse
+Route::post('/subtasks/{subtask}/update-status', [SubtaskController::class, 'updateStatus'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('subtask.updateStatus');
+
 
 // routes for handle sprint history
 // go to sprint history page..
@@ -516,7 +521,10 @@ Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('history.projectHistory');
 
-
+// route for display sprint history in employee section
+Route::get('/sprint-history/{id}/view', [SprintController::class, 'empSprintHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.empSprintHistory');
 
 // routes for generate pdf files
 Route::get('/generate-report', [ReportController::class, 'generateReport'])
