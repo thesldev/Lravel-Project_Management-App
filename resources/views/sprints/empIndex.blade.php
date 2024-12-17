@@ -63,7 +63,7 @@
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="dropdown-item btn-my-tasks">
+                                            <button class="dropdown-item btn-my-tasks" onclick="window.location.href='/sprint-history/{{ $project->id }}/view'">
                                                 <i class="bi bi-list-task"></i>
                                                 <span class="ms-2">My Tasks</span>
                                             </button>
@@ -169,14 +169,6 @@
         $(document).ready(function() {
             $('#dataTable').DataTable();
         });
-
-        $(document).ready(function() {
-            $('.btn-my-tasks').on('click', function() {
-                var sprintId = $(this).closest('li').data('sprint-id'); // assuming you have a way to store or retrieve the sprint ID
-                window.location.href = `/sprint-history/${sprintId}/view`;
-            });
-        });
-
     </script>
 
 </body>
