@@ -51,9 +51,10 @@
                         <h1 class="h3 mb-2 text-gray-800">Sub-Tasks in Sprint #{{ $sprint->id }}</h1>
                     </div>
 
+                    <!-- first section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Project: {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Sub-Tasks In {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
                         </div>
                         <div class="card-body">
                             <p>Sprint Description: {{ $sprint->description }}</p>
@@ -64,22 +65,20 @@
                             </p>
                             <div class="mt-5">
                                 <p>Sub-Tasks Allocated To You:</p>
-                                @if($subtasks->isEmpty())
-                                    <p>No sub-tasks assigned to you in this sprint.</p>
+                                @if($subtasks->whereIn('status', ['To Do', 'In Progress'])->isEmpty())
+                                    <p class="text-muted">No sub-tasks assigned to you in this sprint.</p>
                                 @else
                                     <ul class="list-group">
-                                        @foreach($subtasks as $subtask)
+                                        @foreach($subtasks->whereIn('status', ['To Do', 'In Progress']) as $subtask)
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 <strong>{{ $subtask->title }}</strong>
-                                                
+
                                                 <div class="d-flex align-items-center">
                                                     <span class="badge 
                                                         @if($subtask->status == 'To Do') 
                                                             bg-secondary 
                                                         @elseif($subtask->status == 'In Progress') 
                                                             bg-warning 
-                                                        @elseif($subtask->status == 'Completed') 
-                                                            bg-success 
                                                         @endif">
                                                         {{ $subtask->status }}
                                                     </span>
@@ -108,7 +107,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="dropdown">
-                                                    <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-light btn-sm">
                                                         <i class="bi bi-three-dots-vertical"></i>
                                                     </button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -127,6 +126,53 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- second section -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Completed Sub-Tasks in  {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Sprint Description: {{ $sprint->description }}</p>
+                            <p style="display: flex;">
+                                <span style="margin-right: 10px;">Start Date: {{ \Carbon\Carbon::parse($sprint->start_date)->format('Y-m-d') }}</span>
+                                <span style="margin-right: 10px;"> | </span>
+                                <span>End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}</span>
+                            </p>
+                            <div class="mt-5">
+                                <p>Sub-Tasks Allocated To You:</p>
+                                @if($subtasks->where('status', 'Completed')->isEmpty())
+                                    <p class="text-muted">No completed sub-tasks in this sprint.</p>
+                                @else
+                                    <ul class="list-group">
+                                        @foreach($subtasks->where('status', 'Completed') as $subtask)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <strong>{{ $subtask->title }}</strong>
+
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge bg-success">{{ $subtask->status }}</span>
+                                                </div>
+                                                <div class="dropdown">
+                                                    <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-light btn-sm">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li>
+                                                            <button class="dropdown-item view-subtask" 
+                                                                    data-url="{{ route('subtask.show', ['subtask' => $subtask->id]) }}">
+                                                                View
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+  
                 </div>
                 <!-- /.container-fluid -->
 
@@ -236,6 +282,12 @@
                 var url = $(this).data('url'); 
                 var newStatus = $(this).data('status'); 
                 var statusBadge = $(this).closest('li').find('.badge'); 
+
+                // Confirmation dialog
+                if (newStatus === 'Completed') {
+                    var confirmChange = confirm('Are you sure you want to mark this sub-task as Completed? Once marked, it cannot be changed.');
+                    if (!confirmChange) return; 
+                }
 
                 // Send AJAX POST request to update status
                 $.ajax({
