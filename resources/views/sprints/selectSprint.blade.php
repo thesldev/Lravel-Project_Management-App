@@ -44,47 +44,53 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-2 text-gray-800">Manage Sprints</h1>
+                        <form action="{{ route('sprint.generateReport') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-sm">Generate Report</button>
+                        </form>
+
                     </div>
+
 
                     <div class="container mt-4">
-                    <div class="row">
-                        @foreach($sprints as $sprint)
-                            <!-- Sprint Card -->
-                            <div class="col-md-6 col-lg-12 mb-4">
-                                <div class="card shadow-sm border-0">
-                                    <!-- Header Part -->
-                                    <div class="card-body pt-3 pb-1">
-                                        <h6 class="card-title">
-                                            Created By: <span class="fw-bold">{{ $sprint->created_by ?? 'Unknown' }}</span>
-                                            | At: <span class="fw-bold">{{ \Carbon\Carbon::parse($sprint->created_at)->format('Y.m.d') }}</span>
-                                            <span class="float-end">
-                                                Duration: {{ $sprint->duration_weeks }} weeks
-                                            </span>
-                                        </h6>
-                                    </div>
-
-                                    <!-- Body Part -->
-                                    <div class="card-body pt-1 pb-3">
-                                        <h5 class="card-title">{{ $sprint->title }}</h5>
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span><strong>Project:</strong> {{ $sprint->project->name ?? 'Unknown' }}</span>
-                                            <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="{{ route('sprint.manage', $sprint->id) }}">View Sprint</a>
+                        <div class="row">
+                            @foreach($sprints as $sprint)
+                                <!-- Sprint Card -->
+                                <div class="col-md-6 col-lg-12 mb-4">
+                                    <div class="card shadow-sm border-0">
+                                        <!-- Header Part -->
+                                        <div class="card-body pt-3 pb-1">
+                                            <h6 class="card-title">
+                                                Created By: <span class="fw-bold">{{ $sprint->created_by ?? 'Unknown' }}</span>
+                                                | At: <span class="fw-bold">{{ \Carbon\Carbon::parse($sprint->created_at)->format('Y.m.d') }}</span>
+                                                <span class="float-end">
+                                                    Duration: {{ $sprint->duration_weeks }} weeks
+                                                </span>
+                                            </h6>
                                         </div>
-                                        <p class="card-text mb-1">
-                                            <strong>Description:</strong> {{ $sprint->description }}
-                                        </p>
-                                    </div>
 
-                                    <!-- Footer Part -->
-                                    <div class="card-footer d-flex justify-content-between">
-                                        <span><strong>Start Date:</strong> {{ $sprint->start_date }}</span>
-                                        <span><strong>End Date:</strong> {{ $sprint->end_date }}</span>
+                                        <!-- Body Part -->
+                                        <div class="card-body pt-1 pb-3">
+                                            <h5 class="card-title">{{ $sprint->title }}</h5>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span><strong>Project:</strong> {{ $sprint->project->name ?? 'Unknown' }}</span>
+                                                <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="{{ route('sprint.manage', $sprint->id) }}">View Sprint</a>
+                                            </div>
+                                            <p class="card-text mb-1">
+                                                <strong>Description:</strong> {{ $sprint->description }}
+                                            </p>
+                                        </div>
+
+                                        <!-- Footer Part -->
+                                        <div class="card-footer d-flex justify-content-between">
+                                            <span><strong>Start Date:</strong> {{ $sprint->start_date }}</span>
+                                            <span><strong>End Date:</strong> {{ $sprint->end_date }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
-                </div>
                   
                 </div>
                 <!-- /.container-fluid -->
