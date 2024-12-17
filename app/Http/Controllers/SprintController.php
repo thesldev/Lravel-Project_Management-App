@@ -93,6 +93,22 @@ class SprintController extends Controller
     }
 
 
+    // function for display sprint history for employee section
+    public function empSprintHistory($id){
+
+        // Get the logged-in employee ID
+        $employeeId = Auth::id();
+
+        $projects = Project::whereHas('employees', function ($query) use ($employeeId) {
+            $query->where('employee_id', $employeeId);
+        })->get();
+
+        $sprints = Sprint::where('project_id', $id)->get(); 
+        $subtasks = Subtask::where('assignee_id', $employeeId)->get();
+        return view('sprints.empSprintHistory', compact('sprints', 'subtasks', 'projects'));
+    }
+
+
     // function for display selected sprint's sub-tasks in employee side
     public function viewSubTask($sprintId){
         $employeeId = Auth::id();

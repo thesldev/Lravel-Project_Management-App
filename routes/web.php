@@ -521,7 +521,10 @@ Route::get('/sprints-history/{id}', [SprintController::class, 'projectHistory'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('history.projectHistory');
 
-
+// route for display sprint history in employee section
+Route::get('/sprint-history/{id}/view', [SprintController::class, 'empSprintHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:employee')
+    ->name('sprint.empSprintHistory');
 
 // routes for generate pdf files
 Route::get('/generate-report', [ReportController::class, 'generateReport'])

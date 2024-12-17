@@ -138,6 +138,7 @@
                                 <span style="margin-right: 10px;">Start Date: {{ \Carbon\Carbon::parse($sprint->start_date)->format('Y-m-d') }}</span>
                                 <span style="margin-right: 10px;"> | </span>
                                 <span>End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}</span>
+                                <span>Completed At: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}</span>
                             </p>
                             <div class="mt-5">
                                 <p>Sub-Tasks Allocated To You:</p>
