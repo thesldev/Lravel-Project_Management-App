@@ -127,7 +127,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Issue ID:</strong> <span id="subtask-issue-id"></span></p>
+                    <p><strong>Issue ID: </strong>#<span id="subtask-issue-id"></span></p>
                     <p><strong>Title:</strong> <span id="subtask-title"></span></p>
                     <p><strong>Description:</strong> <span id="subtask-description"></span></p>
                     <p><strong>Assignee ID:</strong> <span id="subtask-assignee-id"></span></p>
@@ -177,28 +177,27 @@
     <!-- Ajax & Jquery function for display selected subtask -->
     <script>
         $(document).ready(function () {
-            // Click event for "View" button
             $('.view-subtask').on('click', function () {
                 var url = $(this).data('url'); // Get the URL from the button's data attribute
 
-                // AJAX request to fetch subtask details
                 $.ajax({
                     url: url,
                     type: 'GET',
                     success: function (data) {
-                        // Populate modal with data
-                        $('#subtask-issue-id').text(data.issue_id);
-                        $('#subtask-title').text(data.title);
-                        $('#subtask-description').text(data.description);
-                        $('#subtask-assignee-id').text(data.assignee_id);
-                        $('#subtask-status').text(data.status);
-                        $('#subtask-created-by').text(data.created_by);
-                        $('#subtask-created-at').text(data.created_at);
-                        $('#subtask-updated-at').text(data.updated_at);
+                        // Handle null or missing values and access nested properties
+                        $('#subtask-issue-id').text(data.id ?? 'N/A');
+                        $('#subtask-title').text(data.title ?? 'N/A');
+                        $('#subtask-description').text(data.description ?? 'N/A');
+                        $('#subtask-assignee-id').text(data.assignee?.name ?? 'N/A'); // Access assignee name
+                        $('#subtask-status').text(data.status ?? 'N/A');
+                        $('#subtask-created-by').text(data.created_by?.name ?? 'N/A'); // Access created_by name
+                        $('#subtask-created-at').text(data.created_at ?? 'N/A');
+                        $('#subtask-updated-at').text(data.updated_at ?? 'N/A');
 
                         // Show the modal
                         $('#subtaskModal').modal('show');
                     },
+
                     error: function () {
                         alert('Failed to fetch subtask details. Please try again.');
                     }
