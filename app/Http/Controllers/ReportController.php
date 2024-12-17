@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Report;
+use App\Models\Sprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -55,6 +56,23 @@ class ReportController extends Controller
         return $pdf->stream('project_report.pdf');
     }
 
+
+
+    public function generateSprintReport(Request $request)
+    {
+        // Fetch sprints data
+        $sprints = Sprint::all();
+
+        // Generate the HTML view for the report
+        $html = view('pdf.sprint_report', compact('sprints'))->render();
+
+        // Generate the PDF using Dompdf
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($html);
+
+        // Download the PDF
+        return $pdf->download('sprints_report.pdf');
+    }
 
 
 

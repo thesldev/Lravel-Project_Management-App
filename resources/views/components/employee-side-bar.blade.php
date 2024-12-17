@@ -130,7 +130,6 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Sprint:</h6>
                 <a class="collapse-item" href="{{ route('sprint.empView') }}">View Sprint</a>
-                <a class="collapse-item" href="">My Sub-Tasks</a>
             </div>
         </div>
     </li>

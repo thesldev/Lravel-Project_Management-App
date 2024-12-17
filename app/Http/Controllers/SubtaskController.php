@@ -117,5 +117,25 @@ class SubtaskController extends Controller
         return response()->json(['message' => 'Subtask updated successfully']);
     }
 
+    //function for Update Subtask Status
+    public function updateStatus(Request $request, $subtaskId)
+    {
+        $request->validate([
+            'status' => 'required|in:To Do,In Progress,Completed',
+        ]);
+
+        $subtask = Subtask::findOrFail($subtaskId);
+
+        // Update status
+        $subtask->status = $request->status;
+        $subtask->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully!',
+            'status' => $subtask->status,
+        ]);
+    }
+
 
 }

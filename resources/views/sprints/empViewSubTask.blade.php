@@ -51,9 +51,10 @@
                         <h1 class="h3 mb-2 text-gray-800">Sub-Tasks in Sprint #{{ $sprint->id }}</h1>
                     </div>
 
+                    <!-- first section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Project: {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Sub-Tasks In {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
                         </div>
                         <div class="card-body">
                             <p>Sprint Description: {{ $sprint->description }}</p>
@@ -64,27 +65,51 @@
                             </p>
                             <div class="mt-5">
                                 <p>Sub-Tasks Allocated To You:</p>
-                                @if($subtasks->isEmpty())
-                                    <p>No sub-tasks assigned to you in this sprint.</p>
+                                @if($subtasks->whereIn('status', ['To Do', 'In Progress'])->isEmpty())
+                                    <p class="text-muted">No sub-tasks assigned to you in this sprint.</p>
                                 @else
                                     <ul class="list-group">
-                                        @foreach($subtasks as $subtask)
+                                        @foreach($subtasks->whereIn('status', ['To Do', 'In Progress']) as $subtask)
                                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                                 <strong>{{ $subtask->title }}</strong>
-                                                
-                                                <span class="badge 
-                                                    @if($subtask->status == 'To Do') 
-                                                        bg-secondary 
-                                                    @elseif($subtask->status == 'In Progress') 
-                                                        bg-warning 
-                                                    @elseif($subtask->status == 'Completed') 
-                                                        bg-success 
-                                                    @endif">
-                                                    {{ $subtask->status }}
-                                                </span>
 
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge 
+                                                        @if($subtask->status == 'To Do') 
+                                                            bg-secondary 
+                                                        @elseif($subtask->status == 'In Progress') 
+                                                            bg-warning 
+                                                        @endif">
+                                                        {{ $subtask->status }}
+                                                    </span>
+                                                    <!-- Dropdown Icon -->
+                                                    <div class="dropdown ms-2">
+                                                        <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bi bi-chevron-compact-down"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="To Do">To Do</button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="In Progress">In Progress</button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="dropdown-item change-status" 
+                                                                    data-url="{{ route('subtask.updateStatus', ['subtask' => $subtask->id]) }}"
+                                                                    data-status="Completed">Completed</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                                 <div class="dropdown">
-                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                                    <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-light btn-sm">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <li>
                                                             <button class="dropdown-item view-subtask" 
@@ -92,7 +117,6 @@
                                                                 View
                                                             </button>
                                                         </li>
-                                                        <li><a class="dropdown-item" href="#">Change</a></li>
                                                     </ul>
                                                 </div>
                                             </li>
@@ -102,6 +126,54 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- second section -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Completed Sub-Tasks in  {{ $sprint->project->name }} | Sprint: {{ $sprint->title }}</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Sprint Description: {{ $sprint->description }}</p>
+                            <p style="display: flex;">
+                                <span style="margin-right: 10px;">Start Date: {{ \Carbon\Carbon::parse($sprint->start_date)->format('Y-m-d') }}</span>
+                                <span style="margin-right: 10px;"> | </span>
+                                <span>End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}</span>
+                                <span>Completed At: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}</span>
+                            </p>
+                            <div class="mt-5">
+                                <p>Sub-Tasks Allocated To You:</p>
+                                @if($subtasks->where('status', 'Completed')->isEmpty())
+                                    <p class="text-muted">No completed sub-tasks in this sprint.</p>
+                                @else
+                                    <ul class="list-group">
+                                        @foreach($subtasks->where('status', 'Completed') as $subtask)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <strong>{{ $subtask->title }}</strong>
+
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge bg-success">{{ $subtask->status }}</span>
+                                                </div>
+                                                <div class="dropdown">
+                                                    <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" class="btn btn-light btn-sm">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li>
+                                                            <button class="dropdown-item view-subtask" 
+                                                                    data-url="{{ route('subtask.show', ['subtask' => $subtask->id]) }}">
+                                                                View
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+  
                 </div>
                 <!-- /.container-fluid -->
 
@@ -127,7 +199,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Issue ID:</strong> <span id="subtask-issue-id"></span></p>
+                    <p><strong>Issue ID: </strong>#<span id="subtask-issue-id"></span></p>
                     <p><strong>Title:</strong> <span id="subtask-title"></span></p>
                     <p><strong>Description:</strong> <span id="subtask-description"></span></p>
                     <p><strong>Assignee ID:</strong> <span id="subtask-assignee-id"></span></p>
@@ -177,34 +249,82 @@
     <!-- Ajax & Jquery function for display selected subtask -->
     <script>
         $(document).ready(function () {
-            // Click event for "View" button
             $('.view-subtask').on('click', function () {
                 var url = $(this).data('url'); // Get the URL from the button's data attribute
 
-                // AJAX request to fetch subtask details
                 $.ajax({
                     url: url,
                     type: 'GET',
                     success: function (data) {
-                        // Populate modal with data
-                        $('#subtask-issue-id').text(data.issue_id);
-                        $('#subtask-title').text(data.title);
-                        $('#subtask-description').text(data.description);
-                        $('#subtask-assignee-id').text(data.assignee_id);
-                        $('#subtask-status').text(data.status);
-                        $('#subtask-created-by').text(data.created_by);
-                        $('#subtask-created-at').text(data.created_at);
-                        $('#subtask-updated-at').text(data.updated_at);
+                        // Handle null or missing values and access nested properties
+                        $('#subtask-issue-id').text(data.id ?? 'N/A');
+                        $('#subtask-title').text(data.title ?? 'N/A');
+                        $('#subtask-description').text(data.description ?? 'N/A');
+                        $('#subtask-assignee-id').text(data.assignee?.name ?? 'N/A'); // Access assignee name
+                        $('#subtask-status').text(data.status ?? 'N/A');
+                        $('#subtask-created-by').text(data.created_by?.name ?? 'N/A'); // Access created_by name
+                        $('#subtask-created-at').text(data.created_at ?? 'N/A');
+                        $('#subtask-updated-at').text(data.updated_at ?? 'N/A');
 
                         // Show the modal
                         $('#subtaskModal').modal('show');
                     },
+
                     error: function () {
                         alert('Failed to fetch subtask details. Please try again.');
                     }
                 });
             });
         });
+
+
+        $(document).ready(function () {
+            $('.change-status').on('click', function () {
+                var url = $(this).data('url'); 
+                var newStatus = $(this).data('status'); 
+                var statusBadge = $(this).closest('li').find('.badge'); 
+
+                // Confirmation dialog
+                if (newStatus === 'Completed') {
+                    var confirmChange = confirm('Are you sure you want to mark this sub-task as Completed? Once marked, it cannot be changed.');
+                    if (!confirmChange) return; 
+                }
+
+                // Send AJAX POST request to update status
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        status: newStatus,
+                        _token: '{{ csrf_token() }}' 
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Update the status badge text and class
+                            statusBadge.text(response.status);
+                            statusBadge.removeClass('bg-secondary bg-warning bg-success');
+
+                            // Update badge color based on status
+                            if (response.status === 'To Do') {
+                                statusBadge.addClass('bg-secondary');
+                            } else if (response.status === 'In Progress') {
+                                statusBadge.addClass('bg-warning');
+                            } else if (response.status === 'Completed') {
+                                statusBadge.addClass('bg-success');
+                            }
+
+                            location.reload();
+                        } else {
+                            alert('Failed to update status. Please try again.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while updating status.');
+                    }
+                });
+            });
+        });
+
     </script>
 
 

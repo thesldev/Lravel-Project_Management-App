@@ -63,7 +63,7 @@
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="dropdown-item btn-my-tasks" onclick="">
+                                            <button class="dropdown-item btn-my-tasks" onclick="window.location.href='/sprint-history/{{ $project->id }}/view'">
                                                 <i class="bi bi-list-task"></i>
                                                 <span class="ms-2">My Tasks</span>
                                             </button>
