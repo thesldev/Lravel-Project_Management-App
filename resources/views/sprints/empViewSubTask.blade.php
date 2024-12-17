@@ -92,7 +92,6 @@
                                                                 View
                                                             </button>
                                                         </li>
-                                                        <li><a class="dropdown-item" href="#">Change</a></li>
                                                     </ul>
                                                 </div>
                                             </li>
