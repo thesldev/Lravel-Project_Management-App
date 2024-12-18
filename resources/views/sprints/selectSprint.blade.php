@@ -50,8 +50,7 @@
                         </form>
 
                     </div>
-
-
+                    
                     <div class="container mt-4">
                         <div class="row">
                             @foreach($sprints as $sprint)
