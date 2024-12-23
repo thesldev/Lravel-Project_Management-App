@@ -87,10 +87,18 @@
                                                 </div>
                                             </span>
                                         </div>
-                                        <!-- Additional project info -->
+                                        <!-- project description -->
                                         <div class="d-flex mt-2">
                                             <span class="me-2">Description:</span>
                                             <p class="mb-0">{{ $project->description }}</p>
+                                        </div>
+                                        <!-- project deadlines -->
+                                        <div class="d-flex mt-4">
+                                            <span class="me-2">Started At:</span>
+                                            <p class="mb-0">{{ $project->created_at->format('Y-m-d') }}</p>
+                                            <i class="bi bi-dash-lg mx-2" style="transform: rotate(90deg);"></i>
+                                            <span class="me-2">Deadline:</span>
+                                            <span>{{ $project->end_date }}</span>
                                         </div>
                                     </li>
                                     @endforeach
