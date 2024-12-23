@@ -44,9 +44,11 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <div class="d-sm-flex justify-content-between mb-4 flex-column">
                         <h1 class="h3 mb-2 text-gray-800">Sprints History</h1>
+                        <p class="mb-4">Here is the current project list with project's sprint tata. Please click the 'Info' button in right-side for view the Sprint data.</p>
                     </div>
+
                     <!-- issues in sprint -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -56,39 +58,46 @@
                             <div class="row">
                                 <ul id="project-list" class="list-group">
                                     @foreach($projects as $project)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div class="d-flex">
-                                            <span class="me-2">Project Name:</span>
-                                            <span>{{ $project->name }}</span>
-                                            <!-- Icon between project name and client name -->
-                                            <i class="bi bi-dash-lg mx-2" style="transform: rotate(90deg);"></i>
-                                            <span class="me-2">Client:</span>
-                                            <span>{{ $project->client->name }}</span>
-                                        </div>
-                                        <span class="d-flex gap-3 align-items-center">
-                                            <span class="badge bg-info">{{ $project->status }}</span>
-                                            <!-- Dropdown button for actions -->
-                                            <div class="dropdown">
-                                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton{{ $project->id }}" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-info-lg"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
-                                                    <li>
-                                                        <button class="dropdown-item btn-view" data-id="{{ $project->id }}"onclick="window.location.href='{{ route('history.projectHistory', ['id' => $project->id]) }}'">
+                                    <li class="list-group-item d-flex flex-column">
+                                        <!-- Main project info -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex">
+                                                <span class="me-2">Project Name:</span>
+                                                <span>{{ $project->name }}</span>
+                                                <!-- Icon between project name and client name -->
+                                                <i class="bi bi-dash-lg mx-2" style="transform: rotate(90deg);"></i>
+                                                <span class="me-2">Client:</span>
+                                                <span>{{ $project->client->name }}</span>
+                                            </div>
+                                            <span class="d-flex gap-3 align-items-center">
+                                                <span class="badge bg-info">{{ $project->status }}</span>
+                                                <!-- Dropdown button for actions -->
+                                                <div class="dropdown">
+                                                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton{{ $project->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-info-lg"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $project->id }}">
+                                                        <li>
+                                                        <button class="dropdown-item btn-view" data-id="{{ $project->id }}">
                                                             <i class="bi bi-eye"></i>
                                                             <span class="ms-2">View</span>
                                                         </button>
-                                                    </li>                      
-                                                </ul>
-                                            </div>
-                                        </span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </span>
+                                        </div>
+                                        <!-- Additional project info -->
+                                        <div class="d-flex mt-2">
+                                            <span class="me-2">Description:</span>
+                                            <p class="mb-0">{{ $project->description }}</p>
+                                        </div>
                                     </li>
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
 
@@ -136,7 +145,18 @@
         $(document).ready(function() {
             $('#dataTable').DataTable();
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-view').forEach(button => {
+                button.addEventListener('click', function () {
+                    const projectId = this.getAttribute('data-id');
+                    const url = `{{ route('history.projectHistory', ['id' => ':id']) }}`.replace(':id', projectId);
+                    window.location.href = url;
+                });
+            });
+        });
     </script>
+
 
 
 </body>
