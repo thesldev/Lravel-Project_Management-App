@@ -56,11 +56,36 @@ class SprintController extends Controller
         return redirect()->route('sprint.index')->with('success', 'Sprint created successfully.');
     }
 
-    // function for go to sprint history page
+    // Function for going to the sprint history page
     public function viewHistory(){
-        $projects = Project::all(); 
-        return view('sprints.sprintHistory', ['projects' => $projects]);
+        $projects = Project::all();
+
+        $projectData = $projects->map(function ($project) {
+            $startDate = new \DateTime($project->start_date);
+            $endDate = new \DateTime($project->end_date);
+            $currentDate = new \DateTime();
+
+            // Calculate total time duration
+            $totalDuration = $startDate->diff($endDate)->format('%a days');
+
+            // Calculate remaining time
+            $remainingTime = $currentDate < $endDate 
+                ? $currentDate->diff($endDate)->format('%a days')
+                : '0 days'; // If the current date is past the end date, set remaining time to 0
+
+            return [
+                'project' => $project,
+                'totalDuration' => $totalDuration,
+                'remainingTime' => $remainingTime,
+            ];
+        });
+
+        return view('sprints.sprintHistory', [
+            'projects' => $projects,
+            'projectData' => $projectData,
+        ]);
     }
+
 
     // function for view selected project's sprint history
     public function projectHistory($id){

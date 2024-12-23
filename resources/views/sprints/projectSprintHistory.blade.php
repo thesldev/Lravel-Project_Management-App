@@ -90,7 +90,7 @@
                                     @else
                                         @foreach($terminatedSprints as $sprint)
                                             <li class="list-group-item">
-                                                Sprint: {{ $sprint->name }} | End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
+                                                Sprint: {{ $sprint->title }} | End Date: {{ \Carbon\Carbon::parse($sprint->end_date)->format('Y-m-d') }}
                                             </li>
                                         @endforeach
                                     @endif
