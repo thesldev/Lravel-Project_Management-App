@@ -70,7 +70,13 @@
                                                     <span>{{ $data['project']->client->name }}</span>
                                                 </div>
                                                 <span class="d-flex gap-3 align-items-center">
-                                                    <span class="badge bg-info">{{ $data['project']->status }}</span>
+                                                    <span class="badge 
+                                                        @if($data['project']->status == 'Pending') bg-warning 
+                                                        @elseif($data['project']->status == 'Ongoing') bg-primary 
+                                                        @elseif($data['project']->status == 'Completed') bg-success 
+                                                        @endif">
+                                                        {{ $data['project']->status }}
+                                                    </span>
                                                     <!-- Dropdown button for actions -->
                                                     <div class="dropdown">
                                                         <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton{{ $data['project']->id }}" data-bs-toggle="dropdown" aria-expanded="false">
