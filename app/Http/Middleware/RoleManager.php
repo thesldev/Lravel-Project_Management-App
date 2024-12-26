@@ -28,6 +28,7 @@ class RoleManager
             'supperAdmin' => 0,
             'admin' => 1,
             'employee' => 2,
+            'client' => 3,
         ];
 
         // Convert roles to their numeric values
@@ -52,6 +53,10 @@ class RoleManager
             return $next($request);
         }
 
+        if ($request->route()->getName() === 'client' && $authUserRole == 3) {
+            return $next($request);
+        }
+
         // Redirect to the correct dashboard based on the user's role
         switch ($authUserRole) {
             case 0:
@@ -60,6 +65,8 @@ class RoleManager
                 return redirect()->route('admin');
             case 2:
                 return redirect()->route('employeeDashboard');
+            case 3:
+                return redirect()->route('client');
             default:
                 return redirect()->route('login');
         }

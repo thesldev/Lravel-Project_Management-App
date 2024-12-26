@@ -38,6 +38,10 @@ Route::get('/sup-admin-dashboard', [TemplateController::class, 'supAdmin'])
     ->middleware(['auth', 'verified', 'rolemanager:admin'])
     ->name('supAdmin');
 
+Route::get('/client-portal', [TemplateController::class, 'client'])
+    ->middleware(['auth', 'verified', 'rolemanager:client'])
+    ->name('client');
+
 
 // create rout for home & dashboard
 Route::get('/home', [TemplateController::class, 'index'])
@@ -542,5 +546,21 @@ Route::post('/store-report', [ReportController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('store.projectReport');
 
+
+
+
+
+
+
+
+
+
+// =============================================================================================== //
+// Routes for client portal
+
+// route for go to client dashboard
+Route::get('/client-dashboard', [ClientController::class, 'portalIndex'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.portalIndex');
 
 require __DIR__.'/auth.php';
