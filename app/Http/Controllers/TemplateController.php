@@ -288,4 +288,10 @@ class TemplateController extends Controller
             'projectData'
         ));
     }
+
+    // function for client portal
+
+    public function client(){
+        return view('clientDashboard');
+    }
 }

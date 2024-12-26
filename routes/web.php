@@ -38,6 +38,10 @@ Route::get('/sup-admin-dashboard', [TemplateController::class, 'supAdmin'])
     ->middleware(['auth', 'verified', 'rolemanager:admin'])
     ->name('supAdmin');
 
+Route::get('/client-portal', [TemplateController::class, 'client'])
+    ->middleware(['auth', 'verified', 'rolemanager:client'])
+    ->name('client');
+
 
 // create rout for home & dashboard
 Route::get('/home', [TemplateController::class, 'index'])
