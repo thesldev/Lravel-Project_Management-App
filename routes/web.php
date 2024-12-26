@@ -547,4 +547,20 @@ Route::post('/store-report', [ReportController::class, 'store'])
     ->name('store.projectReport');
 
 
+
+
+
+
+
+
+
+
+// =============================================================================================== //
+// Routes for client portal
+
+// route for go to client dashboard
+Route::get('/client-dashboard', [ClientController::class, 'portalIndex'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.portalIndex');
+
 require __DIR__.'/auth.php';
