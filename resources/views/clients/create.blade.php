@@ -48,24 +48,50 @@
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" name="name" id="name" class="form-control" placeholder="Enter Client Name" />
+                                @error('name')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <!-- Email Field -->
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email Address" />
+                                @error('email')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <!-- Phone Field -->
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
                                 <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Contact Number" />
+                                @error('phone')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <!-- Project Description Field -->
                             <div class="mb-3">
                                 <label for="project_description" class="form-label">Client Project's Description</label>
                                 <textarea name="project_description" id="project_description" class="form-control" placeholder="Enter Project Description"></textarea>
+                                @error('project_description')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Portal Access Field -->
+                            <div class="form-check mb-3">
+                                <input 
+                                    type="checkbox" 
+                                    name="portal_access" 
+                                    id="portal_access" 
+                                    class="form-check-input"
+                                />
+                                <label for="portal_access" class="form-check-label">Grant Portal Access</label>
+                                @error('portal_access')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <!-- Submit and Cancel Buttons -->

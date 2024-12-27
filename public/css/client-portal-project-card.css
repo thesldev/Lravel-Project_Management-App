@@ -1,0 +1,22 @@
+.project-card {
+    border: 1px solid #e3e6f0;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.badge-container {
+    text-align: center;
+    flex-shrink: 0;
+    width: 80px;
+}
+
+.badge-container .badge {
+    display: block;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+}

@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('client', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->text('project_description')->nullable();
+            $table->boolean('portal_access')->default(false);
             $table->timestamps();
         });
     }
