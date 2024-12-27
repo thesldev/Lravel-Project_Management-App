@@ -33,6 +33,7 @@
     <!-- Additional CSS Files -->
     <link rel="stylesheet" href="css/fontawesome.css">
     <link rel="stylesheet" href="css/templatemo-tale-seo-agency.css">
+    <link rel="stylesheet" href="css/templatemo-574-mexant.css">
     <link rel="stylesheet" href="css/owl.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/clientPortal.css">
@@ -84,7 +85,7 @@
             </div>
         </div>
 
-        <div class="main-banner" id="services"
+        <div class="main-banner"
             style="background: url('/img/banner-left.png') left top no-repeat, url('/img/banner-right.png') right top no-repeat;">
             <div class="container">
                 <div class="row">
@@ -107,57 +108,56 @@
             </div>
         </div>
 
-        <div class="services section" id="services">
+        <section class="services" id="services">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-6 offset-lg-6">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="section-heading">
-                                    <h2>We Provide <em>Different Services</em> &amp;
-                                        <span>Features</span> For Your Agency
-                                    </h2>
-                                    <div class="line-dec"></div>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed doers eiusmod.</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="service-item">
-                                    <div class="icon">
-                                        <img src="img/services-01.jpg" alt="discover SEO" class="templatemo-feature">
-                                    </div>
-                                    <h4>Discover More on Latest SEO Trends</h4>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="service-item">
-                                    <div class="icon">
-                                        <img src="img/services-02.jpg" alt="data analysis" class="templatemo-feature">
-                                    </div>
-                                    <h4>Real-Time Big Data Analysis</h4>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="service-item">
-                                    <div class="icon">
-                                        <img src="img/services-03.jpg" alt="precise data" class="templatemo-feature">
-                                    </div>
-                                    <h4>Precise Data Analysis &amp; Prediction</h4>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="service-item">
-                                    <div class="icon">
-                                        <img src="img/services-04.jpg" alt="SEO marketing" class="templatemo-feature">
-                                    </div>
-                                    <h4>SEO Marketing &amp; Social Media</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-archive"></i>
+                    <h4>CSS Templates</h4>
+                    <p>TemplateMo website is the best for you to explore and download free website templates.</p>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-cloud"></i>
+                    <h4>HTML5 Web Pages</h4>
+                    <p>Templates are based on Bootstrap 5 CSS framework. You can easily adapt or modify based on your needs.</p>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-charging-station"></i>
+                    <h4>Responsive Designs</h4>
+                    <p>All of our CSS templates are 100% free to use for commercial or business websites.</p>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-suitcase"></i>
+                    <h4>Mobile and Tablet ready!</h4>
+                    <p>Our HTML CSS templates are well-tested on mobile, tablet, and desktop compatibility.</p>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-archway"></i>
+                    <h4>Fast Customer Support</h4>
+                    <p>Do not be hesitated to contact us if you have any question or concern about our templates.</p>
+                </div>
+                </div>
+                <div class="col-lg-6">
+                <div class="service-item">
+                    <i class="fas fa-puzzle-piece"></i>
+                    <h4>Fully Customizable</h4>
+                    <p>If you have any idea or suggestion about new templates, feel free to let us know.</p>
+                </div>
                 </div>
             </div>
-        </div>
+            </div>
+        </section>
+
+
         
       <!-- Footer -->
         <x-footer />
