@@ -1,7 +1,17 @@
+<style>
+    .bg-gradient-dark-purple {
+        background-color: #814ca7;
+        background-image: linear-gradient(180deg, #814ca7 10%, #5d198e 100%);
+        background-size: cover;
+    }
+
+</style>
+
 <ul
-    class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
-     id="accordionSidebar"
+    class="navbar-nav bg-gradient-dark-purple sidebar sidebar-dark accordion"
+    id="accordionSidebar"
     >
+
     <!-- Sidebar - Brand -->
     <a
         class="sidebar-brand d-flex align-items-center justify-content-center"

@@ -156,8 +156,6 @@
             </div>
             </div>
         </section>
-
-
         
       <!-- Footer -->
         <x-footer />
