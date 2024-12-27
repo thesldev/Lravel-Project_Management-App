@@ -101,11 +101,26 @@ class ClientController extends Controller
         return redirect(route('client.index'))->with('success', 'Client updated successfully.');
     }
     
-    //function for delete client data
-    public function deleteData(Client $client){
-        $client->delete();
-        return redirect(route('client.index'))->with('success', 'Client Deleted successfully.');
+    // Function for deleting client data from both client and users tables
+    public function deleteData(Client $client)
+    {
+        try {
+            // Use a database transaction for safe deletion
+            DB::transaction(function () use ($client) {
+                // Delete the related user record
+                $client->user()->delete();
+
+                // Delete the client record
+                $client->delete();
+            });
+
+            return redirect(route('client.index'))->with('success', 'Client deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return redirect()->back()->withErrors('An error occurred. Please try again.');
+        }
     }
+
 
     // function for get client by Id
     public function viewClient(Client $client){
