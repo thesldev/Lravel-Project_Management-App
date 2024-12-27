@@ -22,6 +22,7 @@
     
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/client-portal-project-card.css') }}" rel="stylesheet" />
 </head>
 
 <body id="page-top">
@@ -43,65 +44,68 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Projects</h1>
+                    <h1 class="h3 mb-2 text-gray-800">My Projects</h1>
 
                     <p class="mb-4">Here is a list of projects with the respective details. You can view & change details by clicking the "View" button in Action column.</p>
                     <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-                            <h6 class="m-0">Client Data Table</h6>
-                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reportModal">Generate Report</button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>Project ID</th>
-                                            <th>Project Name</th>
-                                            <th>Client Name</th>
-                                            <th>Status</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($projects as $project)
-                                        <tr>
-                                            <td>{{ $project->id }}</td>
-                                            <td>{{ $project->name }}</td>
-                                            <td>{{ $project->client->name }}</td>
-                                            <td>{{ $project->status }}</td>
-                                            <td>{{ $project->start_date }}</td>
-                                            <td>{{ $project->end_date }}</td>
-                                            <td>
-                                                <!-- View Action Button -->
-                                                <a href="{{route('project.viewProject', ['project' => $project])}}" class="btn btn-primary btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-eye"></i>
-                                                    </span>
-                                                    <span class="text">View</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Project ID</th>
-                                            <th>Project Name</th>
-                                            <th>Client Name</th>
-                                            <th>Status</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                    <div class="container py-4">
+                        <div class="row">
+                            @foreach ($projects as $project)
+                                <div class="col-12 mb-3">
+                                    <div class="card project-card shadow-sm">
+                                        <!-- Header Section -->
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <h5 class="mb-0 me-2">{{ $project->name }}</h5> 
+                                                <span class="badge bg-primary">#{{ $project->id }}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Body Section -->
+                                        <div class="card-body d-flex justify-content-between align-items-center">
+                                            <div class="flex-grow-1">
+                                                <p class="card-text mb-1">
+                                                    {{ $project->description }}
+                                                </p>
+                                            </div>
+
+                                            <div class="dropdown">
+                                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <li>
+                                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#issuesModal">
+                                                            <i class="bi bi-info-lg"></i> Info
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- Footer Section -->
+                                        <div class="card-footer d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="text-muted" style="font-size: 0.9rem;">
+                                                    <strong>Start Date:</strong> {{ $project->start_date }} |
+                                                    <strong>End Date:</strong> {{ $project->end_date }}
+                                                </span>
+                                            </div>
+
+                                            <div>
+                                                <span class="badge {{ $project->status === 'Completed' ? 'bg-success' : 'bg-warning text-dark' }}">
+                                                    {{ $project->status }}
+                                                </span>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
+
+
                 </div>
                 <!-- /.container-fluid -->
 
@@ -122,6 +126,8 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
