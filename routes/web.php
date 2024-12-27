@@ -563,4 +563,9 @@ Route::get('/client-dashboard', [ClientController::class, 'portalIndex'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('client.portalIndex');
 
+// route for go to client's project page
+Route::get('/my-projects/{id}', [ClientController::class, 'myProjects'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.myProjects');
+
 require __DIR__.'/auth.php';

@@ -64,8 +64,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">WorkSpace Options:</h6>
-                <a class="collapse-item" href="">My Projects</a>
-                <a class="collapse-item" href="">Comming Soon</a>
+                <a class="collapse-item" href="{{ route('client.myProjects', ['id' => Auth::user()->id]) }}">My Projects</a>
+                <a class="collapse-item" href="#">Coming Soon</a>
             </div>
         </div>
     </li>

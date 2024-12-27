@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -65,6 +66,7 @@ class ClientController extends Controller
 
                 // Create the client in the client table
                 Client::create([
+                    'id' => $user->id,
                     'user_id' => $user->id,
                     'name' => $validated['name'],
                     'email' => $validated['email'],
@@ -207,4 +209,28 @@ class ClientController extends Controller
         ));
 
     }
+
+
+    // function for go to my-projects page in client-portal
+    public function myProjects($id)
+    {
+        try {
+            // Ensure the user is authenticated
+            if (Auth::id() !== (int)$id) {
+                return redirect()->route('dashboard')->withErrors('Unauthorized access.');
+            }
+
+            // Retrieve the projects associated with the logged-in client
+            $projects = Project::where('client_id', $id)->get();
+
+            // Pass the projects to the view
+            return view('clients.clientPortal-view-project', compact('projects'));
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return redirect()->back()->withErrors('An error occurred. Please try again.');
+        }
+    }
+
+
+
 }

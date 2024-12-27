@@ -46,6 +46,14 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relationship with the Client model.
+     */
+    public function client()
+    {
+        return $this->hasOne(Client::class, 'user_id');
+    }
+
     public function schedule()
     {
         return $this->hasOne(Schedule::class);
