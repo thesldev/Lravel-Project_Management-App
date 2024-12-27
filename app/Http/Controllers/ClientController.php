@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
@@ -31,17 +35,51 @@ class ClientController extends Controller
     }
 
     // function to store new client
-    public function storeData(Request $request){
-        // validate user data
-        $data = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:client,email',
-            'phone' => 'nullable|digits_between:10,15',
+    public function storeData(Request $request)
+    {
+        // Validate request data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:15',
             'project_description' => 'nullable|string|max:1000',
+            'portal_access' => 'nullable', // Checkbox for portal access
         ]);
 
-        $newClient = Client::create($data);
-        return redirect(route('client.index'));
+        // Cast portal_access to boolean
+        $validated['portal_access'] = $request->has('portal_access') ? true : false;
+
+        try {
+            // Use a database transaction
+            DB::transaction(function () use ($validated) {
+                $defaultPassword = '12345678';
+                $defaultRole = 3; // Client role is always '3'
+
+                // Explicitly ensure the 'role' is set to '3'
+                $user = User::create([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($defaultPassword), // Default password
+                    'role' => $defaultRole, // Explicitly set the role
+                ]);
+
+                // Create the client in the client table
+                Client::create([
+                    'user_id' => $user->id,
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
+                    'project_description' => $validated['project_description'],
+                    'portal_access' => $validated['portal_access'],
+                ]);
+            });
+
+            // Redirect back with success message
+            return redirect()->route('client.index')->with('success', 'Client registered successfully!');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return redirect()->back()->withErrors('An error occurred. Please try again.');
+        }
     }
 
     // function for edit client data

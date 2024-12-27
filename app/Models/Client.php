@@ -11,9 +11,28 @@ class Client extends Model
     protected $table = 'client';
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'phone',
-        'project_description'
+        'project_description',
+        'portal_access',
     ];
+
+    /**
+     * Define the relationship with the User model.
+     * A client belongs to a user.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Define additional relationships if needed, e.g., with projects.
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class); 
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->tinyInteger('role')->default(2);
+            $table->tinyInteger('role')->default(3);
             $table->string('job_role')->nullable();
             $table->string('position')->nullable();
             $table->date('join_date')->nullable();
