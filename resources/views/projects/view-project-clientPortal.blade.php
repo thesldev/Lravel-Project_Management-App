@@ -13,13 +13,12 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
 
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
 
 </head>
 <body id="page-top">
@@ -90,14 +89,17 @@
 
                     <!-- second-section -->
                     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Support Tickets</h6>
+                            <button id="createTicketBtn" class="btn btn-primary btn-sm">
+                                <i class="bi bi-ticket"></i> Create Ticket
+                            </button>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                
+                                <!-- Add content here -->
                             </div>
-                        </div>                   
+                        </div>
                     </div>
                 </div>
                 <!-- /.container-fluid -->
@@ -120,130 +122,87 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <!-- Create Support Ticket Modal -->
+    <div id="createTicketModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createTicketModalLabel">Create Support Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createTicketForm">
+                        <div class="mb-3">
+                            <label for="ticketTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="ticketTitle" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ticketDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="ticketDescription" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ticketPriority" class="form-label">Priority</label>
+                            <select class="form-select" id="ticketPriority" name="priority" required>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="projectId" class="form-label">Project</label>
+                            <input type="text" class="form-control" id="projectId" name="project_id" value="{{ $project->id }}" readonly>
+                        </div>
+                        <input type="hidden" id="clientId" name="client_id" value="{{ auth()->id() }}">
+                        <input type="hidden" id="status" name="status" value="Open">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Ajax and Jquery functions for handle update form -->
-    <!-- <script>
+    <script>
         $(document).ready(function () {
-            // Set CSRF token for all Ajax requests
+             // Set up CSRF token for AJAX
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
-            let projectId;
-
-            // Open edit modal and populate fields
-            $('#editButton').on('click', function () {
-                projectId = "{{ $project->id }}"; // Ensure project ID is valid
-                
-                // Populate modal fields with project data
-                $('#editName').val("{{ $project->name }}");
-                $('#editDescription').val("{{ $project->description }}");
-                $('#editClient').val("{{ $project->client_id }}");
-                $('#editType').val("{{ $project->project_type }}");
-                $('#editStatus').val("{{ $project->status }}");
-                $('#editStartDate').val("{{ $project->start_date }}");
-                $('#editEndDate').val("{{ $project->end_date }}");
-
-                // Show modal
-                $('#editModal').modal('show');
+            // Show the modal when the button is clicked
+            $('#createTicketBtn').on('click', function () {
+                $('#createTicketModal').modal('show');
             });
 
-            // Handle form submission
-            $('#editForm').on('submit', function (event) {
-                event.preventDefault(); // Prevent default form submission
+            // Handle the form submission via Ajax
+            $('#createTicketForm').on('submit', function (e) {
+                e.preventDefault();
 
-                if (!projectId) {
-                    alert('Project ID is missing. Please try again.');
-                    return;
-                }
-
-                // Serialize form data
+                // Get form data
                 const formData = $(this).serialize();
 
-                // AJAX request to update project
+                // Send an Ajax request
                 $.ajax({
-                    url: `/projects/${projectId}/update`, // Adjust the route based on Laravel setup
-                    method: 'PUT',
+                    url: '/support_tickets/create', // Replace with your route URL
+                    method: 'POST',
                     data: formData,
                     success: function (response) {
-                        $('#response').html('<p style="color:green;">Project updated successfully!</p>');
-                        location.reload(); // Reload to reflect changes
+                        alert('Ticket created successfully!');
+                        $('#createTicketModal').modal('hide');
+                        // Optionally, refresh the ticket list or page
                     },
                     error: function (xhr) {
-                        $('#response').html('<p style="color:red;">Error: ' + xhr.responseText + '</p>');
+                        alert('Failed to create ticket. Please try again.');
                     }
                 });
             });
         });
-    </script> -->
-
-    <!-- Ajax and Jquery functions for handle manage function -->
-    <!-- <script>
-        function openManageProjectModal(projectId) {
-        // Set project ID in the modal's hidden field
-        $('#project_id').val(projectId);
-
-        // Clear response message
-        $('#responseMessage').html('');
-
-        // Fetch existing data for this project via AJAX
-        $.ajax({
-            url: `/projects/${projectId}/manage-data`,
-            method: 'GET',
-            success: function (data) {
-                // Populate employee list
-                let employeeOptions = '';
-                data.employees.forEach(employee => {
-                    const selected = data.assignedEmployees.includes(employee.id) ? 'selected' : '';
-                    employeeOptions += `<option value="${employee.id}" ${selected}>${employee.name}</option>`;
-                });
-                $('#employees').html(employeeOptions);
-
-                // Set priority
-                $('#priority').val(data.priority);
-
-                // Set deadline
-                $('#end_date').val(data.end_date);
-            },
-            error: function () {
-                alert('Failed to load project data.');
-            }
-        });
-
-        // Open the modal
-        $('#manageProjectModal').modal('show');
-    }
-
-        $('#manageProjectForm').on('submit', function (e) {
-        e.preventDefault();
-
-        const projectId = $('#project_id').val();
-        const formData = $(this).serialize(); // This should automatically handle the 'employees[]' field
-
-        console.log('Form Data:', formData);
-
-        $.ajax({
-            url: `/projects/${projectId}/manage`,
-            method: 'POST',
-            data: formData,
-            success: function (response) {
-                $('#responseMessage').html('<p class="text-success">Project updated successfully!</p>');
-                setTimeout(() => $('#manageProjectModal').modal('hide'), 1500);
-            },
-            error: function (xhr) {
-                $('#responseMessage').html(`<p class="text-danger">Error: ${xhr.responseText}</p>`);
-            }
-        });
-    });
-
-
-    </script> -->
-
+    </script>
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
+use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -572,5 +573,10 @@ Route::get('/my-projects/{id}', [ClientController::class, 'myProjects'])
 Route::get('/my-projects/{id}/view', [ProjectController::class, 'viewMyProject'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('project.viewMyProject');
+
+// route for create project support ticket
+Route::post('/support_tickets/create', [SupportTicketController::class, 'projectSupportTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('support.projectSupportTicket');
 
 require __DIR__.'/auth.php';
