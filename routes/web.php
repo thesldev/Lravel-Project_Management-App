@@ -568,4 +568,9 @@ Route::get('/my-projects/{id}', [ClientController::class, 'myProjects'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('client.myProjects');
 
+// route for view selected product in client portal
+Route::get('/my-projects/{id}/view', [ProjectController::class, 'viewMyProject'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('project.viewMyProject');
+
 require __DIR__.'/auth.php';
