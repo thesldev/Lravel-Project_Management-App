@@ -124,38 +124,72 @@
 
     <!-- Create Support Ticket Modal -->
     <div id="createTicketModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createTicketModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createTicketModalLabel">Create Support Ticket</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 600px;">
+            <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header" style="background-color: #007bff; color: white; border-bottom: none; border-radius: 12px 12px 0 0;">
+                    <h5 class="modal-title" id="createTicketModalLabel" style="font-weight: bold;">Create Support Ticket</h5>
+                    <button 
+                        type="button" 
+                        class="btn-close btn-close-white" 
+                        data-bs-dismiss="modal" 
+                        aria-label="Close" 
+                        onclick="closeCreateTicketModal()">
+                    </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="padding: 2rem; background-color: #f8f9fa;">
                     <form id="createTicketForm">
                         <div class="mb-3">
-                            <label for="ticketTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="ticketTitle" name="title" required>
+                            <label for="ticketTitle" class="form-label" style="font-weight: bold;">Title</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="ticketTitle" 
+                                name="title" 
+                                placeholder="Enter the title of your ticket" 
+                                required>
                         </div>
                         <div class="mb-3">
-                            <label for="ticketDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="ticketDescription" name="description" rows="4" required></textarea>
+                            <label for="ticketDescription" class="form-label" style="font-weight: bold;">Description</label>
+                            <textarea 
+                                class="form-control" 
+                                id="ticketDescription" 
+                                name="description" 
+                                rows="4" 
+                                placeholder="Provide a detailed description of your issue" 
+                                required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="ticketPriority" class="form-label">Priority</label>
-                            <select class="form-select" id="ticketPriority" name="priority" required>
+                            <label for="ticketPriority" class="form-label" style="font-weight: bold;">Priority</label>
+                            <select 
+                                class="form-select" 
+                                id="ticketPriority" 
+                                name="priority" 
+                                required>
+                                <option value="" selected disabled>Select priority</option>
                                 <option value="Low">Low</option>
                                 <option value="Medium">Medium</option>
                                 <option value="High">High</option>
                                 <option value="Critical">Critical</option>
                             </select>
                         </div>
-                        <div cs="mb-3">
-                            <label for="projectId" class="form-label">Project</label>
-                            <input type="text" class="form-control" id="projectId" name="project_id" value="{{ $project->id }}" readonly>
+                        <div class="mb-3">
+                            <label for="projectId" class="form-label" style="font-weight: bold;">Project</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="projectId" 
+                                name="project_id" 
+                                value="{{ $project->id }}" 
+                                readonly>
                         </div>
                         <input type="hidden" id="clientId" name="client_id" value="{{ auth()->id() }}">
                         <input type="hidden" id="status" name="status" value="Open">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button 
+                            type="submit" 
+                            class="btn btn-primary w-100" 
+                            style="font-weight: bold; border-radius: 8px;">
+                            Submit
+                        </button>
                     </form>
                 </div>
             </div>
@@ -168,15 +202,26 @@
 
     <script>
         $(document).ready(function () {
-             // Set up CSRF token for AJAX
+            // Set up CSRF token for AJAX
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
             // Show the modal when the button is clicked
             $('#createTicketBtn').on('click', function () {
                 $('#createTicketModal').modal('show');
+            });
+
+            // Close button functionality
+            function closeCreateTicketModal() {
+                $('#createTicketModal').modal('hide');
+            }
+
+            // Attach the close function to the modal close button
+            $('.btn-close').on('click', function () {
+                closeCreateTicketModal();
             });
 
             // Handle the form submission via Ajax
@@ -193,7 +238,7 @@
                     data: formData,
                     success: function (response) {
                         alert('Ticket created successfully!');
-                        $('#createTicketModal').modal('hide');
+                        closeCreateTicketModal(); // Close the modal
                         // Optionally, refresh the ticket list or page
                     },
                     error: function (xhr) {
@@ -299,8 +344,6 @@
             fetchTickets(projectId);
         });
     </script>
-
-
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
