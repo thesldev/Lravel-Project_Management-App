@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
@@ -96,8 +96,8 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <!-- Add content here -->
+                            <div class="row ticket-container">
+                                <!-- Tickets will be dynamically appended here -->
                             </div>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                                 <option value="Critical">Critical</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div cs="mb-3">
                             <label for="projectId" class="form-label">Project</label>
                             <input type="text" class="form-control" id="projectId" name="project_id" value="{{ $project->id }}" readonly>
                         </div>
@@ -201,8 +201,107 @@
                     }
                 });
             });
+
+            // Function to fetch tickets
+            function fetchTickets(projectId) {
+                $.ajax({
+                    url: `/my-prokects/${projectId}/ticket-history`, // Replace with the correct route URL
+                    method: 'GET',
+                    success: function (response) {
+                        const ticketContainer = $('.ticket-container');
+
+                        // Clear any previous content
+                        ticketContainer.empty();
+
+                        // Check if tickets are available
+                        if (response.tickets && response.tickets.length > 0) {
+                            response.tickets.forEach(ticket => {
+                                const ticketHtml = `
+                                    <div class="col-12 mb-3">
+                                        <div class="card shadow-sm">
+                                            <!-- Header Section -->
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    <h5 class="mb-0 me-2">${ticket.title}</h5> 
+                                                    <span class="badge bg-primary">#${ticket.id}</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Body Section -->
+                                            <div class="card-body d-flex justify-content-between align-items-center">
+                                                <!-- Ticket Description -->
+                                                <div class="flex-grow-1">
+                                                    <p class="card-text mb-1">
+                                                        ${ticket.description}
+                                                    </p>
+                                                </div>
+
+                                                <!-- Dropdown Button -->
+                                                <div class="dropdown">
+                                                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li>
+                                                            <a class="dropdown-item" href="{{ route('project.viewMyProject', ['id' => $project->id]) }}">
+                                                                <i class="bi bi-info-lg"></i> Info
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!-- Footer Section -->
+                                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="text-muted" style="font-size: 0.9rem;">
+                                                        <strong>Created At:</strong> ${new Date(ticket.created_at).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-muted">status:</span> 
+                                                    <span class="badge ${
+                                                        ticket.status === 'Resolved' ? 'bg-success' :
+                                                        ticket.status === 'In Progress' ? 'bg-info text-dark' :
+                                                        ticket.status === 'On Hold' ? 'bg-warning text-dark' :
+                                                        'bg-secondary'
+                                                    }">
+                                                        ${ticket.status}
+                                                    </span>
+                                                    <span class="text-muted ms-3">priority:</span> 
+                                                    <span class="badge ${
+                                                        ticket.priority === 'Critical' ? 'bg-danger' :
+                                                        ticket.priority === 'High' ? 'bg-warning text-dark' :
+                                                        ticket.priority === 'Medium' ? 'bg-primary' :
+                                                        'bg-secondary'
+                                                    }">
+                                                        ${ticket.priority}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                ticketContainer.append(ticketHtml);
+                            });
+                        } else {
+                            // Display a message if no tickets are found
+                            ticketContainer.append('<p>No tickets found for this project.</p>');
+                        }
+                    },
+                    error: function () {
+                        alert('Failed to load tickets. Please try again.');
+                    }
+                });
+            }
+
+            // Fetch tickets on page load
+            const projectId = "{{ $project->id }}"; // Replace with your dynamic project ID
+            fetchTickets(projectId);
         });
     </script>
+
+
+
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 

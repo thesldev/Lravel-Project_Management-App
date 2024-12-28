@@ -579,4 +579,9 @@ Route::post('/support_tickets/create', [SupportTicketController::class, 'project
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.projectSupportTicket');
 
+// get all tickets related to the project
+Route::get('/my-prokects/{id}/ticket-history', [SupportTicketController::class, 'projectTicketHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('project.projectTicketHistory');
+
 require __DIR__.'/auth.php';

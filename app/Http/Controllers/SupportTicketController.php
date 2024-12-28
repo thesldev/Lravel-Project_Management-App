@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 
@@ -50,6 +51,29 @@ class SupportTicketController extends Controller
     }
 
 
+    // function for get ticket history according to the project
+    public function projectTicketHistory($id){
+        try{
 
+            $project = Project::findOrFail($id);
+
+            // Get all tickets related to the project, ordered by creation date (latest first)
+            $tickets = SupportTicket::where('project_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'message' => 'Tickets retrieved successfully.',
+                'project' => $project,
+                'tickets' => $tickets,
+            ]);
+
+        } catch(\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve tickets.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
 }
