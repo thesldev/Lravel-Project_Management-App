@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
+use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TicketStatusController;
@@ -567,5 +568,20 @@ Route::get('/client-dashboard', [ClientController::class, 'portalIndex'])
 Route::get('/my-projects/{id}', [ClientController::class, 'myProjects'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('client.myProjects');
+
+// route for view selected product in client portal
+Route::get('/my-projects/{id}/view', [ProjectController::class, 'viewMyProject'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('project.viewMyProject');
+
+// route for create project support ticket
+Route::post('/support_tickets/create', [SupportTicketController::class, 'projectSupportTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('support.projectSupportTicket');
+
+// get all tickets related to the project
+Route::get('/my-prokects/{id}/ticket-history', [SupportTicketController::class, 'projectTicketHistory'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('project.projectTicketHistory');
 
 require __DIR__.'/auth.php';
