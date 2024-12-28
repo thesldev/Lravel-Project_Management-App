@@ -92,7 +92,8 @@
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Support Tickets</h6>
                             <button id="createTicketBtn" class="btn btn-primary btn-sm">
-                                <i class="bi bi-ticket"></i> Create Ticket
+                                <i class="bi bi-ticket-perforated-fill mr-2" ></i> 
+                                Create Ticket
                             </button>
                         </div>
                         <div class="card-body">
@@ -238,8 +239,7 @@
                     data: formData,
                     success: function (response) {
                         alert('Ticket created successfully!');
-                        closeCreateTicketModal(); // Close the modal
-                        // Optionally, refresh the ticket list or page
+                        closeCreateTicketModal(); 
                     },
                     error: function (xhr) {
                         alert('Failed to create ticket. Please try again.');
