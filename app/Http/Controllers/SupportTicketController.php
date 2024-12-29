@@ -76,4 +76,34 @@ class SupportTicketController extends Controller
         }
     }
 
+
+    // function for get closed tickets related to the project
+    public function projectClosedTickets($id){
+        try {
+            
+            $project = Project::findOrFail($id);
+
+            // get tickets statuse equal to closed
+            $closedTickets = SupportTicket::where('project_id', $id)
+                ->where('status', 'Resolved')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            
+                return response()->json([
+                    'message' => 'Tickets retrieved Resolved Tickets successfully.',
+                    'project' => $project,
+                    'closedTickets' => $closedTickets,
+                ]);
+
+
+        } catch (\Exception $e) {
+            //throw $th;
+
+            return response()->json([
+                'message' => 'Failed to retrieve Resolved tickets.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

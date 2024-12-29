@@ -579,9 +579,14 @@ Route::post('/support_tickets/create', [SupportTicketController::class, 'project
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.projectSupportTicket');
 
-// get all tickets related to the project
+// get all-open tickets related to the project
 Route::get('/my-prokects/{id}/ticket-history', [SupportTicketController::class, 'projectTicketHistory'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('project.projectTicketHistory');
+
+// get closed tickets related to the project
+Route::get('/my-projects/{id}/closed-tickets', [SupportTicketController::class, 'projectClosedTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('support.projectClosedTickets');
 
 require __DIR__.'/auth.php';
