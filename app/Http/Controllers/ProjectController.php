@@ -9,6 +9,8 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+
 
 class ProjectController extends Controller
 {
@@ -93,9 +95,6 @@ class ProjectController extends Controller
         ]);
     }
 
-
-
-
     // function for delete project
     public function destroy(Project $project)
     {
@@ -147,5 +146,18 @@ class ProjectController extends Controller
         $projects = Project::select('id', 'name')->get();
         return response()->json($projects);
     }
+
+
+    // function for view product in client-portal
+    public function viewMyProject($id)
+    {
+        // Fetch the project by its ID
+        $project = Project::with('client')->findOrFail($id);
+
+        // Return the view with the project data
+        return view('projects.view-project-clientPortal', compact('project'));
+    }
+
+
 
 }

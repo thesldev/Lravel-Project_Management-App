@@ -73,7 +73,7 @@ figcaption {
 /* Main banner styling */
 .main-banner {
     position: relative;
-    padding: 295px 0 185px 0;
+    padding: 295px 0 25px 0;
     background: none; /* Disable default background images from inline styles */
     overflow: hidden;
 }
@@ -129,75 +129,4 @@ body {
         height: 50%;
         background-size: cover;
     }
-}
-
-.services {
-    position: relative;
-    overflow: hidden;
-    padding: 50px 0;
-}
-
-/* Left background image */
-.services::before {
-    content: "";
-    position: absolute;
-    top: 50px; /* Adjust to control the height of text above the image */
-    left: 0;
-    width: 844px;
-    height: 714px;
-    background: url("../images/services-left.jpg") no-repeat center center;
-    background-size: cover;
-    z-index: -1;
-}
-
-/* Right background image (flipped vertically) */
-.services::after {
-    content: "";
-    position: absolute;
-    top: 50px; /* Adjust to align with the left background */
-    right: 0;
-    width: 844px;
-    height: 714px;
-    background: url("../images/banner-left.png") no-repeat center center;
-    background-size: cover;
-    transform: rotate(90deg); /* Flip vertically by 90 degrees */
-    z-index: -1;
-}
-
-/* Section Heading Text */
-.section-heading {
-    margin-bottom: 30px;
-    position: relative;
-    z-index: 1; /* Ensure text appears above the images */
-}
-
-.section-heading h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    line-height: 1.2;
-    margin-bottom: 15px;
-}
-
-.section-heading p {
-    font-size: 1rem;
-    color: #6c757d;
-}
-
-/* Service Items */
-.service-item {
-    margin-bottom: 30px;
-    position: relative;
-    z-index: 1; /* Ensure service items appear above the images */
-}
-
-.service-item .icon img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.service-item h4 {
-    font-size: 1.2rem;
-    margin-top: 15px;
-    color: #333;
 }
