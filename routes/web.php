@@ -602,5 +602,10 @@ Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTicket
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
+// route for view selected client ticket
+// view selected ticket
+Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.viewTicket');
 
 require __DIR__.'/auth.php';

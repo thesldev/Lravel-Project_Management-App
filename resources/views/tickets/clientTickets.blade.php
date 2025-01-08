@@ -182,7 +182,7 @@
                                         <h5 class="card-title">${ticket.title}</h5>
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span><strong>Project:</strong> ${ticket.project?.name || 'Unknown'}</span>
-                                            <a class="btn btn-primary btn-sm" href="/tickets/${ticket.id}/view">View Ticket</a>
+                                            <a class="btn btn-primary btn-sm" href="/client-tickets/${ticket.id}/view">View Ticket</a>
                                         </div>
                                         <p class="card-text mb-1"><strong>Status:</strong> ${statusBadge}</p>
                                     </div>
@@ -222,13 +222,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
 
     <!-- jQuery (necessary for DataTables) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

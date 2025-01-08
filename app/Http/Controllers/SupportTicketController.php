@@ -135,4 +135,13 @@ class SupportTicketController extends Controller
     }
     
 
+    // display selected ticket's data
+    public function viewTicket($id){
+
+        $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
+
+        return view('tickets.viewClientTickets', compact('ticket'));
+        
+    }
+
 }
