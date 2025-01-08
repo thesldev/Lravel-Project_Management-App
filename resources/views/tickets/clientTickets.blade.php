@@ -133,6 +133,32 @@
                     const createdDate = new Date(ticket.created_at);
                     const formattedDate = `${createdDate.getFullYear()}.${('0' + (createdDate.getMonth() + 1)).slice(-2)}.${('0' + createdDate.getDate()).slice(-2)}`;
 
+                    // Generate status badge with colors
+                    const statusBadge = `
+                        <span class="badge ${
+                            ticket.status === 'Open' ? 'bg-primary' : 
+                            ticket.status === 'In Progress' ? 'bg-info text-dark' :
+                            ticket.status === 'On Hold' ? 'bg-warning text-dark' :
+                            ticket.status === 'Resolved' ? 'bg-success' :
+                            'bg-secondary'
+                        }">
+                            ${ticket.status || 'Unknown'}
+                        </span>
+                    `;
+
+
+                    // Generate priority badge with colors
+                    const priorityBadge = `
+                        <span class="badge ${
+                            ticket.priority === 'Critical' ? 'bg-danger' :
+                            ticket.priority === 'High' ? 'bg-warning text-dark' :
+                            ticket.priority === 'Medium' ? 'bg-primary' :
+                            'bg-secondary'
+                        }">
+                            ${ticket.priority || 'Unknown'}
+                        </span>
+                    `;
+
                     // Get related data
                     const ticketType = ticket.type ? ticket.type.name : 'Unknown';
                     const ticketPriority = ticket.priority;
@@ -147,7 +173,7 @@
                             <h6 class="card-title">
                                 Created By: <span class="fw-bold">${ticket.client ? ticket.client.name : 'Unknown'}</span>
                                 | At: <span class="fw-bold">${formattedDate}</span>
-                                <span class="float-end">${ticketType} | ${ticketPriority}</span>
+                                <span class="float-end">${ticketType} | ${priorityBadge}</span>
                             </h6>
                         </div>
                     `;
@@ -161,7 +187,7 @@
                                 <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a> <!-- Use dynamic ticket ID -->
                             </div>
                             <p class="card-text mb-1"> <!-- Reduced margin -->
-                                <strong>Status:</strong> ${ticketStatus}
+                                <strong>Status:</strong> ${statusBadge}
                             </p>
                         </div>
                     `;
