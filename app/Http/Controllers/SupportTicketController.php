@@ -119,6 +119,20 @@ class SupportTicketController extends Controller
         $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get(); // Execute the query
         return response()->json($tickets);
     }
+
+    // function for filter client tickets according to the ticket status
+    public function filterByStatus($status)
+    {
+        if ($status === 'all') {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get();
+        } else {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])
+                ->where('status', $status)
+                ->get();
+        }
+
+        return response()->json($tickets);
+    }
     
 
 }

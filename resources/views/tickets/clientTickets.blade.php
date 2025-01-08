@@ -54,27 +54,27 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createTicketModal">
-                                            <i class="bi bi-list"></i></i> All
+                                        <button class="dropdown-item filter-button" data-status="all">
+                                            <i class="bi bi-list"></i> All
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
-                                            <i class="bi bi-folder2-open"></i></i> Open
+                                        <button class="dropdown-item filter-button" data-status="Open">
+                                            <i class="bi bi-folder2-open"></i> Open
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
+                                        <button class="dropdown-item filter-button" data-status="In Progress">
                                             <i class="bi bi-arrow-repeat"></i> In Progress
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
+                                        <button class="dropdown-item filter-button" data-status="On Hold">
                                             <i class="bi bi-pause-circle"></i> On Hold
                                         </button>
                                     </li>
                                     <li>
-                                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#removeIssueModal">
+                                        <button class="dropdown-item filter-button" data-status="Resolved">
                                             <i class="bi bi-check-circle"></i> Resolved
                                         </button>
                                     </li>
@@ -117,100 +117,98 @@
     <!-- Jquey scripts for fetch project and employee data -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Ajax & Jquery for handle ticket functions -->
+
+    <!-- Ajax & jQuery for handling ticket functions -->
     <script>
-        // Fetch all ticket details
-        $.ajax({
-            url: '/client-tickets/all',
-            method: 'GET',
-            success: function(tickets) {
-                console.log(tickets);
-                let container = $('.row');
-                container.empty(); 
+        function fetchTickets(status = 'all') {
+            // Determine the API endpoint based on the selected status
+            const url = status === 'all' ? '/client-tickets/all' : `/client-tickets/status/${status}`;
 
-                tickets.forEach(ticket => {
-                    // Format the created date
-                    const createdDate = new Date(ticket.created_at);
-                    const formattedDate = `${createdDate.getFullYear()}.${('0' + (createdDate.getMonth() + 1)).slice(-2)}.${('0' + createdDate.getDate()).slice(-2)}`;
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (tickets) {
+                    let container = $('.row');
+                    container.empty(); // Clear existing tickets
 
-                    // Generate status badge with colors
-                    const statusBadge = `
-                        <span class="badge ${
-                            ticket.status === 'Open' ? 'bg-primary' : 
-                            ticket.status === 'In Progress' ? 'bg-info text-dark' :
-                            ticket.status === 'On Hold' ? 'bg-warning text-dark' :
-                            ticket.status === 'Resolved' ? 'bg-success' :
-                            'bg-secondary'
-                        }">
-                            ${ticket.status || 'Unknown'}
-                        </span>
-                    `;
+                    // Display a message if no tickets are found
+                    if (tickets.length === 0) {
+                        container.append('<p class="text-center">No tickets found for the selected status.</p>');
+                        return;
+                    }
 
+                    // Iterate through the tickets and generate HTML for each
+                    tickets.forEach(ticket => {
+                        const createdDate = new Date(ticket.created_at);
+                        const formattedDate = `${createdDate.getFullYear()}.${('0' + (createdDate.getMonth() + 1)).slice(-2)}.${('0' + createdDate.getDate()).slice(-2)}`;
 
-                    // Generate priority badge with colors
-                    const priorityBadge = `
-                        <span class="badge ${
-                            ticket.priority === 'Critical' ? 'bg-danger' :
-                            ticket.priority === 'High' ? 'bg-warning text-dark' :
-                            ticket.priority === 'Medium' ? 'bg-primary' :
-                            'bg-secondary'
-                        }">
-                            ${ticket.priority || 'Unknown'}
-                        </span>
-                    `;
+                        // Generate the status badge with appropriate styling
+                        const statusBadge = `
+                            <span class="badge ${
+                                ticket.status === 'Open' ? 'bg-primary' :
+                                ticket.status === 'In Progress' ? 'bg-info text-dark' :
+                                ticket.status === 'On Hold' ? 'bg-warning text-dark' :
+                                ticket.status === 'Resolved' ? 'bg-success' :
+                                'bg-secondary'
+                            }">
+                                ${ticket.status || 'Unknown'}
+                            </span>
+                        `;
 
-                    // Get related data
-                    const ticketType = ticket.type ? ticket.type.name : 'Unknown';
-                    const ticketPriority = ticket.priority;
-                    const projectName = ticket.project ? ticket.project.name : 'Unknown';
-                    const ticketStatus = ticket.status ? ticket.status : 'Unknown';
-                    const assigneeName = ticket.assignee ? ticket.assignee.name : 'Unknown';
-                    const assigneeRole = ticket.assignee ? ticket.assignee.job_role : 'Unknown';
+                        // Generate the priority badge with appropriate styling
+                        const priorityBadge = `
+                            <span class="badge ${
+                                ticket.priority === 'Critical' ? 'bg-danger' :
+                                ticket.priority === 'High' ? 'bg-warning text-dark' :
+                                ticket.priority === 'Medium' ? 'bg-primary' :
+                                'bg-secondary'
+                            }">
+                                ${ticket.priority || 'Unknown'}
+                            </span>
+                        `;
 
-                    // Header part
-                    let headerHTML = `
-                        <div class="card-body pt-3 pb-1"> <!-- Reduced padding -->
-                            <h6 class="card-title">
-                                Created By: <span class="fw-bold">${ticket.client ? ticket.client.name : 'Unknown'}</span>
-                                | At: <span class="fw-bold">${formattedDate}</span>
-                                <span class="float-end">${ticketType} | ${priorityBadge}</span>
-                            </h6>
-                        </div>
-                    `;
-
-                    // Body part with flex layout for alignment and reduced margin
-                    let bodyHTML = `
-                        <div class="card-body pt-1 pb-3"> <!-- Reduced padding -->
-                            <h5 class="card-title">${ticket.title}</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span><strong>Project:</strong> ${projectName}</span>
-                                <a class="btn btn-primary btn-sm d-flex align-items-center justify-content-center" style="height: 40px;" href="/tickets/${ticket.id}/view">View Ticket</a> <!-- Use dynamic ticket ID -->
+                        // Create the ticket card HTML
+                        const ticketHTML = `
+                            <div class="col-md-6 col-lg-12 mb-4">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-body pt-3 pb-1">
+                                        <h6 class="card-title">
+                                            Created By: <span class="fw-bold">${ticket.client ? ticket.client.name : 'Unknown'}</span>
+                                            | At: <span class="fw-bold">${formattedDate}</span>
+                                            <span class="float-end">${ticket.type?.name || 'Unknown'} | ${priorityBadge}</span>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body pt-1 pb-3">
+                                        <h5 class="card-title">${ticket.title}</h5>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span><strong>Project:</strong> ${ticket.project?.name || 'Unknown'}</span>
+                                            <a class="btn btn-primary btn-sm" href="/tickets/${ticket.id}/view">View Ticket</a>
+                                        </div>
+                                        <p class="card-text mb-1"><strong>Status:</strong> ${statusBadge}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="card-text mb-1"> <!-- Reduced margin -->
-                                <strong>Status:</strong> ${statusBadge}
-                            </p>
-                        </div>
-                    `;
+                        `;
 
-                    // Combine all parts into a complete ticket card
-                    let ticketHTML = `
-                        <div class="col-md-6 col-lg-12 mb-4">
-                            <div class="card shadow-sm border-0">
-                                ${headerHTML}
-                                ${bodyHTML}
-                            </div>
-                        </div>
-                    `;
+                        container.append(ticketHTML); // Add the ticket card to the container
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching tickets:', error);
+                }
+            });
+        }
 
-                    container.append(ticketHTML);
-                });
-            },
-            error: function(error) {
-                console.error('Error fetching tickets:', error);
-            }
+        // Fetch all tickets when the page loads
+        fetchTickets();
+
+        // Filter tickets by status when a dropdown item is clicked
+        $(document).on('click', '.filter-button', function () {
+            const status = $(this).data('status'); // Get the status from the clicked button's data attribute
+            fetchTickets(status); // Fetch tickets with the selected status
         });
-
     </script>
+
     
     <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

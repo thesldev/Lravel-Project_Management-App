@@ -599,4 +599,8 @@ Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTicket
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.getAllTickets');
 
+// route for filter the client tickets according to the ticket status
+Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
+
+
 require __DIR__.'/auth.php';
