@@ -11279,3 +11279,9 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+
+.dropdown span {
+  font-size: 0.9rem; /* Adjust font size */
+  color: #6c757d;   /* Muted gray, matches Bootstrap text-muted */
+}
