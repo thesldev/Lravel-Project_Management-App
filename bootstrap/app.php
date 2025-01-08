@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckPortalAccess;
 use App\Http\Middleware\RoleManager;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'rolemanager'=>RoleManager::class
+            'rolemanager'=>RoleManager::class,
+            'checkPortalAccess'=>CheckPortalAccess::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

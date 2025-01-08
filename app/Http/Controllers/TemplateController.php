@@ -290,7 +290,6 @@ class TemplateController extends Controller
     }
 
     // function for client portal
-
     public function client(){
     
         return view('clientDashboard');

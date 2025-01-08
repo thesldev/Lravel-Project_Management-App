@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/employee-dashboard', [TemplateController::class, 'employeeDashboard'])
     ->middleware(['auth', 'verified', 'rolemanager:employee'])
@@ -40,7 +40,7 @@ Route::get('/sup-admin-dashboard', [TemplateController::class, 'supAdmin'])
     ->name('supAdmin');
 
 Route::get('/client-portal', [TemplateController::class, 'client'])
-    ->middleware(['auth', 'verified', 'rolemanager:client'])
+    ->middleware(['auth', 'verified', 'rolemanager:client', 'checkPortalAccess'])
     ->name('client');
 
 
