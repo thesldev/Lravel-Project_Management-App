@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/employee-dashboard', [TemplateController::class, 'employeeDashboard'])
     ->middleware(['auth', 'verified', 'rolemanager:employee'])
@@ -40,7 +40,7 @@ Route::get('/sup-admin-dashboard', [TemplateController::class, 'supAdmin'])
     ->name('supAdmin');
 
 Route::get('/client-portal', [TemplateController::class, 'client'])
-    ->middleware(['auth', 'verified', 'rolemanager:client'])
+    ->middleware(['auth', 'verified', 'rolemanager:client', 'checkPortalAccess'])
     ->name('client');
 
 
@@ -588,5 +588,24 @@ Route::get('/my-prokects/{id}/ticket-history', [SupportTicketController::class, 
 Route::get('/my-projects/{id}/closed-tickets', [SupportTicketController::class, 'projectClosedTickets'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.projectClosedTickets');
+
+// route for access client tickets in the admin dashboard
+Route::get('/client-tickets', [SupportTicketController::class, 'clientTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.clientTickets');
+
+// route for fetch clinet tickets
+Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.getAllTickets');
+
+// route for filter the client tickets according to the ticket status
+Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
+
+// route for view selected client ticket
+// view selected ticket
+Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.viewTicket');
 
 require __DIR__.'/auth.php';

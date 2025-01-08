@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 
+use function Pest\Laravel\json;
+
 class SupportTicketController extends Controller
 {
     //
@@ -104,6 +106,42 @@ class SupportTicketController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    // function for access the client tickets in admin portal
+    public function clientTickets(){
+        return view('tickets.clientTickets');
+    }
+
+    // function for fetch client ticket details
+    public function getAllTickets() {
+        $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get(); // Execute the query
+        return response()->json($tickets);
+    }
+
+    // function for filter client tickets according to the ticket status
+    public function filterByStatus($status)
+    {
+        if ($status === 'all') {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get();
+        } else {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])
+                ->where('status', $status)
+                ->get();
+        }
+
+        return response()->json($tickets);
+    }
+    
+
+    // display selected ticket's data
+    public function viewTicket($id){
+
+        $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
+
+        return view('tickets.viewClientTickets', compact('ticket'));
+        
     }
 
 }
