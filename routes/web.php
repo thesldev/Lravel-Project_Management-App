@@ -589,6 +589,11 @@ Route::get('/my-projects/{id}/closed-tickets', [SupportTicketController::class, 
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.projectClosedTickets');
 
-    
+// route for access client tickets in the admin dashboard
+Route::get('/client-tickets', [SupportTicketController::class, 'clientTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.clientTickets');
+
+
 
 require __DIR__.'/auth.php';
