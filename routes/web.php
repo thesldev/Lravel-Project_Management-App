@@ -589,4 +589,6 @@ Route::get('/my-projects/{id}/closed-tickets', [SupportTicketController::class, 
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.projectClosedTickets');
 
+    
+
 require __DIR__.'/auth.php';
