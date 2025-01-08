@@ -121,11 +121,12 @@
     <script>
         // Fetch all ticket details
         $.ajax({
-            url: '/tickets/all',
+            url: '/client-tickets/all',
             method: 'GET',
             success: function(tickets) {
+                console.log(tickets);
                 let container = $('.row');
-                container.empty(); // Clear any existing content
+                container.empty(); 
 
                 tickets.forEach(ticket => {
                     // Format the created date
@@ -136,7 +137,7 @@
                     const ticketType = ticket.type ? ticket.type.name : 'Unknown';
                     const ticketPriority = ticket.priority;
                     const projectName = ticket.project ? ticket.project.name : 'Unknown';
-                    const ticketStatus = ticket.status ? ticket.status.name : 'Unknown';
+                    const ticketStatus = ticket.status ? ticket.status : 'Unknown';
                     const assigneeName = ticket.assignee ? ticket.assignee.name : 'Unknown';
                     const assigneeRole = ticket.assignee ? ticket.assignee.job_role : 'Unknown';
 
@@ -144,7 +145,7 @@
                     let headerHTML = `
                         <div class="card-body pt-3 pb-1"> <!-- Reduced padding -->
                             <h6 class="card-title">
-                                Created By: <span class="fw-bold">${ticket.reporter ? ticket.reporter.name : 'Unknown'}</span>
+                                Created By: <span class="fw-bold">${ticket.client ? ticket.client.name : 'Unknown'}</span>
                                 | At: <span class="fw-bold">${formattedDate}</span>
                                 <span class="float-end">${ticketType} | ${ticketPriority}</span>
                             </h6>
@@ -164,14 +165,6 @@
                             </p>
                         </div>
                     `;
-                    
-                    // Footer part (keep as it is)
-                    let footerHTML = `
-                        <div class="card-footer d-flex justify-content-between">
-                            <span><strong>Due Date:</strong> ${ticket.due_date}</span>
-                            <span><strong>Assignees:</strong> ${assigneeName} | <strong>Job Role:</strong> ${assigneeRole}</span>
-                        </div>
-                    `;
 
                     // Combine all parts into a complete ticket card
                     let ticketHTML = `
@@ -179,7 +172,6 @@
                             <div class="card shadow-sm border-0">
                                 ${headerHTML}
                                 ${bodyHTML}
-                                ${footerHTML}
                             </div>
                         </div>
                     `;
@@ -207,8 +199,18 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
+    <!-- Page level plugins -->
+    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+
     <!-- jQuery (necessary for DataTables) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 
     <!-- Initialize DataTables -->

@@ -594,6 +594,9 @@ Route::get('/client-tickets', [SupportTicketController::class, 'clientTickets'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.clientTickets');
 
-
+// route for fetch clinet tickets
+Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.getAllTickets');
 
 require __DIR__.'/auth.php';

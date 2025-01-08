@@ -6,6 +6,8 @@ use App\Models\Project;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 
+use function Pest\Laravel\json;
+
 class SupportTicketController extends Controller
 {
     //
@@ -111,5 +113,12 @@ class SupportTicketController extends Controller
     public function clientTickets(){
         return view('tickets.clientTickets');
     }
+
+    // function for fetch client ticket details
+    public function getAllTickets() {
+        $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get(); // Execute the query
+        return response()->json($tickets);
+    }
+    
 
 }
