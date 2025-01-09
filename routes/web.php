@@ -610,9 +610,14 @@ Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTicket
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
 // route for view selected client ticket
-// view selected ticket
+// view selected ticket (admin-side)
 Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.viewTicket');
+
+// route for view selected ticket (client-side)
+Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientViewTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.clientViewTicket');
 
 require __DIR__.'/auth.php';
