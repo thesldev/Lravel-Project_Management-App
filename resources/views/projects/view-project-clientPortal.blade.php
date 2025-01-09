@@ -112,8 +112,30 @@
                     <!-- second-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <!-- Section Title -->
                             <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Resolved & Closed</h6>
+                            
+                            <!-- Dropdown Button -->
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a class="dropdown-item" href="">
+                                            <i class="bi bi-list"></i> View All Tickets
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" onclick="refreshTickets()">
+                                            <i class="bi bi-arrow-clockwise"></i> Refresh Tickets
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
+
+                        <!-- Card Body -->
                         <div class="card-body">
                             <div class="row resolve-ticket-container">
                                 <!-- Tickets will be dynamically appended here -->

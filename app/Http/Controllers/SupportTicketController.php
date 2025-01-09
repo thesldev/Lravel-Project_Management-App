@@ -88,7 +88,7 @@ class SupportTicketController extends Controller
             // Get tickets with statuses 'Resolved' or 'Closed'
             $closedTickets = SupportTicket::where('project_id', $id)
                 ->whereIn('status', ['Resolved', 'Closed'])
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
 
             return response()->json([
