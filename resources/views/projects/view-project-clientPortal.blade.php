@@ -112,7 +112,7 @@
                     <!-- second-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Closed</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Resolved & Closed</h6>
                         </div>
                         <div class="card-body">
                             <div class="row resolve-ticket-container">
@@ -280,7 +280,9 @@
                         // Check if tickets are available
                         if (response.tickets && response.tickets.length > 0) {
                             // Filter out 'Resolved' tickets
-                            const filteredTickets = response.tickets.filter(ticket => ticket.status !== 'Resolved');
+                            const filteredTickets = response.tickets.filter(
+                                    ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
+                                );
 
                             if (filteredTickets.length > 0) {
                                 filteredTickets.forEach(ticket => {
@@ -372,7 +374,7 @@
 
 
 
-             // Function to fetch closed tickets
+            // Function to fetch closed tickets
             function fetchResolvedTickets(projectId) {
                 $.ajax({
                     url: `/my-projects/${projectId}/closed-tickets`,
@@ -386,6 +388,10 @@
                         // Check if tickets exist
                         if (response.closedTickets && response.closedTickets.length > 0) {
                             response.closedTickets.forEach(ticket => {
+                                const statusBadgeClass = 
+                                    ticket.status === 'Resolved' ? 'bg-success' : // Green for Resolved
+                                    ticket.status === 'Closed' ? 'bg-danger' : ''; // Red for Closed
+
                                 const ticketHtml = `
                                     <div class="col-12 mb-3">
                                         <div class="card shadow-sm">
@@ -407,7 +413,7 @@
                                             <!-- Footer Section -->
                                             <div class="card-footer d-flex justify-content-between align-items-center">
                                                 <span class="text-muted">Created At: ${new Date(ticket.created_at).toLocaleString()}</span>
-                                                <span class="badge bg-success">${ticket.status}</span>
+                                                <span class="badge ${statusBadgeClass}">${ticket.status}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -424,7 +430,6 @@
                 });
             }
 
-        
             // Fetch tickets on page load
             const projectId = "{{ $project->id }}"; // Replace with your dynamic project ID
             fetchTickets(projectId);
