@@ -12,9 +12,13 @@
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
-
+    <!-- Include Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 </head>
 
 <body id="page-top">
@@ -48,6 +52,25 @@
                             <p><strong>Email:</strong> {{ $client->email }}</p>
                             <p><strong>Phone:</strong> {{ $client->phone }}</p>
                             <p><strong>Description:</strong> {{ $client->project_description }}</p>
+                        </div>
+                    </div>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Client Portal-Access</h6>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <p style="margin: 0;">
+                                    <strong>Portal-Access:</strong> 
+                                    <span id="portal-status">{{ $client->portal_access == 1 ? 'Enable' : 'Disable' }}</span>
+                                </p>
+                                <p>
+                                    <span>Change Portal Access: </span>
+                                    <button class="btn btn-link" id="toggle-access" onclick="togglePortalAccess('{{ $client->id }}')">
+                                        <i class="bi {{ $client->portal_access == 1 ? 'bi-toggle-on' : 'bi-toggle-off' }}"></i>
+                                    </button>
+                                </p>        
+                            </div>
                         </div>
                     </div>
 
@@ -104,12 +127,38 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+    <script>
+    function togglePortalAccess(clientId) {
+        fetch(`/toggle-portal-access/${clientId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const portalStatus = document.getElementById('portal-status');
+                const toggleIcon = document.querySelector('#toggle-access i');
 
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+                // Update the portal status and toggle icon
+                if (data.portal_access == 1) {
+                    portalStatus.textContent = 'Enable';
+                    toggleIcon.classList.remove('bi-toggle-off');
+                    toggleIcon.classList.add('bi-toggle-on');
+                } else {
+                    portalStatus.textContent = 'Disable';
+                    toggleIcon.classList.remove('bi-toggle-on');
+                    toggleIcon.classList.add('bi-toggle-off');
+                }
+            } else {
+                alert('Failed to update portal access');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
 
 </body>
 

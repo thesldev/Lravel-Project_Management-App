@@ -50,21 +50,21 @@
                         <div class="card-body">
                             <div class="row">
                                 <!-- Ticket Title -->
-                                <p><strong>Ticket Title:</strong> {{ $ticket->title }}</p>
+                                <p>Ticket Title:<strong>{{ $ticket->title }}</strong></p>
 
                                 <!-- Ticket Priority -->
                                 <div class="col-md-3 me-3 ">
-                                    <p><strong>Ticket Priority:</strong> {{ $ticket->priority }}</p>
+                                    <p>Ticket Priority:<strong>{{ $ticket->priority }}</strong></p>
                                 </div>
 
                                 <!-- Ticket Type -->
                                 <div class="col-md-3 me-3">
-                                    <p><strong>Ticket Type:</strong> </p>
+                                    <p>Ticket Type:<strong></strong> </p>
                                 </div>
 
                                 <!-- Ticket Status -->
                                 <div class="col-md-3 me-3">
-                                    <p><strong>Ticket Status:</strong> {{ $ticket->status}}</p>
+                                    <p>Ticket Status:<strong>{{ $ticket->status}}</strong></p>
                                 </div>
                             </div>
 
@@ -78,21 +78,6 @@
                                     Priority: <strong>{{ $ticket->project->priority }}</strong>
                                 </p>
                                 <p class="mb-3">Due Date: <strong></strong></p>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 me-3">
-                                    <p>
-                                        Assign to: <strong></strong>
-                                        <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Job Role: <strong></strong>
-                                        <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Position: <strong></strong>
-                                    </p>
-                                </div>
-                                <div class="col-md-3 me-3">
-                                    <p>Due Date: <strong>{{ $ticket->due_date }}</strong></p>
-                                </div>
                             </div>
                             <form method="POST" action="{{ route('comments.storeAdmin', $ticket->id) }}">
                                 @csrf
@@ -128,7 +113,8 @@
 
             </div>
             <!-- End of Main Content -->
-             
+
+
             <!-- Footer -->
             <x-footer />
             <!-- End of Footer -->
@@ -151,10 +137,6 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
