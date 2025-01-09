@@ -128,8 +128,7 @@
 
             </div>
             <!-- End of Main Content -->
-
-
+             
             <!-- Footer -->
             <x-footer />
             <!-- End of Footer -->

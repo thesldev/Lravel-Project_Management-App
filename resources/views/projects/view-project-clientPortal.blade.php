@@ -19,6 +19,7 @@
 
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 <body id="page-top">
@@ -315,7 +316,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a class="dropdown-item" href="">
+                                                                <a class="dropdown-item" href="#" onclick="changeTicketStatus(${ticket.id})">
                                                                     <i class="bi bi-x-circle"></i> Close Ticket
                                                                 </a>
                                                             </li>
@@ -423,12 +424,38 @@
                 });
             }
 
+        
             // Fetch tickets on page load
             const projectId = "{{ $project->id }}"; // Replace with your dynamic project ID
             fetchTickets(projectId);
             fetchResolvedTickets(projectId);
         });
     </script>
+
+<script>
+    function changeTicketStatus(ticketId) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        fetch(`/change-status/${ticketId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify({}), // Add data here if needed
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                // Optional: Update the UI to reflect the status change
+            } else {
+                alert('Failed to update ticket status.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>

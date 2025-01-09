@@ -151,4 +151,26 @@ class SupportTicketController extends Controller
         return view('clients.clientPortal-view-selectedTicket', compact('ticket'));
     }
 
+
+    // function for close the ticket from client side
+    public function changeStatusClientSide($id)
+    {
+        $ticket = SupportTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.'
+            ], 404);
+        }
+
+        $ticket->status = 'Closed';
+        $ticket->save();
+
+        return response()->json([
+            'message' => 'Ticket status updated successfully.',
+            'ticket' => $ticket
+        ]);
+    }
+
+
 }

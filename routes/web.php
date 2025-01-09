@@ -620,4 +620,9 @@ Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientVie
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.clientViewTicket');
 
+// route for change the ticket-status from client portal
+Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatusClientSide'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.changeStatusClientSide');
+
 require __DIR__.'/auth.php';
