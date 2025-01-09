@@ -103,6 +103,13 @@ Route::get('/api/clients', [ClientController::class, 'getClients'])
     ->middleware(['auth','verified','rolemanager:supperAdmin,admin'])
     ->name('clients.getClients');
 
+// change the client-portal access
+Route::post('/toggle-portal-access/{client}', [ClientController::class, 'togglePortalAccess'])
+    ->middleware(['auth','verified','rolemanager:supperAdmin'])
+    ->name('clients.togglePortalAccess');
+
+
+
 
 // routes for handel projects data
 
