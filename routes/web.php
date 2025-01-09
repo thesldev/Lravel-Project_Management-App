@@ -103,6 +103,13 @@ Route::get('/api/clients', [ClientController::class, 'getClients'])
     ->middleware(['auth','verified','rolemanager:supperAdmin,admin'])
     ->name('clients.getClients');
 
+// change the client-portal access
+Route::post('/toggle-portal-access/{client}', [ClientController::class, 'togglePortalAccess'])
+    ->middleware(['auth','verified','rolemanager:supperAdmin'])
+    ->name('clients.togglePortalAccess');
+
+
+
 
 // routes for handel projects data
 
@@ -603,9 +610,19 @@ Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTicket
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
 // route for view selected client ticket
-// view selected ticket
+// view selected ticket (admin-side)
 Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.viewTicket');
+
+// route for view selected ticket (client-side)
+Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientViewTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.clientViewTicket');
+
+// route for change the ticket-status from client portal
+Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatusClientSide'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.changeStatusClientSide');
 
 require __DIR__.'/auth.php';

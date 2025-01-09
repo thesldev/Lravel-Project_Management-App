@@ -19,6 +19,7 @@
 
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
 <body id="page-top">
@@ -111,8 +112,30 @@
                     <!-- second-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Closed</h6>
+                            <!-- Section Title -->
+                            <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Resolved & Closed</h6>
+                            
+                            <!-- Dropdown Button -->
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a class="dropdown-item" href="">
+                                            <i class="bi bi-list"></i> View All Tickets
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" onclick="refreshTickets()">
+                                            <i class="bi bi-arrow-clockwise"></i> Refresh Tickets
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
+
+                        <!-- Card Body -->
                         <div class="card-body">
                             <div class="row resolve-ticket-container">
                                 <!-- Tickets will be dynamically appended here -->
@@ -279,7 +302,9 @@
                         // Check if tickets are available
                         if (response.tickets && response.tickets.length > 0) {
                             // Filter out 'Resolved' tickets
-                            const filteredTickets = response.tickets.filter(ticket => ticket.status !== 'Resolved');
+                            const filteredTickets = response.tickets.filter(
+                                    ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
+                                );
 
                             if (filteredTickets.length > 0) {
                                 filteredTickets.forEach(ticket => {
@@ -310,8 +335,13 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <li>
-                                                                <a class="dropdown-item" href="{{ route('project.viewMyProject', ['id' => $project->id]) }}">
-                                                                    <i class="bi bi-info-lg"></i> Info
+                                                                <a class="dropdown-item" href="/view-ticket/${ticket.id}/view">
+                                                                    <i class="bi bi-eye"></i> View Ticket
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#" onclick="changeTicketStatus(${ticket.id})">
+                                                                    <i class="bi bi-x-circle"></i> Close Ticket
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -366,7 +396,7 @@
 
 
 
-             // Function to fetch closed tickets
+            // Function to fetch closed tickets
             function fetchResolvedTickets(projectId) {
                 $.ajax({
                     url: `/my-projects/${projectId}/closed-tickets`,
@@ -380,6 +410,10 @@
                         // Check if tickets exist
                         if (response.closedTickets && response.closedTickets.length > 0) {
                             response.closedTickets.forEach(ticket => {
+                                const statusBadgeClass = 
+                                    ticket.status === 'Resolved' ? 'bg-success' : // Green for Resolved
+                                    ticket.status === 'Closed' ? 'bg-danger' : ''; // Red for Closed
+
                                 const ticketHtml = `
                                     <div class="col-12 mb-3">
                                         <div class="card shadow-sm">
@@ -401,7 +435,7 @@
                                             <!-- Footer Section -->
                                             <div class="card-footer d-flex justify-content-between align-items-center">
                                                 <span class="text-muted">Created At: ${new Date(ticket.created_at).toLocaleString()}</span>
-                                                <span class="badge bg-success">${ticket.status}</span>
+                                                <span class="badge ${statusBadgeClass}">${ticket.status}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -425,18 +459,40 @@
         });
     </script>
 
+<script>
+    function changeTicketStatus(ticketId) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        fetch(`/change-status/${ticketId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify({}), // Add data here if needed
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                // Optional: Update the UI to reflect the status change
+            } else {
+                alert('Failed to update ticket status.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+    <!-- Bootstrap Bundle JS (includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

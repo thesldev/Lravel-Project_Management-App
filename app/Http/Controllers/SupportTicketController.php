@@ -80,33 +80,30 @@ class SupportTicketController extends Controller
 
 
     // function for get closed tickets related to the project
-    public function projectClosedTickets($id){
+    public function projectClosedTickets($id)
+    {
         try {
-            
             $project = Project::findOrFail($id);
 
-            // get tickets statuse equal to closed
+            // Get tickets with statuses 'Resolved' or 'Closed'
             $closedTickets = SupportTicket::where('project_id', $id)
-                ->where('status', 'Resolved')
-                ->orderBy('created_at', 'desc')
+                ->whereIn('status', ['Resolved', 'Closed'])
+                ->orderBy('created_at', 'asc')
                 ->get();
-            
-                return response()->json([
-                    'message' => 'Tickets retrieved Resolved Tickets successfully.',
-                    'project' => $project,
-                    'closedTickets' => $closedTickets,
-                ]);
-
-
-        } catch (\Exception $e) {
-            //throw $th;
 
             return response()->json([
-                'message' => 'Failed to retrieve Resolved tickets.',
+                'message' => 'Tickets retrieved successfully.',
+                'project' => $project,
+                'closedTickets' => $closedTickets,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve resolved tickets.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
 
     // function for access the client tickets in admin portal
@@ -135,7 +132,7 @@ class SupportTicketController extends Controller
     }
     
 
-    // display selected ticket's data
+    // display selected support-ticket's data in admin-side
     public function viewTicket($id){
 
         $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
@@ -143,5 +140,34 @@ class SupportTicketController extends Controller
         return view('tickets.viewClientTickets', compact('ticket'));
         
     }
+
+    // display selected support-ticket's data in client side
+    public function clientViewTicket($id){
+        $ticket = SupportTicket::with('project')->find($id);
+
+        return view('clients.clientPortal-view-selectedTicket', compact('ticket'));
+    }
+
+
+    // function for close the ticket from client side
+    public function changeStatusClientSide($id)
+    {
+        $ticket = SupportTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.'
+            ], 404);
+        }
+
+        $ticket->status = 'Closed';
+        $ticket->save();
+
+        return response()->json([
+            'message' => 'Ticket status updated successfully.',
+            'ticket' => $ticket
+        ]);
+    }
+
 
 }

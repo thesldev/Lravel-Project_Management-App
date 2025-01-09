@@ -209,5 +209,16 @@ class ClientController extends Controller
     }
 
 
+    // function for enable/disbale client portal access
+    public function togglePortalAccess(Client $client)
+    {
+        $client->portal_access = $client->portal_access == 1 ? 0 : 1;
+        $client->save();
+
+        return response()->json([
+            'success' => true,
+            'portal_access' => $client->portal_access,
+        ]);
+    }
 
 }
