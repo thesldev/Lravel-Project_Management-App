@@ -641,5 +641,9 @@ Route::post('/support-tickets/{ticket}/clientComments', [SupportTicketCommentCon
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('comments.storeClientComment');
 
+// route for fetch support-ticket comments for client
+Route::get('/support-tickets/{ticketId}/comments', [SupportTicketCommentController::class, 'viewComments'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('comments.viewComments');
 
 require __DIR__.'/auth.php';
