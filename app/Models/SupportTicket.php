@@ -41,4 +41,11 @@ class SupportTicket extends Model
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(TicketAttachment::class, 'ticket_id'); // Explicitly define the foreign key
+    }
+
+
 }

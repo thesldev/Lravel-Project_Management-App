@@ -18,6 +18,7 @@ class TicketAttachment extends Model
 
     public function ticket()
     {
-        return $this->belongsTo(SupportTicket::class);
+        return $this->belongsTo(SupportTicket::class, 'ticket_id'); // Explicitly define the foreign key
     }
+
 }

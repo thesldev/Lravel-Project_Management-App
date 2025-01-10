@@ -123,8 +123,7 @@ class SupportTicketController extends Controller
         }
     }
 
-
-
+    
     // function for access the client tickets in admin portal
     public function clientTickets(){
         return view('tickets.clientTickets');
