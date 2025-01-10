@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employees;
 use App\Models\Project;
 use App\Models\SupportTicket;
+use App\Models\TicketAttachment;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -26,11 +27,11 @@ class SupportTicketController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'client_id' => 'required|exists:users,id',
-                'project_id' => 'nullable|exists:project,id',
+                'project_id' => 'nullable|exists:project,id', 
                 'service_id' => 'nullable|exists:services,id',
                 'priority' => 'required|in:Low,Medium,High,Critical',
                 'status' => 'nullable|string',
-                'assigned_to' => 'nullable|exists:users,id',
+                'attachment.*' => 'nullable|file|max:2048',
             ]);
 
             // Create the support ticket
@@ -38,25 +39,37 @@ class SupportTicketController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'client_id' => $validated['client_id'],
-                'project_id' => $validated['project_id'],
+                'project_id' => $validated['project_id'] ?? null,
                 'service_id' => $validated['service_id'] ?? null,
                 'priority' => $validated['priority'],
                 'status' => $validated['status'] ?? 'Open',
                 'assigned_to' => $validated['assigned_to'] ?? null,
             ]);
 
+            // Handle attachments if present
+            if ($request->hasFile('attachment')) {
+                foreach ($request->file('attachment') as $file) {
+                    $filePath = $file->store('attachments', 'public');
+                    TicketAttachment::create([
+                        'ticket_id' => $supportTicket->id, // Use the correct variable
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_path' => $filePath,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'message' => 'Support ticket created successfully.',
                 'ticket' => $supportTicket,
             ]);
         } catch (\Exception $e) {
-            // \Log::error($e->getMessage());
             return response()->json([
                 'message' => 'Failed to create support ticket.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
 
     // function for get ticket history according to the project

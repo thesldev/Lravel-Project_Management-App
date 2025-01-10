@@ -224,6 +224,17 @@
                                 value="{{ $project->id }}" 
                                 readonly>
                         </div>
+                        <div class="mb-3">
+                            <label for="ticketAttachment" class="form-label" style="font-weight: bold;">Attachment</label>
+                            <input 
+                                type="file" 
+                                class="form-control" 
+                                id="ticketAttachment" 
+                                name="attachment[]" 
+                                multiple>
+                            <small class="form-text text-muted">You can attach multiple files.</small>
+                        </div>
+
                         <input type="hidden" id="clientId" name="client_id" value="{{ auth()->id() }}">
                         <input type="hidden" id="status" name="status" value="Open">
                         <button 
@@ -271,16 +282,18 @@
                 e.preventDefault();
 
                 // Get form data
-                const formData = $(this).serialize();
+                const formData = new FormData(this);
 
                 // Send an Ajax request
                 $.ajax({
-                    url: '/support_tickets/create', // Replace with your route URL
+                    url: '/support_tickets/create',
                     method: 'POST',
                     data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
                         alert('Ticket created successfully!');
-                        closeCreateTicketModal(); 
+                        $('#createTicketModal').modal('hide');
                     },
                     error: function (xhr) {
                         alert('Failed to create ticket. Please try again.');
