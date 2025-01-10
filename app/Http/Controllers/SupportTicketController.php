@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employees;
 use App\Models\Project;
 use App\Models\SupportTicket;
 use Exception;
@@ -142,16 +143,19 @@ class SupportTicketController extends Controller
 
         $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
 
-        return view('tickets.viewClientTickets', compact('ticket'));
+        $employees = Employees::all();
+        return view('tickets.viewClientTickets', compact('ticket', 'employees'));
         
     }
 
     // display selected support-ticket's data in client side
-    public function clientViewTicket($id){
-        $ticket = SupportTicket::with('project')->find($id);
+    public function clientViewTicket($id)
+    {
+        $ticket = SupportTicket::with(['project', 'assignedUser'])->find($id);
 
         return view('clients.clientPortal-view-selectedTicket', compact('ticket'));
     }
+
 
 
     // function for close the ticket from client side
@@ -251,6 +255,30 @@ class SupportTicketController extends Controller
         }
     }
 
+
+    // function for assign members into the project
+    public function assignMember(Request $request, $ticketId)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:users,id',
+        ]);
+
+        // Find the support ticket by ID
+        $ticket = SupportTicket::findOrFail($ticketId);
+
+        // Check if the selected employee belongs to the ticket's related project
+        $project = $ticket->project; // Assuming the ticket has a `project` relationship
+        if (!$project->employees->contains($validated['employee_id'])) {
+            return redirect()->back()->with('error', 'The selected employee is not part of the project.');
+        }
+
+        // Assign the employee to the ticket
+        $ticket->assigned_to = $validated['employee_id'];
+        $ticket->save();
+
+        return redirect()->back()->with('success', 'Member assigned to the support ticket successfully.');
+    }
 
 
 }

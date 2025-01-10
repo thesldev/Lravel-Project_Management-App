@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
 
@@ -45,26 +45,66 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Ticket #{{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}</h6>
+
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a class="dropdown-item" id="assignMemberButton" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
+                                            <i class="bi bi-person-plus-fill"></i> Assign Member
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" id="changeStatusButton">
+                                            <i class="bi bi-arrow-repeat"></i> Change Status
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" id="closeTicketButton">
+                                            <i class="bi bi-x-circle-fill"></i> Close Ticket
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <!-- display ticket data -->
                         <div class="card-body">
                             <div class="row">
                                 <!-- Ticket Title -->
-                                <p><strong>Ticket Title:</strong> {{ $ticket->title }}</p>
+                                <p>Ticket Title: <strong>{{ $ticket->title }}</strong></p>
 
                                 <!-- Ticket Priority -->
-                                <div class="col-md-3 me-3 ">
-                                    <p><strong>Ticket Priority:</strong> {{ $ticket->priority }}</p>
+                                <div class="col-md-3 me-3">
+                                    <p>Ticket Priority: 
+                                        <span class="badge 
+                                            {{ $ticket->priority === 'Critical' ? 'bg-danger' : '' }}
+                                            {{ $ticket->priority === 'High' ? 'bg-warning text-dark' : '' }}
+                                            {{ $ticket->priority === 'Medium' ? 'bg-primary' : '' }}
+                                            {{ $ticket->priority === 'Low' ? 'bg-secondary' : '' }}">
+                                            {{ $ticket->priority }}
+                                        </span>
+                                    </p>
                                 </div>
 
                                 <!-- Ticket Type -->
                                 <div class="col-md-3 me-3">
-                                    <p><strong>Ticket Type:</strong> </p>
+                                    <p>Ticket Type:<strong></strong> </p>
                                 </div>
 
                                 <!-- Ticket Status -->
                                 <div class="col-md-3 me-3">
-                                    <p><strong>Ticket Status:</strong> {{ $ticket->status}}</p>
+                                    <p>Ticket Status: 
+                                        <span class="badge 
+                                            {{ $ticket->status === 'In Progress' ? 'bg-info text-dark' : '' }}
+                                            {{ $ticket->status === 'On Hold' ? 'bg-warning text-dark' : '' }}
+                                            {{ $ticket->status === 'Resolved' ? 'bg-success' : '' }}
+                                            {{ $ticket->status === 'Closed' ? 'bg-danger' : '' }}
+                                            {{ $ticket->status === 'Open' ? 'bg-secondary' : '' }}">
+                                            {{ $ticket->status }}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
 
@@ -75,23 +115,33 @@
                                 <p class="mb-3">
                                     Project Name: <strong>{{ $ticket->project->name }}</strong>
                                     <span class="mx-3">|</span>
-                                    Priority: <strong>{{ $ticket->project->priority }}</strong>
+                                    Project Priority: 
+                                    <strong>
+                                        <span class="badge 
+                                            @if($ticket->project->priority == 'Low') 
+                                                bg-success 
+                                            @elseif($ticket->project->priority == 'Medium') 
+                                                bg-warning 
+                                            @elseif($ticket->project->priority == 'High') 
+                                                bg-danger 
+                                            @endif
+                                        ">
+                                            {{ $ticket->project->priority }}
+                                        </span>
+                                    </strong>
                                 </p>
                                 <p class="mb-3">Due Date: <strong></strong></p>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 me-3">
+                                <div class="me-3">
                                     <p>
-                                        Assign to: <strong></strong>
+                                        Assign to: <strong>{{ $ticket->assignedUser->name ?? 'Not Assigned' }}</strong>
                                         <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Job Role: <strong></strong>
+                                        Job Role: <strong>{{ $ticket->assignedUser->job_role ?? 'Not Assigned' }}</strong>
                                         <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Position: <strong></strong>
+                                        Position: <strong>{{ $ticket->assignedUser->position ?? 'Not Assigned' }}</strong>
                                     </p>
-                                </div>
-                                <div class="col-md-3 me-3">
-                                    <p>Due Date: <strong>{{ $ticket->due_date }}</strong></p>
                                 </div>
                             </div>
                             <form method="POST" action="{{ route('comments.storeAdminComment', $ticket->id) }}">
@@ -139,6 +189,42 @@
     </div>
     <!-- End of Wrapper -->
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="assignMemberModal" tabindex="-1" aria-labelledby="assignMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignMemberModalLabel">Assign Member to Project</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Display Already Assigned Members -->
+                    <h6>Assigned Members:</h6>
+                    <ul id="assignedMembersList">
+                        @foreach ($ticket->project->employees as $employee)
+                            <li>{{ $employee->name }} - {{ $employee->job_role }}</li>
+                        @endforeach
+                    </ul>
+
+                    <!-- Select Member for the Support Ticket -->
+                    <form method="POST" action="{{ route('assign.assignMember', $ticket->id) }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="employeeSelect" class="form-label">Select Member for Support Ticket</label>
+                            <select class="form-select" id="employeeSelect" name="employee_id" required>
+                                <option value="" disabled selected>Select an employee</option>
+                                @foreach ($ticket->project->employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }} - {{ $employee->job_role }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Assign Member</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">

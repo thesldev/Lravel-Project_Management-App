@@ -79,7 +79,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <!-- Ticket Title -->
-                                <p>Ticket Title:<strong>{{ $ticket->title }}</strong></p>
+                                <p>Ticket Title: <strong>{{ $ticket->title }}</strong></p>
 
                                 <!-- Ticket Priority -->
                                 <div class="col-md-3 me-3">

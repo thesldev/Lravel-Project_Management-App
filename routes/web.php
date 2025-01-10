@@ -671,4 +671,10 @@ Route::delete('/sup-ticket-comments-delete-admin/{commentId}', [SupportTicketCom
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('comments.deleteCommentAdmin');
 
+// route for assign members into the support-tickets
+Route::post('/projects/{project}/assign-member', [SupportTicketController::class, 'assignMember'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('assign.assignMember');
+
+
 require __DIR__.'/auth.php';
