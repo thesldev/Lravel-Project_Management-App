@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employees;
 use App\Models\Project;
 use App\Models\SupportTicket;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 use function Pest\Laravel\json;
 
@@ -137,16 +143,19 @@ class SupportTicketController extends Controller
 
         $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
 
-        return view('tickets.viewClientTickets', compact('ticket'));
+        $employees = Employees::all();
+        return view('tickets.viewClientTickets', compact('ticket', 'employees'));
         
     }
 
     // display selected support-ticket's data in client side
-    public function clientViewTicket($id){
-        $ticket = SupportTicket::with('project')->find($id);
+    public function clientViewTicket($id)
+    {
+        $ticket = SupportTicket::with(['project', 'assignedUser'])->find($id);
 
         return view('clients.clientPortal-view-selectedTicket', compact('ticket'));
     }
+
 
 
     // function for close the ticket from client side
@@ -168,6 +177,174 @@ class SupportTicketController extends Controller
             'ticket' => $ticket
         ]);
     }
+
+
+    // function for update the ticket from client portal
+    public function updateMyTicket(Request $request, $id){
+        
+        // Validate the incoming request
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        try {
+            // Find the ticket by ID
+            $ticket = SupportTicket::where('id', $id)
+                ->where('client_id', Auth::id()) // Ensures the ticket belongs to the authenticated user
+                ->firstOrFail();
+
+    
+            // Update the ticket details
+            $ticket->title = $validated['title'];
+            $ticket->description = $validated['description'];
+            $ticket->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Ticket updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating ticket: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    // function for change the priority from client-portal
+    public function myTicketPriority(Request $request, $id)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'priority' => 'required|string|in:Low,Medium,High,Critical',
+            ]);
+
+            // Debug: Log the request data
+            Log::info('Changing ticket priority', ['ticket_id' => $id, 'priority' => $request->input('priority')]);
+
+            // Find the ticket and ensure it belongs to the logged-in user
+            $ticket = SupportTicket::where('id', $id)->where('client_id', Auth::id())->firstOrFail();
+
+            // Update the priority
+            $ticket->priority = $request->input('priority');
+            $ticket->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ticket priority updated successfully.',
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket not found or unauthorized.',
+            ], 404);
+        } catch (Exception $e) {
+            Log::error('Error updating ticket priority:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update ticket priority.',
+            ], 500);
+        }
+    }
+
+
+    // function for assign members into the project
+    public function assignMember(Request $request, $ticketId)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:users,id',
+        ]);
+
+        // Find the support ticket by ID
+        $ticket = SupportTicket::findOrFail($ticketId);
+
+        // Check if the selected employee belongs to the ticket's related project
+        $project = $ticket->project; // Assuming the ticket has a `project` relationship
+        if (!$project->employees->contains($validated['employee_id'])) {
+            return redirect()->back()->with('error', 'The selected employee is not part of the project.');
+        }
+
+        // Assign the employee to the ticket
+        $ticket->assigned_to = $validated['employee_id'];
+        $ticket->save();
+
+        return redirect()->back()->with('success', 'Member assigned to the support ticket successfully.');
+    }
+
+
+    // function for change the ticket status from admin-side
+    public function changeStatus(Request $request, $id)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'status' => 'required|string|in:Open,In Progress,On Hold,Resolved',
+            ]);
+
+            // Debug: Log the request data
+            Log::info('Changing ticket status', ['ticket_id' => $id, 'status' => $request->input('status')]);
+
+            // Find the ticket
+            $ticket = SupportTicket::findOrFail($id);
+
+            // Update the status
+            $ticket->status = $request->input('status');
+            $ticket->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ticket status updated successfully.',
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket not found.',
+            ], 404);
+        } catch (Exception $e) {
+            Log::error('Error updating ticket status:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update ticket status.',
+            ], 500);
+        }
+    }
+
+
+    // function for closed the ticked from admin-side
+    public function closeSupportTicket($id)
+    {
+        $ticket = SupportTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.'
+            ], 404);
+        }
+
+        $ticket->status = 'Closed';
+        $ticket->save();
+
+        return response()->json([
+            'message' => 'Ticket status updated successfully.',
+            'ticket' => $ticket
+        ]);
+    }
+
+
 
 
 }

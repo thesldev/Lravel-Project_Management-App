@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
+use App\Http\Controllers\SupportTicketCommentController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
@@ -624,5 +625,66 @@ Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientVie
 Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatusClientSide'])
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.changeStatusClientSide');
+
+// route for update ticket from client-portal
+Route::put('/my-ticket/{id}/update', [SupportTicketController::class, 'updateMyTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.updateMyTicket');
+
+// Route for change the ticket priority form client-side
+Route::put('/my-ticket/{id}/change-priority', [SupportTicketController::class, 'myTicketPriority'])
+    ->middleware(['auth', 'verified', 'rolemanager:client', 'checkPortalAccess'])
+    ->name('ticket.myTicketPriority');
+
+// create comments for support-tickets, from client side
+Route::post('/support-tickets/{ticket}/clientComments', [SupportTicketCommentController::class, 'storeClientComment'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('comments.storeClientComment');
+
+// route for fetch support-ticket comments for client
+Route::get('/support-tickets/{ticketId}/comments', [SupportTicketCommentController::class, 'viewComments'])
+    ->middleware('auth', 'verified', )
+    ->name('comments.viewComments');
+
+// route for update the support ticket from client side
+Route::put('/supportTicket-comments/{commentId}', [SupportTicketCommentController::class, 'updateComment'])
+    ->middleware('auth', 'verified')
+    ->name('comments.updateComment');
+
+// route for delete support ticket comment
+Route::delete('/sup-ticket-comments/{commentId}', [SupportTicketCommentController::class, 'deleteComment'])
+    ->middleware('auth', 'verified')
+    ->name('comments.deleteComment');
+
+// create comments for support-tickets comments, from admin side
+Route::post('/support-tickets/{ticket}/adminComments', [SupportTicketCommentController::class, 'storeAdminComment'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.storeAdminComment');
+
+// route for update the support ticket comment from admin side
+Route::put('/sup-Ticket-update-comments-admin/{commentId}', [SupportTicketCommentController::class, 'updateCommentAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.updateCommentAdmin');
+
+// route for delete support ticket comment from admin side
+Route::delete('/sup-ticket-comments-delete-admin/{commentId}', [SupportTicketCommentController::class, 'deleteCommentAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.deleteCommentAdmin');
+
+// route for assign members into the support-tickets
+Route::post('/projects/{project}/assign-member', [SupportTicketController::class, 'assignMember'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('assign.assignMember');
+
+// route for change the ticket-status from admin-side
+Route::put('/support-ticket/{id}/change-status', [SupportTicketController::class, 'changeStatus'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin, employee'])
+    ->name('ticket.changeStatus');
+
+// route for change the support-ticket status into closed
+Route::put('/support-ticket/{id}/closed', [SupportTicketController::class, 'closeSupportTicket'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('ticket.closeSupportTicket');
+
 
 require __DIR__.'/auth.php';
