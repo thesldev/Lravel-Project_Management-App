@@ -120,7 +120,7 @@
                                 </p>
                                 <p class="mb-3">Due Date: <strong></strong></p>
                             </div>
-                            <form method="POST" action="{{ route('comments.storeAdmin', $ticket->id) }}">
+                            <form method="POST" action="{{ route('comments.storeClientComment', $ticket->id) }}">
                                 @csrf
                                 <div class="row mt-5">
                                     <h6 class="mb-3">Add a Comment:</h6>

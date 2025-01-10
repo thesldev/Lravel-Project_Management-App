@@ -13,6 +13,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
+use App\Http\Controllers\SupportTicketCommentController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TicketController;
@@ -635,8 +636,10 @@ Route::put('/my-ticket/{id}/change-priority', [SupportTicketController::class, '
     ->middleware(['auth', 'verified', 'rolemanager:client', 'checkPortalAccess'])
     ->name('ticket.myTicketPriority');
 
-
-
+// create comments for support-tickets, from client side
+Route::post('/support-tickets/{ticket}/clientComments', [SupportTicketCommentController::class, 'storeClientComment'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('comments.storeClientComment');
 
 
 require __DIR__.'/auth.php';
