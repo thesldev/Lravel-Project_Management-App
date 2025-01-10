@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 use function Pest\Laravel\json;
@@ -123,7 +124,7 @@ class SupportTicketController extends Controller
         }
     }
 
-    
+
     // function for access the client tickets in admin portal
     public function clientTickets(){
         return view('tickets.clientTickets');
@@ -192,26 +193,51 @@ class SupportTicketController extends Controller
 
 
     // function for update the ticket from client portal
-    public function updateMyTicket(Request $request, $id){
-        
+    public function updateMyTicket(Request $request, $id)
+    {
         // Validate the incoming request
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,docx|max:2048', 
+            'remove_attachments.*' => 'integer|exists:ticket_attachments,id', 
         ]);
 
         try {
             // Find the ticket by ID
             $ticket = SupportTicket::where('id', $id)
-                ->where('client_id', Auth::id()) // Ensures the ticket belongs to the authenticated user
+                ->where('client_id', Auth::id())
                 ->firstOrFail();
 
-    
             // Update the ticket details
             $ticket->title = $validated['title'];
             $ticket->description = $validated['description'];
             $ticket->save();
-    
+
+            // Handle attachment removal
+            if ($request->has('remove_attachments')) {
+                $attachmentsToRemove = $ticket->attachments()->whereIn('id', $request->remove_attachments)->get();
+
+                foreach ($attachmentsToRemove as $attachment) {
+                    // Delete file from storage
+                    Storage::disk('public')->delete($attachment->file_path);
+
+                    // Delete record from database
+                    $attachment->delete();
+                }
+            }
+
+            // Handle new attachments
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $filePath = $file->store('attachments', 'public');
+                    $ticket->attachments()->create([
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_path' => $filePath,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Ticket updated successfully.',
@@ -223,7 +249,6 @@ class SupportTicketController extends Controller
             ], 500);
         }
     }
-
 
     // function for change the priority from client-portal
     public function myTicketPriority(Request $request, $id)
