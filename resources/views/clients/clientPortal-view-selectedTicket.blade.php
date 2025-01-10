@@ -81,10 +81,17 @@
                                 <p>Ticket Title:<strong>{{ $ticket->title }}</strong></p>
 
                                 <!-- Ticket Priority -->
-                                <div class="col-md-3 me-3 ">
-                                    <p>Ticket Priority:<strong>{{ $ticket->priority }}</strong></p>
+                                <div class="col-md-3 me-3">
+                                    <p>Ticket Priority: 
+                                        <span class="badge 
+                                            {{ $ticket->priority === 'Critical' ? 'bg-danger' : '' }}
+                                            {{ $ticket->priority === 'High' ? 'bg-warning text-dark' : '' }}
+                                            {{ $ticket->priority === 'Medium' ? 'bg-primary' : '' }}
+                                            {{ $ticket->priority === 'Low' ? 'bg-secondary' : '' }}">
+                                            {{ $ticket->priority }}
+                                        </span>
+                                    </p>
                                 </div>
-
                                 <!-- Ticket Type -->
                                 <div class="col-md-3 me-3">
                                     <p>Ticket Type:<strong></strong> </p>
@@ -92,10 +99,18 @@
 
                                 <!-- Ticket Status -->
                                 <div class="col-md-3 me-3">
-                                    <p>Ticket Status:<strong>{{ $ticket->status}}</strong></p>
+                                    <p>Ticket Status: 
+                                        <span class="badge 
+                                            {{ $ticket->status === 'In Progress' ? 'bg-info text-dark' : '' }}
+                                            {{ $ticket->status === 'On Hold' ? 'bg-warning text-dark' : '' }}
+                                            {{ $ticket->status === 'Resolved' ? 'bg-success' : '' }}
+                                            {{ $ticket->status === 'Closed' ? 'bg-danger' : '' }}
+                                            {{ $ticket->status === 'Open' ? 'bg-secondary' : '' }}">
+                                            {{ $ticket->status }}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
-
                             <!-- Remaining Ticket Details -->
                             <div class="mt-2">    
                                 <p class="mb-3">Created By: <strong>{{ $ticket->client->name }}</strong></p>
