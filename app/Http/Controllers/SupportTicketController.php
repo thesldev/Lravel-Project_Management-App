@@ -281,4 +281,69 @@ class SupportTicketController extends Controller
     }
 
 
+    // function for change the ticket status from admin-side
+    public function changeStatus(Request $request, $id)
+    {
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'status' => 'required|string|in:Open,In Progress,On Hold,Resolved,Closed',
+            ]);
+
+            // Debug: Log the request data
+            Log::info('Changing ticket status', ['ticket_id' => $id, 'status' => $request->input('status')]);
+
+            // Find the ticket
+            $ticket = SupportTicket::findOrFail($id);
+
+            // Update the status
+            $ticket->status = $request->input('status');
+            $ticket->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ticket status updated successfully.',
+            ], 200);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket not found.',
+            ], 404);
+        } catch (Exception $e) {
+            Log::error('Error updating ticket status:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update ticket status.',
+            ], 500);
+        }
+    }
+
+
+    // function for closed the ticked from admin-side
+    public function closeSupportTicket($id)
+    {
+        $ticket = SupportTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket not found.'
+            ], 404);
+        }
+
+        $ticket->status = 'Closed';
+        $ticket->save();
+
+        return response()->json([
+            'message' => 'Ticket status updated successfully.',
+            'ticket' => $ticket
+        ]);
+    }
+
+
+
 }

@@ -676,5 +676,15 @@ Route::post('/projects/{project}/assign-member', [SupportTicketController::class
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('assign.assignMember');
 
+// route for change the ticket-status from admin-side
+Route::put('/support-ticket/{id}/change-status', [SupportTicketController::class, 'changeStatus'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin, employee'])
+    ->name('ticket.changeStatus');
+
+// route for change the support-ticket status into closed
+Route::put('/support-ticket/{id}/closed', [SupportTicketController::class, 'closeSupportTicket'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin'])
+    ->name('ticket.closeSupportTicket');
+
 
 require __DIR__.'/auth.php';

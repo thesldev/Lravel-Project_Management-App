@@ -19,6 +19,8 @@
     <link href="{{ asset('css/comments-styles.css') }}" rel="stylesheet" />
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet" />
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body id="page-top">
@@ -56,10 +58,19 @@
                                             <i class="bi bi-person-plus-fill"></i> Assign Member
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" id="changeStatusButton">
+                                    <li class="dropdown-item position-relative">
+                                        <a id="changeStatusButton">
                                             <i class="bi bi-arrow-repeat"></i> Change Status
                                         </a>
+                                        <!-- Status List -->
+                                        <div id="statusList" class="status-popup position-absolute d-none">
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="dropdown-item" data-status="Open">Open</li>
+                                                <li class="dropdown-item" data-status="In Progress">In Progress</li>
+                                                <li class="dropdown-item" data-status="On Hold">On Hold</li>
+                                                <li class="dropdown-item" data-status="Resolved">Resolved</li>
+                                            </ul>
+                                        </div>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" id="closeTicketButton">
@@ -67,7 +78,10 @@
                                         </a>
                                     </li>
                                 </ul>
+                                <!-- Hidden input to store ticket ID -->
+                                <input type="hidden" id="ticketId" name="id" value="{{ $ticket->id }}"><!-- Replace 12345 with dynamic ticket ID -->
                             </div>
+
                         </div>
                         <!-- display ticket data -->
                         <div class="card-body">
@@ -415,11 +429,77 @@
     </script>
 
     <script>
-        $(document).ready(function(){
-            $('.jspContainer').jScrollPane();
-        });
-    </script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Handle "Change Status" functionality
+            const changeStatusButton = document.getElementById('changeStatusButton');
+            const statusList = document.getElementById('statusList');
+            const statusItems = statusList.querySelectorAll('.dropdown-item');
 
+            // Show the status list when hovering over the "Change Status" button
+            changeStatusButton.addEventListener('mouseenter', function () {
+                statusList.classList.remove('d-none');
+            });
+
+            // Hide the status list after a short delay when the mouse leaves the button
+            changeStatusButton.addEventListener('mouseleave', function () {
+                setTimeout(() => {
+                    if (!statusList.matches(':hover')) {
+                        statusList.classList.add('d-none');
+                    }
+                }, 200);
+            });
+
+            // Ensure the status list stays visible when hovering over it
+            statusList.addEventListener('mouseenter', function () {
+                statusList.classList.remove('d-none');
+            });
+
+            // Hide the status list when the mouse leaves it
+            statusList.addEventListener('mouseleave', function () {
+                statusList.classList.add('d-none');
+            });
+
+            // Handle click events for each status item
+            statusItems.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    const selectedStatus = item.textContent.trim();
+                    const ticketId = document.getElementById('ticketId').value;
+
+                    // Confirmation alert
+                    if (confirm(`Are you sure you want to change the status to: ${selectedStatus}?`)) {
+                        updateTicketStatus(ticketId, selectedStatus);
+                    }
+                });
+            });
+        });
+
+        // Function to update the ticket status
+        async function updateTicketStatus(ticketId, status) {
+            try {
+                const response = await fetch(`/support-ticket/${ticketId}/change-status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ status }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Status updated to: ${status}`);
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert(`Failed to update status: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('An error occurred while updating the status.');
+            }
+        }
+
+    </script>
 
 </body>
 </html>
