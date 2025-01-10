@@ -287,7 +287,7 @@ class SupportTicketController extends Controller
         try {
             // Validate the incoming request
             $request->validate([
-                'status' => 'required|string|in:Open,In Progress,On Hold,Resolved,Closed',
+                'status' => 'required|string|in:Open,In Progress,On Hold,Resolved',
             ]);
 
             // Debug: Log the request data

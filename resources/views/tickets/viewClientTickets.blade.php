@@ -54,11 +54,11 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" id="assignMemberButton" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
+                                        <a class="dropdown-item {{ $ticket->status === 'Closed' ? 'disabled' : '' }}" id="assignMemberButton" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
                                             <i class="bi bi-person-plus-fill"></i> Assign Member
                                         </a>
                                     </li>
-                                    <li class="dropdown-item position-relative">
+                                    <li class="dropdown-item {{ $ticket->status === 'Closed' ? 'disabled' : '' }} position-relative ">
                                         <a id="changeStatusButton">
                                             <i class="bi bi-arrow-repeat"></i> Change Status
                                         </a>
@@ -73,7 +73,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" id="closeTicketButton" data-id="{{ $ticket->id }}">
+                                        <a class="dropdown-item {{ $ticket->status === 'Closed' ? 'disabled' : '' }}" id="closeTicketButton" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-x-circle-fill"></i> Close Ticket
                                         </a>
                                     </li>
