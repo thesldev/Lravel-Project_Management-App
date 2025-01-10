@@ -58,16 +58,16 @@
                                         </a>
                                     </li>
                                     <li class="dropdown-item position-relative">
-                                        <a href="#" id="changeStatusButton">
+                                        <a href="#" id="changePriorityButton">
                                             <i class="bi bi-arrow-clockwise"></i> Change Status
                                         </a>
                                         <!-- Status List -->
-                                        <div id="statusList" class="status-popup position-absolute d-none">
+                                        <div id="priorityList" class="status-popup position-absolute d-none">
                                             <ul class="list-unstyled mb-0">
-                                                <li class="dropdown-item" data-status="Open">Open</li>
-                                                <li class="dropdown-item" data-status="On Hold">On Hold</li>
-                                                <li class="dropdown-item" data-status="Resolved">Resolved</li>
-                                                <li class="dropdown-item" data-status="Closed">Closed</li>
+                                                <li class="dropdown-item" data-status="Open">Low</li>
+                                                <li class="dropdown-item" data-status="On Hold">Medium</li>
+                                                <li class="dropdown-item" data-status="Resolved">High</li>
+                                                <li class="dropdown-item" data-status="Closed">Critical</li>
                                             </ul>
                                         </div>
                                     </li>
@@ -215,77 +215,74 @@
                 updateTicketModal.show(); // Show the modal
             });
 
-            // Handle "Change Status" functionality
-            const changeStatusButton = document.getElementById('changeStatusButton');
-            const statusList = document.getElementById('statusList');
-            const statusItems = statusList.querySelectorAll('.dropdown-item');
+            // Handle "Change Priority" functionality
+            const changePriorityButton = document.getElementById('changePriorityButton');
+            const priorityList = document.getElementById('priorityList');
+            const priorityItems = priorityList.querySelectorAll('.dropdown-item');
 
-            // Show the status list when hovering over the "Change Status" button
-            changeStatusButton.addEventListener('mouseenter', function () {
-                statusList.classList.remove('d-none');
+            // Show the priority list when hovering over the "Change Priority" button
+            changePriorityButton.addEventListener('mouseenter', function () {
+                priorityList.classList.remove('d-none');
             });
 
-            // Hide the status list after a short delay when the mouse leaves the button
-            changeStatusButton.addEventListener('mouseleave', function () {
+            // Hide the priority list after a short delay when the mouse leaves the button
+            changePriorityButton.addEventListener('mouseleave', function () {
                 setTimeout(() => {
-                    if (!statusList.matches(':hover')) {
-                        statusList.classList.add('d-none');
+                    if (!priorityList.matches(':hover')) {
+                        priorityList.classList.add('d-none');
                     }
                 }, 200);
             });
 
-            // Ensure the status list stays visible when hovering over it
-            statusList.addEventListener('mouseenter', function () {
-                statusList.classList.remove('d-none');
+            // Ensure the priority list stays visible when hovering over it
+            priorityList.addEventListener('mouseenter', function () {
+                priorityList.classList.remove('d-none');
             });
 
-            // Hide the status list when the mouse leaves it
-            statusList.addEventListener('mouseleave', function () {
-                statusList.classList.add('d-none');
+            // Hide the priority list when the mouse leaves it
+            priorityList.addEventListener('mouseleave', function () {
+                priorityList.classList.add('d-none');
             });
 
-           // Handle click events for each status item
-            statusItems.forEach(function (item) {
+            // Handle click events for each priority item
+            priorityItems.forEach(function (item) {
                 item.addEventListener('click', function () {
-                    const selectedStatus = item.textContent.trim();
+                    const selectedPriority = item.textContent.trim();
+                    const ticketId = document.getElementById('ticketId').value;
 
-                    // Display confirmation alert
-                    if (confirm(`Are you sure you want to change the status to: ${selectedStatus}?`)) {
-                        // Add your custom logic for changing the ticket status
-                        updateTicketStatus(selectedStatus);
+                    // Confirmation alert
+                    if (confirm(`Are you sure you want to change the priority to: ${selectedPriority}?`)) {
+                        updateTicketPriority(ticketId, selectedPriority);
                     }
                 });
             });
-
         });
 
-        // Function to update the ticket status
-        async function updateTicketStatus(status) {
-            const ticketId = document.getElementById('ticketId').value; // Assuming there's a hidden input for ticket ID
+        // Function to update the ticket priority
+        async function updateTicketPriority(ticketId, priority) {
             try {
-                const response = await fetch(`/my-ticket/${ticketId}/change-status`, {
+                const response = await fetch(`/my-ticket/${ticketId}/change-priority`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     },
-                    body: JSON.stringify({ status }),
+                    body: JSON.stringify({ priority }),
                 });
 
                 const result = await response.json();
 
                 if (result.success) {
-                    alert(`Status updated to: ${status}`);
+                    alert(`Priority updated to: ${priority}`);
                     location.reload(); // Reload the page to reflect changes
                 } else {
-                    alert(`Failed to update status: ${result.message}`);
+                    alert(`Failed to update priority: ${result.message}`);
                 }
             } catch (error) {
-                console.error('Error updating status:', error);
-                alert('An error occurred while updating the status.');
+                console.error('Error updating priority:', error);
+                alert('An error occurred while updating the priority.');
             }
         }
-
 
         // Function to save ticket changes
         async function saveTicketChanges() {
@@ -319,14 +316,6 @@
             }
         }
     </script>
-
-
-    <script>
-        $(document).ready(function(){
-            $('.jspContainer').jScrollPane();
-        });
-    </script>
-
 
 </body>
 </html>

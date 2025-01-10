@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\SupportTicket;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 use function Pest\Laravel\json;
 
@@ -206,43 +209,47 @@ class SupportTicketController extends Controller
     }
 
 
-    // function for change the status from client-portal
-    public function myTicketStatus(Request $request, $id)
+    // function for change the priority from client-portal
+    public function myTicketPriority(Request $request, $id)
     {
-        // Validate the incoming request
-        $request->validate([
-            'status' => 'required|string|in:Open,In Progress,On Hold,Resolved,Closed',
-        ]);
-
         try {
+            // Validate the incoming request
+            $request->validate([
+                'priority' => 'required|string|in:Low,Medium,High,Critical',
+            ]);
+
+            // Debug: Log the request data
+            Log::info('Changing ticket priority', ['ticket_id' => $id, 'priority' => $request->input('priority')]);
+
             // Find the ticket and ensure it belongs to the logged-in user
             $ticket = SupportTicket::where('id', $id)->where('client_id', Auth::id())->firstOrFail();
 
-            // Update the status
-            $ticket->status = $request->input('status');
+            // Update the priority
+            $ticket->priority = $request->input('priority');
             $ticket->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Ticket status updated successfully.',
+                'message' => 'Ticket priority updated successfully.',
             ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Handle case where ticket is not found or does not belong to the user
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ticket not found or you do not have permission to update this ticket.',
+                'message' => $e->errors(),
+            ], 422);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket not found or unauthorized.',
             ], 404);
-        } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Error updating ticket status:', ['error' => $e->getMessage()]);
-
+        } catch (Exception $e) {
+            Log::error('Error updating ticket priority:', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update ticket status.',
+                'message' => 'Failed to update ticket priority.',
             ], 500);
         }
     }
-
 
 
 

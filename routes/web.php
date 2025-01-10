@@ -630,10 +630,12 @@ Route::put('/my-ticket/{id}/update', [SupportTicketController::class, 'updateMyT
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.updateMyTicket');
 
-// route for change the ticket status form client-side
-Route::put('/my-ticket/{id}/change-status', [SupportTicketController::class, 'myTicketStatus'])
-    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
-    ->name('ticket.myTicketStatus');
+// Route for change the ticket priority form client-side
+Route::put('/my-ticket/{id}/change-priority', [SupportTicketController::class, 'myTicketPriority'])
+    ->middleware(['auth', 'verified', 'rolemanager:client', 'checkPortalAccess'])
+    ->name('ticket.myTicketPriority');
+
+
 
 
 
