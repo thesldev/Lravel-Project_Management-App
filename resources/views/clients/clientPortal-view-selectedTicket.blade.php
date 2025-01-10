@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
 
@@ -26,7 +26,7 @@
     <div id="wrapper">
 
         <!-- Include Sidebar -->
-        <x-side-bar />
+        <x-client-side-bar />
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -45,6 +45,24 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Ticket #{{ $ticket->id }} Information | Created At: {{ $ticket->created_at }}</h6>
+                            <!-- Dropdown Button -->
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <a class="dropdown-item" href="" id="updateTicketButton">
+                                            <i class="bi bi-file-earmark-break-fill"></i> Update Ticket
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bi bi-arrow-clockwise"></i> Change Status
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <!-- display ticket data -->
                         <div class="card-body">
@@ -125,6 +143,38 @@
     </div>
     <!-- End of Wrapper -->
 
+    <!-- Update Ticket Modal -->
+    <div class="modal fade" id="updateTicketModal" tabindex="-1" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket #{{ $ticket->id }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form id="updateTicketForm">
+                        <div class="mb-3">
+                            <label for="ticketTitle" class="form-label">Ticket Title</label>
+                            <input type="text" class="form-control" id="ticketTitle" name="title" value="{{ $ticket->title }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ticketDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="ticketDescription" name="description" rows="8" required>{{ $ticket->description }}</textarea>
+                        </div>
+                        <input type="hidden" id="ticketId" name="id" value="{{ $ticket->id }}">
+                    </form>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTicketChanges()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
@@ -144,183 +194,54 @@
     <!-- Font Awesome (optional, for icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-    <!-- script for display the comments related to the ticket -->
+    <!-- script for handle the ticket details -->
     <script>
+        // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function () {
-        const ticketId = JSON.parse('@json($ticket->id)');
-        
-        fetch(`/tickets/${ticketId}/adminComments`)
-            .then(response => response.json())
-            .then(comments => {
-                const container = document.getElementById('comments-container');
-                if (comments.length === 0) {
-                    const noCommentsMessage = document.createElement('p');
-                    noCommentsMessage.classList.add('text-center', 'text-muted');
-                    noCommentsMessage.textContent = 'No comments yet.';
-                    container.appendChild(noCommentsMessage);
-                } else {
-                    comments.forEach(comment => {
-                        const li = document.createElement('li');
-                        li.classList.add('ks-item', 'd-flex', 'mb-3');
+            // Get the button and add a click event listener
+            const updateTicketButton = document.getElementById('updateTicketButton');
+            
+            updateTicketButton.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default link behavior
+                const updateTicketModal = new bootstrap.Modal(document.getElementById('updateTicketModal'));
+                updateTicketModal.show(); // Show the modal
+            });
+        });
 
-                        // Check if the current user is the comment owner
-                        const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
+        // function for update the ticket details
+        async function saveTicketChanges() {
+            const form = document.getElementById('updateTicketForm');
+            const ticketId = document.getElementById('ticketId').value;
 
-                        // Create the profile image and comment structure
-                        const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
-                        li.innerHTML = `
-                            <div class="ks-avatar me-2">
-                                <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
-                            </div>
-                            <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
-                                <div class="ks-header d-flex justify-content-between align-items-center">          
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">Commented By:</span>
-                                        <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
-                                    </div>
-                                    <span class="ks-datetime">
-                                        ${new Date(comment.created_at).toLocaleString()}
-                                        ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
-                                    </span>
-                                </div>
-                                <div class="ks-body mt-1">
-                                    <p>${comment.content}</p>
-                                </div>
-                                <div class="ks-footer mt-2">
-                                    <div class="btn-group">
-                                        ${isOwner ? `
-                                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
-                                                <i class="bi bi-pencil"></i> Update
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        ` : ''}
-                                        <button class="btn btn-outline-info btn-sm">
-                                            <i class="bi bi-reply"></i> Reply
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(li);
-                    });
-                }
-            })
-            .catch(error => console.error('Error fetching comments:', error));
-    });
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
 
-       // Placeholder functions for comment actions
-       function updateComment(commentId) {
-            console.log('Update comment with ID:', commentId);
-            // Implement the update logic
-        }
-
-        // function for delete the comment
-        function deleteComment(commentId) {
-            if (confirm('Are you sure you want to delete this comment?')) {
-                fetch(`/comments/${commentId}`, {
-                    method: 'DELETE',
+            try {
+                const response = await fetch(`/my-ticket/${ticketId}/update`, {
+                    method: 'PUT',
                     headers: {
+                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json'
                     },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Comment deleted successfully.');
-                        // Optionally remove the comment from the DOM
-                        document.getElementById(`comment-${commentId}`).remove();
-                    } else {
-                        alert('Error: ' + data.error);
-                    }
-                })
-                .catch(error => console.error('Error deleting comment:', error));
-            }
-        }
+                    body: JSON.stringify(data),
+                });
 
-        // Function to handle the update button click
-        function updateComment(commentId) {
-            const commentElement = document.getElementById(`comment-${commentId}`);
-            const commentContent = commentElement.querySelector('.ks-body p');
+                const result = await response.json();
 
-            // Convert the comment content into an editable text area
-            const editableContent = document.createElement('textarea');
-            editableContent.classList.add('form-control');
-            editableContent.style.width = '100%';
-            editableContent.style.height = '100px';
-            editableContent.value = commentContent.textContent.trim();
-
-            // Replace the paragraph with the editable text area
-            commentContent.replaceWith(editableContent);
-
-            // Hide existing buttons and show the 'Save changes' button
-            const footer = commentElement.querySelector('.ks-footer');
-            footer.innerHTML = `
-                <button class="btn btn-outline-success btn-sm" onclick="saveComment(${commentId}, this)">
-                    <i class="bi bi-save"></i> Save changes
-                </button>
-            `;
-        }
-
-        // Function to handle saving the comment changes
-        function saveComment(commentId, buttonElement) {
-            const commentElement = document.getElementById(`comment-${commentId}`);
-            const editableContent = commentElement.querySelector('textarea');
-
-            if (!editableContent) {
-                console.error('Error: Editable content not found');
-                return;
-            }
-
-            // Get the new content from the textarea
-            const newContent = editableContent.value.trim();
-
-            if (newContent === '') {
-                alert('Comment content cannot be empty.');
-                return;
-            }
-
-            fetch(`/comments/${commentId}`, {
-                method: 'PUT',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ content: newContent })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Comment updated successfully.');
-
-                    // Replace the textarea with the updated content
-                    const updatedCommentContent = document.createElement('p');
-                    updatedCommentContent.textContent = newContent;
-                    editableContent.replaceWith(updatedCommentContent);
-
-                    // Replace the 'Save changes' button with the original buttons
-                    buttonElement.closest('.ks-footer').innerHTML = `
-                        <div class="btn-group">
-                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${commentId})">
-                                <i class="bi bi-pencil"></i> Update
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${commentId})">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                            <button class="btn btn-outline-info btn-sm">
-                                <i class="bi bi-reply"></i> Reply
-                            </button>
-                        </div>
-                    `;
+                if (result.success) {
+                    alert(result.message);
+                    location.reload(); // Reload the page to reflect changes
                 } else {
-                    alert('Error: ' + data.error);
+                    alert(result.message);
                 }
-            })
-            .catch(error => console.error('Error updating comment:', error));
+            } catch (error) {
+                console.error('Error updating ticket:', error);
+                alert('An error occurred while updating the ticket.');
+            }
         }
 
+        // function for change the status
+        
     </script>
 
     <script>

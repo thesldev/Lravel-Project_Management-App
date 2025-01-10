@@ -625,4 +625,9 @@ Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatus
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.changeStatusClientSide');
 
+// route for update ticket from client-portal
+Route::put('/my-ticket/{id}/update', [SupportTicketController::class, 'updateMyTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.updateMyTicket');
+
 require __DIR__.'/auth.php';

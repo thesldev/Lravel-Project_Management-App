@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use function Pest\Laravel\json;
 
@@ -167,6 +168,40 @@ class SupportTicketController extends Controller
             'message' => 'Ticket status updated successfully.',
             'ticket' => $ticket
         ]);
+    }
+
+
+    // function for update the ticket from client portal
+    public function updateMyTicket(Request $request, $id){
+        
+        // Validate the incoming request
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        try {
+            // Find the ticket by ID
+            $ticket = SupportTicket::where('id', $id)
+                ->where('client_id', Auth::id()) // Ensures the ticket belongs to the authenticated user
+                ->firstOrFail();
+
+    
+            // Update the ticket details
+            $ticket->title = $validated['title'];
+            $ticket->description = $validated['description'];
+            $ticket->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Ticket updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating ticket: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
 
