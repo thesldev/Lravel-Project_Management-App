@@ -437,7 +437,7 @@
                 return;
             }
 
-            fetch(`/comments/${commentId}`, {
+            fetch(`/supportTicket-comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -477,7 +477,7 @@
         // Function to delete a comment
         function deleteComment(commentId) {
             if (confirm('Are you sure you want to delete this comment?')) {
-                fetch(`/comments/${commentId}`, {
+                fetch(`/sup-ticket-comments/${commentId}`, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

@@ -643,7 +643,17 @@ Route::post('/support-tickets/{ticket}/clientComments', [SupportTicketCommentCon
 
 // route for fetch support-ticket comments for client
 Route::get('/support-tickets/{ticketId}/comments', [SupportTicketCommentController::class, 'viewComments'])
-    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->middleware('auth', 'verified', )
     ->name('comments.viewComments');
+
+// route for update the support ticket
+Route::put('/supportTicket-comments/{commentId}', [SupportTicketCommentController::class, 'updateComment'])
+    ->middleware('auth', 'verified')
+    ->name('comments.updateComment');
+
+// route for delete support ticket comment
+Route::delete('/sup-ticket-comments/{commentId}', [SupportTicketCommentController::class, 'deleteComment'])
+    ->middleware('auth', 'verified')
+    ->name('comments.deleteComment');
 
 require __DIR__.'/auth.php';

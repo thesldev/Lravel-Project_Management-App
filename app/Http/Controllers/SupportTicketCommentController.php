@@ -36,7 +36,6 @@ class SupportTicketCommentController extends Controller
         return redirect()->back()->with('success', 'Your comment has been added successfully.');
     }
 
-
     // function for fetch comments related to the ticket
     public function viewComments(Request $request, $ticketId)
     {
@@ -58,6 +57,74 @@ class SupportTicketCommentController extends Controller
 
         // Return comments in JSON format
         return response()->json($comments, 200);
+    }
+
+    // function for update support ticket comments
+    public function updateComment(Request $request, $commentId)
+    {
+        // Find the comment by ID
+        $comment = SupportTicketComment::find($commentId);
+
+        if (!$comment) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Comment not found.',
+            ], 404);
+        }
+
+        // Check if the current user is the owner of the comment or has the necessary permissions
+        if ($comment->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'You are not authorized to update this comment.',
+            ], 403);
+        }
+
+        // Validate the incoming content
+        $validatedData = $request->validate([
+            'content' => 'required|string|max:5000',
+        ]);
+
+        // Update the comment content
+        $comment->content = $validatedData['content'];
+        $comment->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment updated successfully.',
+            'content' => $comment->content,  // Send the updated content back
+        ]);
+    }
+
+
+    // function for delete support ticket
+    public function deleteComment($commentId)
+    {
+        // Find the comment by ID
+        $comment = SupportTicketComment::find($commentId);
+
+        if (!$comment) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Comment not found.',
+            ], 404);
+        }
+
+        // Check if the current user is the owner of the comment or has the necessary permissions
+        if ($comment->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'You are not authorized to delete this comment.',
+            ], 403);
+        }
+
+        // Delete the comment
+        $comment->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment deleted successfully.',
+        ]);
     }
 
 }
