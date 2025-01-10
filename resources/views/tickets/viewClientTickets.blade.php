@@ -73,7 +73,7 @@
                                         </div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" id="closeTicketButton">
+                                        <a class="dropdown-item" id="closeTicketButton" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-x-circle-fill"></i> Close Ticket
                                         </a>
                                     </li>
@@ -498,6 +498,43 @@
                 alert('An error occurred while updating the status.');
             }
         }
+
+        // functions for close the ticket 
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeTicketButton = document.querySelector('#closeTicketButton');
+
+            closeTicketButton.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const ticketId = this.getAttribute('data-id');
+                const confirmation = confirm('Are you sure you want to close this ticket?');
+
+                if (confirmation) {
+                    fetch(`/support-ticket/${ticketId}/closed`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert(data.message);
+                            // Optionally reload the page or update the ticket status dynamically
+                            location.reload();
+                        } else {
+                            alert('An error occurred.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred.');
+                    });
+                }
+            });
+        });
+
 
     </script>
 
