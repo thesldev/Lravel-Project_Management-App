@@ -94,7 +94,7 @@
                                     <p>Due Date: <strong>{{ $ticket->due_date }}</strong></p>
                                 </div>
                             </div>
-                            <form method="POST" action="{{ route('comments.storeAdmin', $ticket->id) }}">
+                            <form method="POST" action="{{ route('comments.storeAdminComment', $ticket->id) }}">
                                 @csrf
                                 <div class="row mt-5">
                                     <h6 class="mb-3">Add a Comment:</h6>
@@ -165,115 +165,83 @@
     <!-- script for display the comments related to the ticket -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        const ticketId = JSON.parse('@json($ticket->id)');
-        
-        fetch(`/tickets/${ticketId}/adminComments`)
-            .then(response => response.json())
-            .then(comments => {
-                const container = document.getElementById('comments-container');
-                if (comments.length === 0) {
-                    const noCommentsMessage = document.createElement('p');
-                    noCommentsMessage.classList.add('text-center', 'text-muted');
-                    noCommentsMessage.textContent = 'No comments yet.';
-                    container.appendChild(noCommentsMessage);
-                } else {
-                    comments.forEach(comment => {
-                        const li = document.createElement('li');
-                        li.classList.add('ks-item', 'd-flex', 'mb-3');
+            const ticketId = JSON.parse('@json($ticket->id)');
 
-                        // Check if the current user is the comment owner
-                        const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
-
-                        // Create the profile image and comment structure
-                        const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
-                        li.innerHTML = `
-                            <div class="ks-avatar me-2">
-                                <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
-                            </div>
-                            <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
-                                <div class="ks-header d-flex justify-content-between align-items-center">          
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">Commented By:</span>
-                                        <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
-                                    </div>
-                                    <span class="ks-datetime">
-                                        ${new Date(comment.created_at).toLocaleString()}
-                                        ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
-                                    </span>
-                                </div>
-                                <div class="ks-body mt-1">
-                                    <p>${comment.content}</p>
-                                </div>
-                                <div class="ks-footer mt-2">
-                                    <div class="btn-group">
-                                        ${isOwner ? `
-                                            <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
-                                                <i class="bi bi-pencil"></i> Update
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        ` : ''}
-                                        <button class="btn btn-outline-info btn-sm">
-                                            <i class="bi bi-reply"></i> Reply
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(li);
-                    });
-                }
-            })
-            .catch(error => console.error('Error fetching comments:', error));
-    });
-
-       // Placeholder functions for comment actions
-       function updateComment(commentId) {
-            console.log('Update comment with ID:', commentId);
-            // Implement the update logic
-        }
-
-        // function for delete the comment
-        function deleteComment(commentId) {
-            if (confirm('Are you sure you want to delete this comment?')) {
-                fetch(`/comments/${commentId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json'
-                    },
-                })
+            // Fetch comments for the support ticket
+            fetch(`/support-tickets/${ticketId}/comments`)
                 .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Comment deleted successfully.');
-                        // Optionally remove the comment from the DOM
-                        document.getElementById(`comment-${commentId}`).remove();
+                .then(comments => {
+                    const container = document.getElementById('comments-container');
+                    if (comments.length === 0) {
+                        const noCommentsMessage = document.createElement('p');
+                        noCommentsMessage.classList.add('text-center', 'text-muted');
+                        noCommentsMessage.textContent = 'No comments yet.';
+                        container.appendChild(noCommentsMessage);
                     } else {
-                        alert('Error: ' + data.error);
+                        comments.forEach(comment => {
+                            const li = document.createElement('li');
+                            li.classList.add('ks-item', 'd-flex', 'mb-3');
+
+                            // Check if the current user is the comment owner
+                            const isOwner = comment.user?.id === JSON.parse('@json(Auth::id())');
+
+                            // Create the profile image and comment structure
+                            const avatarSrc = comment.user?.profile_picture || 'https://bootdey.com/img/Content/avatar/avatar1.png';
+                            li.innerHTML = `
+                                <div class="ks-avatar me-2">
+                                    <img src="${avatarSrc}" width="50" height="50" class="rounded-circle" alt="${comment.user?.name || 'User'}">
+                                </div>
+                                <div class="ks-comment-box flex-grow-1" id="comment-${comment.id}">
+                                    <div class="ks-header d-flex justify-content-between align-items-center">          
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">Commented By:</span>
+                                            <span class="ks-name fw-bold">${comment.user?.name || 'Unknown User'}</span>
+                                        </div>
+                                        <span class="ks-datetime">
+                                            ${new Date(comment.created_at).toLocaleString()}
+                                            ${comment.updated_at && comment.created_at !== comment.updated_at ? `<small class="text-muted"> (Updated)</small>` : ''}
+                                        </span>
+                                    </div>
+                                    <div class="ks-body mt-1">
+                                        <p>${comment.content}</p>
+                                    </div>
+                                    <div class="ks-footer mt-2">
+                                        <div class="btn-group">
+                                            ${isOwner ? `
+                                                <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${comment.id})">
+                                                    <i class="bi bi-pencil"></i> Update
+                                                </button>
+                                                <button class="btn btn-outline-danger btn-sm" onclick="deleteComment(${comment.id})">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            ` : ''}
+                                            <button class="btn btn-outline-info btn-sm">
+                                                <i class="bi bi-reply"></i> Reply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.appendChild(li);
+                        });
                     }
                 })
-                .catch(error => console.error('Error deleting comment:', error));
-            }
-        }
+                .catch(error => console.error('Error fetching comments:', error));
+        });
 
-        // Function to handle the update button click
+        // Function to handle updating a comment
         function updateComment(commentId) {
             const commentElement = document.getElementById(`comment-${commentId}`);
             const commentContent = commentElement.querySelector('.ks-body p');
 
-            // Convert the comment content into an editable text area
             const editableContent = document.createElement('textarea');
             editableContent.classList.add('form-control');
             editableContent.style.width = '100%';
             editableContent.style.height = '100px';
             editableContent.value = commentContent.textContent.trim();
 
-            // Replace the paragraph with the editable text area
             commentContent.replaceWith(editableContent);
 
-            // Hide existing buttons and show the 'Save changes' button
             const footer = commentElement.querySelector('.ks-footer');
             footer.innerHTML = `
                 <button class="btn btn-outline-success btn-sm" onclick="saveComment(${commentId}, this)">
@@ -282,7 +250,7 @@
             `;
         }
 
-        // Function to handle saving the comment changes
+        // Function to save updated comment content
         function saveComment(commentId, buttonElement) {
             const commentElement = document.getElementById(`comment-${commentId}`);
             const editableContent = commentElement.querySelector('textarea');
@@ -292,7 +260,6 @@
                 return;
             }
 
-            // Get the new content from the textarea
             const newContent = editableContent.value.trim();
 
             if (newContent === '') {
@@ -300,7 +267,7 @@
                 return;
             }
 
-            fetch(`/comments/${commentId}`, {
+            fetch(`/sup-Ticket-update-comments-admin/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -313,12 +280,10 @@
                 if (data.success) {
                     alert('Comment updated successfully.');
 
-                    // Replace the textarea with the updated content
                     const updatedCommentContent = document.createElement('p');
                     updatedCommentContent.textContent = newContent;
                     editableContent.replaceWith(updatedCommentContent);
 
-                    // Replace the 'Save changes' button with the original buttons
                     buttonElement.closest('.ks-footer').innerHTML = `
                         <div class="btn-group">
                             <button class="btn btn-outline-primary btn-sm" onclick="updateComment(${commentId})">
@@ -339,6 +304,28 @@
             .catch(error => console.error('Error updating comment:', error));
         }
 
+        // Function to delete a comment
+        function deleteComment(commentId) {
+            if (confirm('Are you sure you want to delete this comment?')) {
+                fetch(`/sup-ticket-comments-delete-admin/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment deleted successfully.');
+                        document.getElementById(`comment-${commentId}`).remove();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error deleting comment:', error));
+            }
+        }
     </script>
 
     <script>

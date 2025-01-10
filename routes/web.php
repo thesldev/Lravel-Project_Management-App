@@ -646,7 +646,7 @@ Route::get('/support-tickets/{ticketId}/comments', [SupportTicketCommentControll
     ->middleware('auth', 'verified', )
     ->name('comments.viewComments');
 
-// route for update the support ticket
+// route for update the support ticket from client side
 Route::put('/supportTicket-comments/{commentId}', [SupportTicketCommentController::class, 'updateComment'])
     ->middleware('auth', 'verified')
     ->name('comments.updateComment');
@@ -655,5 +655,20 @@ Route::put('/supportTicket-comments/{commentId}', [SupportTicketCommentControlle
 Route::delete('/sup-ticket-comments/{commentId}', [SupportTicketCommentController::class, 'deleteComment'])
     ->middleware('auth', 'verified')
     ->name('comments.deleteComment');
+
+// create comments for support-tickets comments, from admin side
+Route::post('/support-tickets/{ticket}/adminComments', [SupportTicketCommentController::class, 'storeAdminComment'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.storeAdminComment');
+
+// route for update the support ticket comment from admin side
+Route::put('/sup-Ticket-update-comments-admin/{commentId}', [SupportTicketCommentController::class, 'updateCommentAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.updateCommentAdmin');
+
+// route for delete support ticket comment from admin side
+Route::delete('/sup-ticket-comments-delete-admin/{commentId}', [SupportTicketCommentController::class, 'deleteCommentAdmin'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('comments.deleteCommentAdmin');
 
 require __DIR__.'/auth.php';
