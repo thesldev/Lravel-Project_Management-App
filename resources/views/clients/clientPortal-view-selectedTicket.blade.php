@@ -15,10 +15,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet" />
 
-    <link href="{{ asset('css/comments-styles.css') }}" rel="stylesheet" />
     <!-- jQuery (necessary for AJAX) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body id="page-top">
@@ -56,10 +57,19 @@
                                             <i class="bi bi-file-earmark-break-fill"></i> Update Ticket
                                         </a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
+                                    <li class="dropdown-item position-relative">
+                                        <a href="#" id="changeStatusButton">
                                             <i class="bi bi-arrow-clockwise"></i> Change Status
                                         </a>
+                                        <!-- Status List -->
+                                        <div id="statusList" class="status-popup position-absolute d-none">
+                                            <ul class="list-unstyled mb-0">
+                                                <li class="dropdown-item" data-status="Open">Open</li>
+                                                <li class="dropdown-item" data-status="On Hold">On Hold</li>
+                                                <li class="dropdown-item" data-status="Resolved">Resolved</li>
+                                                <li class="dropdown-item" data-status="Closed">Closed</li>
+                                            </ul>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
@@ -92,8 +102,6 @@
                                 <p class="mb-3">Ticket Description: <strong>{{ $ticket->description }}</strong></p>
                                 <p class="mb-3">
                                     Project Name: <strong>{{ $ticket->project->name }}</strong>
-                                    <span class="mx-3">|</span>
-                                    Priority: <strong>{{ $ticket->project->priority }}</strong>
                                 </p>
                                 <p class="mb-3">Due Date: <strong></strong></p>
                             </div>
@@ -194,21 +202,92 @@
     <!-- Font Awesome (optional, for icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-    <!-- script for handle the ticket details -->
+    <!-- script for handling the ticket details -->
     <script>
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function () {
-            // Get the button and add a click event listener
+            // Handle "Update Ticket" button click
             const updateTicketButton = document.getElementById('updateTicketButton');
-            
+
             updateTicketButton.addEventListener('click', function (event) {
                 event.preventDefault(); // Prevent default link behavior
                 const updateTicketModal = new bootstrap.Modal(document.getElementById('updateTicketModal'));
                 updateTicketModal.show(); // Show the modal
             });
+
+            // Handle "Change Status" functionality
+            const changeStatusButton = document.getElementById('changeStatusButton');
+            const statusList = document.getElementById('statusList');
+            const statusItems = statusList.querySelectorAll('.dropdown-item');
+
+            // Show the status list when hovering over the "Change Status" button
+            changeStatusButton.addEventListener('mouseenter', function () {
+                statusList.classList.remove('d-none');
+            });
+
+            // Hide the status list after a short delay when the mouse leaves the button
+            changeStatusButton.addEventListener('mouseleave', function () {
+                setTimeout(() => {
+                    if (!statusList.matches(':hover')) {
+                        statusList.classList.add('d-none');
+                    }
+                }, 200);
+            });
+
+            // Ensure the status list stays visible when hovering over it
+            statusList.addEventListener('mouseenter', function () {
+                statusList.classList.remove('d-none');
+            });
+
+            // Hide the status list when the mouse leaves it
+            statusList.addEventListener('mouseleave', function () {
+                statusList.classList.add('d-none');
+            });
+
+           // Handle click events for each status item
+            statusItems.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    const selectedStatus = item.textContent.trim();
+
+                    // Display confirmation alert
+                    if (confirm(`Are you sure you want to change the status to: ${selectedStatus}?`)) {
+                        // Add your custom logic for changing the ticket status
+                        updateTicketStatus(selectedStatus);
+                    }
+                });
+            });
+
         });
 
-        // function for update the ticket details
+        // Function to update the ticket status
+        async function updateTicketStatus(status) {
+            const ticketId = document.getElementById('ticketId').value; // Assuming there's a hidden input for ticket ID
+            try {
+                const response = await fetch(`/my-ticket/${ticketId}/change-status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ status }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Status updated to: ${status}`);
+                    location.reload(); // Reload the page to reflect changes
+                } else {
+                    alert(`Failed to update status: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('An error occurred while updating the status.');
+            }
+        }
+
+
+        // Function to save ticket changes
         async function saveTicketChanges() {
             const form = document.getElementById('updateTicketForm');
             const ticketId = document.getElementById('ticketId').value;
@@ -239,10 +318,8 @@
                 alert('An error occurred while updating the ticket.');
             }
         }
-
-        // function for change the status
-        
     </script>
+
 
     <script>
         $(document).ready(function(){
