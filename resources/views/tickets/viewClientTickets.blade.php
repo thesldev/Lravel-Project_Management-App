@@ -158,6 +158,35 @@
                                     </p>
                                 </div>
                             </div>
+
+                            <!-- Attachments Section -->
+                            <div class="mt-4">
+                                <h6>Attachments:</h6>
+                                @if($ticket->attachments->isEmpty())
+                                    <p>No attachments available for this ticket.</p>
+                                @else
+                                    <ul class="list-group">
+                                        @foreach($ticket->attachments as $attachment)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>{{ $attachment->file_name }}</span>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                    class="btn btn-sm btn-outline-primary" 
+                                                    target="_blank">
+                                                        View
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                    class="btn btn-sm btn-outline-primary" 
+                                                    download="{{ $attachment->file_name }}">
+                                                        Download
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>   
+                            
                             <form method="POST" action="{{ route('comments.storeAdminComment', $ticket->id) }}">
                                 @csrf
                                 <div class="row mt-5">

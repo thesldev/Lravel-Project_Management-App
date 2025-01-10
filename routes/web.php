@@ -627,7 +627,7 @@ Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatus
     ->name('ticket.changeStatusClientSide');
 
 // route for update ticket from client-portal
-Route::put('/my-ticket/{id}/update', [SupportTicketController::class, 'updateMyTicket'])
+Route::post('/my-ticket/{id}/update', [SupportTicketController::class, 'updateMyTicket'])
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.updateMyTicket');
 

@@ -121,6 +121,34 @@
                                 </p>
                                 <p class="mb-3">Due Date: <strong></strong></p>
                             </div>
+
+                            <!-- Attachments Section -->
+                            <div class="mt-4">
+                                <h6>Attachments:</h6>
+                                @if($ticket->attachments->isEmpty())
+                                    <p>No attachments available for this ticket.</p>
+                                @else
+                                    <ul class="list-group">
+                                        @foreach($ticket->attachments as $attachment)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>{{ $attachment->file_name }}</span>
+                                                <div class="d-flex gap-2">
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                    class="btn btn-sm btn-outline-primary" 
+                                                    target="_blank">
+                                                        View
+                                                    </a>
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                                    class="btn btn-sm btn-outline-primary" 
+                                                    download="{{ $attachment->file_name }}">
+                                                        Download
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>   
                             <form method="POST" action="{{ route('comments.storeClientComment', $ticket->id) }}">
                                 @csrf
                                 <div class="row mt-5">
@@ -178,17 +206,39 @@
                 </div>
                 <!-- Modal Body -->
                 <div class="modal-body">
-                    <form id="updateTicketForm">
-                        <div class="mb-3">
-                            <label for="ticketTitle" class="form-label">Ticket Title</label>
-                            <input type="text" class="form-control" id="ticketTitle" name="title" value="{{ $ticket->title }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ticketDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="ticketDescription" name="description" rows="8" required>{{ $ticket->description }}</textarea>
-                        </div>
-                        <input type="hidden" id="ticketId" name="id" value="{{ $ticket->id }}">
-                    </form>
+                <form id="updateTicketForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="ticketTitle" class="form-label">Ticket Title</label>
+                        <input type="text" class="form-control" id="ticketTitle" name="title" value="{{ $ticket->title }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ticketDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="ticketDescription" name="description" rows="8" required>{{ $ticket->description }}</textarea>
+                    </div>
+
+                    <!-- Display Existing Attachments -->
+                    <div class="mb-3">
+                        <label class="form-label">Existing Attachments</label>
+                        <ul class="list-group">
+                            @foreach ($ticket->attachments as $attachment)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ $attachment->file_name }}</span>
+                                <a href="{{ asset('storage/' . $attachment->file_path) }}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                                <input type="checkbox" name="remove_attachments[]" value="{{ $attachment->id }}"> Remove
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+                    <!-- Add New Attachments -->
+                    <div class="mb-3">
+                        <label for="ticketAttachments" class="form-label">Add New Attachments</label>
+                        <input type="file" class="form-control" id="ticketAttachments" name="attachments[]" multiple>
+                    </div>
+
+                    <input type="hidden" id="ticketId" name="id" value="{{ $ticket->id }}">
+                </form>
+
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer">
@@ -306,16 +356,14 @@
             const ticketId = document.getElementById('ticketId').value;
 
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries()); // Convert FormData to JSON
 
             try {
                 const response = await fetch(`/my-ticket/${ticketId}/update`, {
-                    method: 'PUT',
+                    method: 'POST', // Use POST for file uploads
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     },
-                    body: JSON.stringify(data),
+                    body: formData,
                 });
 
                 const result = await response.json();
@@ -331,6 +379,7 @@
                 alert('An error occurred while updating the ticket.');
             }
         }
+
     </script>
 
     <script>
