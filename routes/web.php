@@ -165,6 +165,16 @@ Route::get('/services', [ServiceContoller::class, 'index'])
     ->middleware('auth','verified','rolemanager:supperAdmin,admin')
     ->name('service.index');
 
+// route for access create new service form
+Route::get('/services/add-service', [ServiceContoller::class, 'create'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
+    ->name('service.create');
+
+// route for service's create function 
+Route::post('/services', [ServiceContoller::class, 'storeData'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('service.storeData');
+
 
 // routes for handle employee data
 // create route for get employee data page

@@ -79,7 +79,7 @@
             <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a>
             <h6 class="collapse-header">Manage Services:</h6>
             <a class="collapse-item" href="{{ route('service.index') }}">View All Services</a>
-            <a class="collapse-item" href="">Add New Service</a>
+            <a class="collapse-item" href="{{ route('service.create') }}">Add New Service</a>
         </div>
         </div>
     </li>
