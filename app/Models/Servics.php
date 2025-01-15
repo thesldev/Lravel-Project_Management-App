@@ -24,10 +24,12 @@ class Servics extends Model
     /**
      * A service belongs to a client.
      */
-    public function client()
+    public function clients()
     {
-        return $this->belongsTo(Client::class, 'user_id');
+        return $this->belongsToMany(Client::class, 'service_user', 'service_id', 'client_id');
+
     }
+
 
     public function users()
     {

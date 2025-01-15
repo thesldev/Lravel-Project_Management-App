@@ -58,15 +58,25 @@
                     </div>
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                            <h6 class="m-0 font-weight-bold text-primary">{{$service->name}} Users:</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">{{ $service->name }} Users:</h6>
                             <!-- Add Users Button -->
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUsersModal">Add Users</button>
                         </div>
                         <div class="card-body">
-                            <!-- Content for service users will go here -->
+                            @if($service->users->isEmpty())
+                                <p class="text-muted">No users have been assigned to this service yet.</p>
+                            @else
+                                <ul class="list-group">
+                                    @foreach($service->users as $user)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ $user->name }}
+                                            <span class="badge bg-primary">{{ $user->email }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </div>
                     </div>
-
                     <!-- Action Buttons -->
                     <div>
                         <!-- Edit Button -->
@@ -126,7 +136,7 @@
                             <label for="clientSelect" class="form-label">Select Clients</label>
                             <select name="clients[]" id="clientSelect" class="form-select" multiple style="width: 100%;">
                                 @foreach($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                    <option value="{{ $client->user_id }}">{{ $client->name }}</option>
                                 @endforeach
                             </select>
                         </div>
