@@ -42,6 +42,7 @@ class Client extends Model
      */
     public function services()
     {
-        return $this->hasMany(Servics::class, 'user_id');
+        return $this->belongsToMany(Servics::class, 'service_user', 'user_id', 'service_id');
     }
+
 }
