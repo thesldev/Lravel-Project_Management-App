@@ -119,7 +119,7 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-12">
                         <div class="section-tittle text-center mb-105">
-                            <h2>Most amazing features</h2>
+                            <h2>Powerful Client Portal Features</h2>
                         </div>
                     </div>
                 </div>
@@ -130,8 +130,8 @@
                                 <img src="{{ asset('img/icon/services1.svg') }}" alt="">
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="#">Employee Owned</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <h5><a href="#">Real-Time Project Management</a></h5>
+                                <p>Seamlessly track project progress, assign tasks, and collaborate with your team in one centralized platform.</p>
                             </div>
                         </div>
                     </div>
@@ -141,8 +141,8 @@
                                 <img src="{{ asset('img/icon/services2.svg') }}" alt="">
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="#">Commitment to Security</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <h5><a href="#">Advanced Security Features</a></h5>
+                                <p>Ensure the safety of your data with robust security protocols, encryption, and privacy controls.</p>
                             </div>
                         </div>
                     </div>
@@ -152,8 +152,8 @@
                                 <img src="{{ asset('img/icon/services3.svg') }}" alt="">
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="#">Passion for Privacy</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <h5><a href="#">Customizable Dashboard</a></h5>
+                                <p>Personalize your dashboard to view essential metrics, reports, and analytics tailored to your needs.</p>
                             </div>
                         </div>
                     </div>
@@ -163,8 +163,8 @@
                                 <img src="{{ asset('img/icon/services4.svg') }}" alt="">
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="#">Employee Owned</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <h5><a href="#">Data Analytics & Reporting</a></h5>
+                                <p>Access detailed analytics and generate insightful reports to make informed business decisions.</p>
                             </div>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                             </div>
                             <div class="cat-cap">
                                 <h5><a href="#">24/7 Support</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <p>Get round-the-clock assistance from our dedicated support team to resolve any issues swiftly.</p>
                             </div>
                         </div>
                     </div>
@@ -185,8 +185,8 @@
                                 <img src="{{ asset('img/icon/services6.svg') }}" alt="">
                             </div>
                             <div class="cat-cap">
-                                <h5><a href="#">100% Uptime Guaranteed</a></h5>
-                                <p>Supercharge your WordPress hosting with detailed website analytics, marketing tools.</p>
+                                <h5><a href="#">100% Uptime Guarantee</a></h5>
+                                <p>Ensure uninterrupted access to your portal with a guaranteed 100% uptime for your essential operations.</p>
                             </div>
                         </div>
                     </div>
@@ -203,20 +203,22 @@
                         <div class="about-caption about-caption3 mb-50">
                             <!-- Section Tittle -->
                             <div class="section-tittle section-tittle2 mb-30">
-                                <h2>Dedicated support</h2>
+                                <h2>Exceptional Client Portal</h2>
                             </div>
-                            <p class="mb-40">Supercharge your WordPress hosting with detailed website analytics, marketing tools. Our experts are just part of the reason Bluehost is the ideal home for your WordPress website. We're here to help you succeed!</p>
+                            <p class="mb-40">
+                                Enhance your business operations with our comprehensive client portal, offering seamless communication, real-time updates, and streamlined project management. Our goal is to provide you with the tools and support needed to achieve success and drive your business forward.
+                            </p>
                             <ul class="mb-30">
                                 <li>
                                     <img src="{{ asset('img/icon/right.svg') }}" alt="">
-                                    <p>WordPress hosting with detailed website</p>
+                                    <p>Effortless management of client requests and support tickets.</p>
                                 </li>
                                 <li>
                                     <img src="{{ asset('img/icon/right.svg') }}" alt="">
-                                    <p>Our experts are just part of the reason</p>
+                                    <p>Access detailed analytics and reports for better decision-making.</p>
                                 </li>
                             </ul>
-                            <a href="#" class="btn"><i class="fas fa-phone-alt"></i>(10) 892-293 2678</a>
+                            <a href="#" class="btn"><i class="fas fa-phone-alt"></i>(+94) 77 845 8827</a>
                         </div>
                     </div>
                     <div class="col-xl-5 col-lg-5 col-md-8 col-sm-10">
