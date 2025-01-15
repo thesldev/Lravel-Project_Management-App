@@ -65,7 +65,7 @@
         aria-controls="collapseUtilities"
         >
         <i class="fas fa-clipboard-list"></i>
-        <span>Projects</span>
+        <span>Our Jobs</span>
         </a>
         <div
         id="collapseUtilities"
@@ -77,6 +77,9 @@
             <h6 class="collapse-header">Manage Projects:</h6>
             <a class="collapse-item" href="{{route('projects.index')}}">View All Projects</a>
             <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a>
+            <h6 class="collapse-header">Manage Services:</h6>
+            <a class="collapse-item" href="{{ route('service.index') }}">View All Services</a>
+            <a class="collapse-item" href="">Add New Service</a>
         </div>
         </div>
     </li>

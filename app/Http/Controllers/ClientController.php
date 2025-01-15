@@ -209,6 +209,12 @@ class ClientController extends Controller
     }
 
 
+    // function for go to my-services page in client portal
+    public function myServices($id){
+        
+    }
+
+
     // function for enable/disbale client portal access
     public function togglePortalAccess(Client $client)
     {
