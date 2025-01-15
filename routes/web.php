@@ -175,6 +175,21 @@ Route::post('/services', [ServiceContoller::class, 'storeData'])
     ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
     ->name('service.storeData');
 
+// route for get service by id
+Route::get('/services/{id}/view', [ServiceContoller::class, 'viewService'])
+    ->middleware(['auth','verified'])
+    ->name('service.view');
+
+//  route for add users into service
+Route::post('/services/{id}/add-users', [ServiceContoller::class, 'addUsers'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('service.addUsers');
+
+
+
+
+
+
 
 // routes for handle employee data
 // create route for get employee data page

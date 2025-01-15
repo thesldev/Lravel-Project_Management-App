@@ -36,4 +36,12 @@ class Client extends Model
     {
         return $this->hasMany(Project::class); 
     }
+
+    /**
+     * A client has many services.
+     */
+    public function services()
+    {
+        return $this->hasMany(Servics::class, 'user_id');
+    }
 }

@@ -63,7 +63,7 @@
                                             <td>{{ $service->description }}</td>
                                             <td>
                                                 <!-- View Action Button -->
-                                                <a href="" class="btn btn-primary btn-icon-split">
+                                                <a href="{{ route('service.view', ['id' => $service]) }}" class="btn btn-primary btn-icon-split">
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-eye"></i>
                                                     </span>
