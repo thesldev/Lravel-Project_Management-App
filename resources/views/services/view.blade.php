@@ -12,6 +12,10 @@
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    
     <!-- Include Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom styles for this template-->
@@ -66,13 +70,48 @@
                             @if($service->users->isEmpty())
                                 <p class="text-muted">No users have been assigned to this service yet.</p>
                             @else
-                                <ul class="list-group">
-                                    @foreach($service->users as $user)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            {{ $user->name }}
-                                            <span class="badge bg-primary">{{ $user->email }}</span>
-                                        </li>
-                                    @endforeach
+                                <ul class="list-group"> 
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Contact No</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach($service->users as $user)
+                                                <tr>
+                                                    <td>{{ $user->id }}</td>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <td>{{ $user->client->phone }}</td>
+                                                    <td>
+                                                        <!-- View Action Button -->
+                                                        <a href="{{ route('service.view', ['id' => $service]) }}" class="btn btn-primary btn-icon-split">
+                                                            <span class="icon text-white-50">
+                                                                <i class="fas fa-eye"></i>
+                                                            </span>
+                                                            <span class="text">View</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Contact No</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
                                 </ul>
                             @endif
                         </div>
@@ -164,12 +203,22 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
+    <!-- jQuery (necessary for DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
     <script>
         $(document).ready(function() {
             $('#clientSelect').select2({
                 placeholder: "Select Clients",
                 allowClear: true
             });
+        });
+
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
         });
     </script>
 
