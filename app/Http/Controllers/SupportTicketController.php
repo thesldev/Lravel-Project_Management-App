@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employees;
 use App\Models\Project;
+use App\Models\Servics;
 use App\Models\SupportTicket;
 use App\Models\TicketAttachment;
 use Exception;
@@ -72,6 +73,53 @@ class SupportTicketController extends Controller
     }
 
 
+    //  function for store service support ticket
+    public function serviceSupportTicket(Request $request){
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'client_id' => 'required|exists:users,id',
+                'service_id' => 'required|exists:services,id',
+                'priority' => 'required|in:Low,Medium,High,Critical',
+                'status' => 'nullable|string',
+                'attachment.*' => 'nullable|file|max:2048',
+            ]);
+    
+            // Create the support ticket
+            $supportTicket = SupportTicket::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'client_id' => $validated['client_id'],
+                'service_id' => $validated['service_id'],
+                'priority' => $validated['priority'],
+                'status' => $validated['status'] ?? 'Open',
+            ]);
+    
+            // Handle attachments if present
+            if ($request->hasFile('attachment')) {
+                foreach ($request->file('attachment') as $file) {
+                    $filePath = $file->store('attachments', 'public');
+                    TicketAttachment::create([
+                        'ticket_id' => $supportTicket->id,
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_path' => $filePath,
+                    ]);
+                }
+            }
+    
+            return response()->json([
+                'message' => 'Service support ticket created successfully.',
+                'ticket' => $supportTicket,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to create service support ticket.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     // function for get ticket history according to the project
     public function projectTicketHistory($id){
@@ -99,6 +147,33 @@ class SupportTicketController extends Controller
     }
 
 
+    // function for get ticket history according to the service.
+    public function serviceTicketHistory($id){
+        try {
+            // Find the service by ID or fail with an exception
+            $service = Servics::findOrFail($id);
+    
+            // Get all tickets related to the service, ordered by creation date (latest first)
+            $tickets = SupportTicket::where('service_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+    
+            // Return a JSON response with the service and ticket data
+            return response()->json([
+                'message' => 'Tickets retrieved successfully.',
+                'service' => $service,
+                'tickets' => $tickets,
+            ]);
+    
+        } catch (\Exception $e) {
+            // Handle exceptions and return an error response
+            return response()->json([
+                'message' => 'Failed to retrieve tickets.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     // function for get closed tickets related to the project
     public function projectClosedTickets($id)
     {
@@ -123,6 +198,30 @@ class SupportTicketController extends Controller
             ], 500);
         }
     }
+
+
+    // function for get closed tickets related to the service
+    public function serviceClosedTickets($id) {
+        try {
+            $service = Servics::findOrFail($id);
+            $closedTickets = SupportTicket::where('service_id', $id)
+                ->whereIn('status', ['Resolved', 'Closed'])
+                ->orderBy('created_at', 'asc')
+                ->get();
+    
+            return response()->json([
+                'message' => 'Tickets retrieved successfully.',
+                'service' => $service,
+                'closedTickets' => $closedTickets,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve resolved tickets.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
 
 
     // function for access the client tickets in admin portal

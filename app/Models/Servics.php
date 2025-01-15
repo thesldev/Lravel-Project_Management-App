@@ -26,7 +26,7 @@ class Servics extends Model
      */
     public function clients()
     {
-        return $this->belongsToMany(Client::class, 'service_user', 'service_id', 'client_id');
+        return $this->belongsToMany(Client::class, 'service_user', 'service_id', 'user_id');
 
     }
 

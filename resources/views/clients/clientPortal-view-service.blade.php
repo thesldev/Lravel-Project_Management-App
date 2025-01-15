@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>SB Admin 2 - Dashboard</title>
+    <title>My Services - Client Portal</title>
 
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -45,7 +45,7 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">My Services</h1>
 
-                    <p class="mb-4">Here is a list of projects with the respective details. You can view & change details by clicking the "View" button in Action column.</p>
+                    <p class="mb-4">Here is a list of services with the respective details. You can view & change details by clicking the "View" button in Action column.</p>
                     <!-- DataTales Example -->
                     <div class="container py-4">
                         <div class="row">
@@ -74,7 +74,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                     <li>
-                                                        <a class="dropdown-item" href="">
+                                                        <a class="dropdown-item" href="{{ route('service.viewMyService', ['id' => $service->id]) }}">
                                                             <i class="bi bi-info-lg"></i> Info
                                                         </a>
                                                     </li>
@@ -86,7 +86,7 @@
                                         <div class="card-footer d-flex justify-content-between align-items-center">
                                             <div>
                                                 <span class="text-muted" style="font-size: 0.9rem;">
-                                                    <strong>Service Type:</strong> {{ $service->service_type }} |
+                                                    <strong>Service Type:</strong> {{ $service->service_type }} 
                                                 </span>
                                             </div>
 
