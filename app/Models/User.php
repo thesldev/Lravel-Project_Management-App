@@ -58,4 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Schedule::class);
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Servics::class, 'service_user');
+    }
+
 }

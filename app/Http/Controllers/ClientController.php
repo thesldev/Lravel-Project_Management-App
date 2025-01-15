@@ -209,6 +209,35 @@ class ClientController extends Controller
     }
 
 
+    // function for go to my-services page in client portal
+    public function myServices($id)
+    {
+        try {
+            // Ensure the user is authenticated
+            if (Auth::id() !== (int)$id) {
+                return redirect()->route('dashboard')->withErrors('Unauthorized access.');
+            }
+
+            // Retrieve the client data
+            $client = Client::where('user_id', $id)->firstOrFail();
+
+            // Fetch services associated with the client
+            $services = $client->services;
+
+            // Debugging: Log data to verify
+            Log::info('Fetched services for client', ['client_id' => $client->id, 'services' => $services]);
+
+            // Pass the services to the view
+            return view('clients.clientPortal-view-service', compact('services'));
+        } catch (\Exception $e) {
+            Log::error('Error fetching client services: ' . $e->getMessage());
+            return redirect()->back()->withErrors('An error occurred. Please try again.');
+        }
+    }
+
+
+
+
     // function for enable/disbale client portal access
     public function togglePortalAccess(Client $client)
     {

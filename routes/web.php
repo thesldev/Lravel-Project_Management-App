@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ServiceContoller;
 use App\Http\Controllers\SprintController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\SupportTicketCommentController;
@@ -158,8 +159,36 @@ Route::post('/projects/{project}/manage', [ProjectController::class, 'updateMana
 Route::get('/api/projects', [ProjectController::class, 'getProjects']);
 
 
-// routes for handle employee data
+// routes for handle services
+// route for create service
+Route::get('/services', [ServiceContoller::class, 'index'])
+    ->middleware('auth','verified','rolemanager:supperAdmin,admin')
+    ->name('service.index');
 
+// route for access create new service form
+Route::get('/services/add-service', [ServiceContoller::class, 'create'])
+    ->middleware(['auth', 'verified', 'rolemanager:admin,supperAdmin'])
+    ->name('service.create');
+
+// route for service's create function 
+Route::post('/services', [ServiceContoller::class, 'storeData'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('service.storeData');
+
+// route for get service by id
+Route::get('/services/{id}/view', [ServiceContoller::class, 'viewService'])
+    ->middleware(['auth','verified'])
+    ->name('service.view');
+
+//  route for add users into service
+Route::post('/services/{id}/add-users', [ServiceContoller::class, 'addUsers'])
+    ->middleware(['auth','verified','rolemanager:admin,supperAdmin'])
+    ->name('service.addUsers');
+
+
+
+    
+// routes for handle employee data
 // create route for get employee data page
 Route::get('/employees', [EmployeeController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -576,6 +605,11 @@ Route::get('/client-dashboard', [ClientController::class, 'portalIndex'])
 Route::get('/my-projects/{id}', [ClientController::class, 'myProjects'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('client.myProjects');
+
+// route for go to client's services page
+Route::get('/my-services/{id}', [ClientController::class, 'myServices'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.myServices');
 
 // route for view selected product in client portal
 Route::get('/my-projects/{id}/view', [ProjectController::class, 'viewMyProject'])
