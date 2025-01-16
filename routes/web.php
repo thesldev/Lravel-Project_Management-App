@@ -646,7 +646,7 @@ Route::get('/my-projects/{id}/closed-tickets', [SupportTicketController::class, 
     ->name('support.projectClosedTickets');
 
 // get closed tickets related to the service
-Route::get('/my-service/${id}/closed-tickets', [SupportTicketController::class, 'serviceClosedTickets'])
+Route::get('/my-services/{id}/closed-tickets', [SupportTicketController::class, 'serviceClosedTickets'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.serviceClosedTickets');
 

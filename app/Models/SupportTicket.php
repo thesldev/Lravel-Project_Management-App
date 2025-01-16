@@ -32,10 +32,10 @@ class SupportTicket extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    // public function service()
-    // {
-    //     return $this->belongsTo(Service::class, 'service_id');
-    // }
+    public function service()
+    {
+        return $this->belongsTo(Servics::class, 'service_id');
+    }
 
     public function assignedUser()
     {

@@ -316,8 +316,118 @@
 
                         // Check if tickets are available
                         if (response.tickets && response.tickets.length > 0) {
-                            // Display tickets
-                            response.tickets.forEach(ticket => {
+                            // Filter out 'Resolved' and 'Closed' tickets
+                            const filteredTickets = response.tickets.filter(
+                                ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
+                            );
+
+                            if (filteredTickets.length > 0) {
+                                filteredTickets.forEach(ticket => {
+                                    const ticketHtml = `
+                                        <div class="col-12 mb-3">
+                                            <div class="card shadow-sm">
+                                                <!-- Header Section -->
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <h5 class="mb-0 me-2">${ticket.title}</h5> 
+                                                        <span class="badge bg-primary">#${ticket.id}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Body Section -->
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <div class="flex-grow-1">
+                                                        <p class="card-text mb-1">
+                                                            ${ticket.description}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Dropdown Button -->
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <li>
+                                                                <a class="dropdown-item" href="/view-ticket/${ticket.id}/view">
+                                                                    <i class="bi bi-eye"></i> View Ticket
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#" onclick="changeTicketStatus(${ticket.id})">
+                                                                    <i class="bi bi-x-circle"></i> Close Ticket
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Footer Section -->
+                                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="text-muted" style="font-size: 0.9rem;">
+                                                            <strong>Created At:</strong> ${new Date(ticket.created_at).toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-muted">status:</span> 
+                                                        <span class="badge ${
+                                                            ticket.status === 'In Progress' ? 'bg-info text-dark' :
+                                                            ticket.status === 'On Hold' ? 'bg-warning text-dark' :
+                                                            'bg-secondary'
+                                                        }">
+                                                            ${ticket.status}
+                                                        </span>
+                                                        <span class="text-muted ms-3">priority:</span> 
+                                                        <span class="badge ${
+                                                            ticket.priority === 'Critical' ? 'bg-danger' :
+                                                            ticket.priority === 'High' ? 'bg-warning text-dark' :
+                                                            ticket.priority === 'Medium' ? 'bg-primary' :
+                                                            'bg-secondary'
+                                                        }">
+                                                            ${ticket.priority}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    ticketContainer.append(ticketHtml);
+                                });
+                            } else {
+                                // Display a message if no tickets are found after filtering
+                                ticketContainer.append('<p>No tickets found for this service.</p>');
+                            }
+                        } else {
+                            // Display a message if no tickets are found
+                            ticketContainer.append('<p>No tickets found for this service.</p>');
+                        }
+                    },
+                    error: function () {
+                        alert('Failed to load tickets. Please try again.');
+                    }
+                });
+            }
+
+
+            // Function to fetch closed tickets for a service
+            function fetchResolvedTickets(serviceId) {
+                $.ajax({
+                    url: `/my-services/${serviceId}/closed-tickets`,
+                    method: 'GET',
+                    success: function (response) {
+                        const ticketContainer = $('.resolve-ticket-container');
+
+                        // Clear previous content
+                        ticketContainer.empty();
+
+                        // Check if tickets exist
+                        if (response.closedTickets && response.closedTickets.length > 0) {
+                            response.closedTickets.forEach(ticket => {
+                                const statusBadgeClass = 
+                                    ticket.status === 'Resolved' ? 'bg-success' : // Green for Resolved
+                                    ticket.status === 'Closed' ? 'bg-danger' : ''; // Red for Closed
+
                                 const ticketHtml = `
                                     <div class="col-12 mb-3">
                                         <div class="card shadow-sm">
@@ -330,101 +440,13 @@
                                             </div>
 
                                             <!-- Body Section -->
-                                            <div class="card-body d-flex justify-content-between align-items-center">
-                                                <div class="flex-grow-1">
-                                                    <p class="card-text mb-1">
-                                                        ${ticket.description}
-                                                    </p>
-                                                </div>
-
-                                                <!-- Dropdown Button -->
-                                                <div class="dropdown">
-                                                    <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="bi bi-three-dots-vertical"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <li>
-                                                            <a class="dropdown-item" href="/view-ticket/${ticket.id}/view">
-                                                                <i class="bi bi-eye"></i> View Ticket
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#" onclick="changeTicketStatus(${ticket.id})">
-                                                                <i class="bi bi-x-circle"></i> Close Ticket
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                            <div class="card-body">
+                                                <p class="card-text mb-1">
+                                                    ${ticket.description}
+                                                </p>
                                             </div>
 
                                             <!-- Footer Section -->
-                                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <span class="text-muted" style="font-size: 0.9rem;">
-                                                        <strong>Created At:</strong> ${new Date(ticket.created_at).toLocaleString()}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <span class="text-muted">status:</span> 
-                                                    <span class="badge ${
-                                                        ticket.status === 'In Progress' ? 'bg-info text-dark' :
-                                                        ticket.status === 'On Hold' ? 'bg-warning text-dark' :
-                                                        'bg-secondary'
-                                                    }">
-                                                        ${ticket.status}
-                                                    </span>
-                                                    <span class="text-muted ms-3">priority:</span> 
-                                                    <span class="badge ${
-                                                        ticket.priority === 'Critical' ? 'bg-danger' :
-                                                        ticket.priority === 'High' ? 'bg-warning text-dark' :
-                                                        ticket.priority === 'Medium' ? 'bg-primary' :
-                                                        'bg-secondary'
-                                                    }">
-                                                        ${ticket.priority}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                ticketContainer.append(ticketHtml);
-                            });
-                        } else {
-                            // Display a message if no tickets are found
-                            ticketContainer.append('<p>No tickets found for this service.</p>');
-                        }
-                    },
-                    error: function () {
-                        alert('Failed to load tickets. Please try again.');
-                    }
-                });
-            }
-
-            // Function to fetch closed tickets for a service
-            function fetchServiceClosedTickets(serviceId) {
-                $.ajax({
-                    url: `/my-service/${serviceId}/closed-tickets`,
-                    method: 'GET',
-                    success: function (response) {
-                        const ticketContainer = $('.resolve-ticket-container');
-                        ticketContainer.empty();
-
-                        if (response.closedTickets && response.closedTickets.length > 0) {
-                            response.closedTickets.forEach(ticket => {
-                                const statusBadgeClass = ticket.status === 'Resolved' ? 'bg-success' : 
-                                                        ticket.status === 'Closed' ? 'bg-danger' : '';
-                                const ticketHtml = `
-                                    <div class="col-12 mb-3">
-                                        <div class="card shadow-sm">
-                                            <div class="card-header d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <h5 class="mb-0 me-2">${ticket.title}</h5> 
-                                                    <span class="badge bg-primary">#${ticket.id}</span>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-text mb-1">${ticket.description}</p>
-                                            </div>
                                             <div class="card-footer d-flex justify-content-between align-items-center">
                                                 <span class="text-muted">Created At: ${new Date(ticket.created_at).toLocaleString()}</span>
                                                 <span class="badge ${statusBadgeClass}">${ticket.status}</span>
@@ -435,19 +457,46 @@
                                 ticketContainer.append(ticketHtml);
                             });
                         } else {
-                            ticketContainer.append('<p>No resolved tickets found for this service.</p>');
+                            ticketContainer.append('<p>No resolved tickets found for this project.</p>');
                         }
                     },
                     error: function (xhr) {
                         alert(`Failed to load resolved tickets: ${xhr.responseText}`);
                     }
                 });
-            }
-            
+            }   
+                        
             // Fetch tickets on page load
             const serviceId = "{{ $service->id }}"; // Replace with your dynamic service ID
             fetchServiceTickets(serviceId);
+            fetchResolvedTickets(serviceId);
         });
+    </script>
+
+    <!-- script for change ticket status from client-side -->
+    <script>
+        function changeTicketStatus(ticketId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            fetch(`/change-status/${ticketId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({}), // Add data here if needed
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    // Optional: Update the UI to reflect the status change
+                } else {
+                    alert('Failed to update ticket status.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     </script>
 
 </body>
