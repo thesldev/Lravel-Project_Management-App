@@ -49,7 +49,7 @@
                     @foreach($projects as $project)
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-2 text-gray-800">Project: {{ $projects->name }}</h1>
+                            <h1 class="h3 mb-2 text-gray-800">Project: </h1>
                         </div>
                         @endforeach
                         <!-- first section -->
