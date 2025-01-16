@@ -650,24 +650,42 @@ Route::get('/my-services/{id}/closed-tickets', [SupportTicketController::class, 
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('support.serviceClosedTickets');
 
-// route for access client tickets in the admin dashboard
+// route for access client tickets(project) in the admin dashboard
 Route::get('/client-tickets', [SupportTicketController::class, 'clientTickets'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.clientTickets');
 
-// route for fetch clinet tickets
+// route for access client tickets(services) in the admin dashboard
+Route::get('/client-service-tickets', [SupportTicketController::class, 'clientServiceTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.clientServiceTickets');
+
+// route for fetch clinet-projects tickets
 Route::get('/client-tickets/all', [SupportTicketController::class, 'getAllTickets'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.getAllTickets');
 
+// route for fetch clinet-services tickets
+Route::get('/client-service-tickets/all', [SupportTicketController::class, 'getAllServiceTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.getAllServiceTickets');
+
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
+// route for filter the client service tickets according to the ticket status
+Route::get('/client-status-tickets/status/{status}', [SupportTicketController::class, 'filterByStatusService']);
+
 // route for view selected client ticket
-// view selected ticket (admin-side)
+// view selected project ticket (admin-side)
 Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.viewTicket');
+
+// view selected service ticket (admin-side)
+Route::get('/client-service-tickets/{id}/view', [SupportTicketController::class, 'viewServiceTicket'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->name('ticket.viewServiceTicket');
 
 // route for view selected project-ticket (client-side)
 Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientViewTicket'])

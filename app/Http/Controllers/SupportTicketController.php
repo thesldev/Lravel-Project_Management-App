@@ -229,19 +229,40 @@ class SupportTicketController extends Controller
         return view('tickets.clientTickets');
     }
 
+    //  function for access the clients service tickets in admin portal
+    public function clientServiceTickets(){
+        return view('tickets.clientServiceTicket');
+    }
+
     // function for fetch client ticket details
     public function getAllTickets() {
-        $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get(); // Execute the query
+        $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])
+            ->whereNotNull('project_id')
+            ->get(); // Execute the query
         return response()->json($tickets);
     }
+
+
+    // function for fetch clients service ticket details
+    public function getAllServiceTickets()
+    {
+        $tickets = SupportTicket::with(['client', 'service', 'assignedUser'])
+            ->whereNotNull('service_id')
+            ->get();
+        return response()->json($tickets);
+    }
+
 
     // function for filter client tickets according to the ticket status
     public function filterByStatus($status)
     {
         if ($status === 'all') {
-            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])->get();
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])
+                ->whereNotNull('project_id')
+                ->get();
         } else {
-            $tickets = SupportTicket::with(['client', 'project', 'assignedUser'])
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])
+                ->whereNotNull('project_id')
                 ->where('status', $status)
                 ->get();
         }
@@ -250,7 +271,23 @@ class SupportTicketController extends Controller
     }
     
 
-    // display selected support-ticket's data in admin-side
+    //  function for filter client tickets according to the ticket status for service ticket
+    public function filterByStatusService($status){
+        if ($status === 'all') {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])
+                ->whereNotNull('service_id')
+                ->get();
+        } else {
+            $tickets = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])
+                ->whereNotNull('service_id')
+                ->where('status', $status)
+                ->get();
+        }
+
+        return response()->json($tickets);
+    }
+
+    // display selected project-support-ticket's data in admin-side
     public function viewTicket($id){
 
         $ticket = SupportTicket::with(['client', 'project', 'assignedUser'])->find($id);
@@ -258,6 +295,16 @@ class SupportTicketController extends Controller
         $employees = Employees::all();
         return view('tickets.viewClientTickets', compact('ticket', 'employees'));
         
+    }
+
+    //  display selected service-support ticket data in admin side
+    public function viewServiceTicket($id){
+
+        $ticket = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])->find($id);
+
+        $employees = Employees::all();
+        return view('tickets.viewClientService', compact('ticket', 'employees'));
+
     }
 
     // display selected support-ticket's data in client side
