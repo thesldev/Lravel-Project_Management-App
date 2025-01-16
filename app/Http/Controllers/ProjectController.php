@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
+use App\Models\Servics;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
@@ -157,6 +158,18 @@ class ProjectController extends Controller
         // Return the view with the project data
         return view('projects.view-project-clientPortal', compact('project'));
     }
+
+
+    // function for view product in client-portal
+    public function viewMyService($id)
+    {
+        // Fetch the project by its ID
+        $service = Servics::with('clients')->findOrFail($id);
+
+        // Return the view with the project data
+        return view('services.view-service-clientPortal', compact('service'));
+    }
+
 
 
 
