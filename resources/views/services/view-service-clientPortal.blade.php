@@ -349,7 +349,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <li>
-                                                                <a class="dropdown-item" href="/view-ticket/${ticket.id}/view">
+                                                                <a class="dropdown-item" href="/view-service-ticket/${ticket.id}/view">
                                                                     <i class="bi bi-eye"></i> View Ticket
                                                                 </a>
                                                             </li>

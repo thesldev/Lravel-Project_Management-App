@@ -669,10 +669,15 @@ Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTi
     ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.viewTicket');
 
-// route for view selected ticket (client-side)
+// route for view selected project-ticket (client-side)
 Route::get('/view-ticket/{id}/view', [SupportTicketController::class, 'clientViewTicket'])
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('ticket.clientViewTicket');
+
+// route for view selected service-ticket (client-side)
+Route::get('/view-service-ticket/{id}/view', [SupportTicketController::class, 'clientViewServiceTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.clientViewServiceTicket');
 
 // route for change the ticket-status from client portal
 Route::put('/change-status/{id}', [SupportTicketController::class, 'changeStatusClientSide'])

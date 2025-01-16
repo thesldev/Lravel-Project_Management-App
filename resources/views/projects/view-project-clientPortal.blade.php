@@ -472,30 +472,30 @@
         });
     </script>
 
-<script>
-    function changeTicketStatus(ticketId) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    <script>
+        function changeTicketStatus(ticketId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-        fetch(`/change-status/${ticketId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-            },
-            body: JSON.stringify({}), // Add data here if needed
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                alert(data.message);
-                // Optional: Update the UI to reflect the status change
-            } else {
-                alert('Failed to update ticket status.');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-</script>
+            fetch(`/change-status/${ticketId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({}), // Add data here if needed
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    // Optional: Update the UI to reflect the status change
+                } else {
+                    alert('Failed to update ticket status.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>

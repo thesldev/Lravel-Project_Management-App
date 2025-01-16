@@ -269,6 +269,19 @@ class SupportTicketController extends Controller
     }
 
 
+    // display selected service support ticket data in client side..
+    public function clientViewServiceTicket($id)
+    {
+        $ticket = SupportTicket::with(['service', 'assignedUser', 'client', 'project'])->find($id);
+
+        // Check if ticket exists
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
+
+        return view('clients.clientPortal-view-selectedServiceTicket', compact('ticket'));
+    }
+
 
     // function for close the ticket from client side
     public function changeStatusClientSide($id)
