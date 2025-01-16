@@ -752,6 +752,16 @@ Route::post('/projects/{project}/assign-member', [SupportTicketController::class
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('assign.assignMember');
 
+// route for assign members into the service support tickets
+Route::post('/services/{service}/assign-employee', [SupportTicketController::class, 'assignEmployeeToService'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('assign.assignEmployeeToService');
+
+// function for remove employee from service support ticket
+Route::delete('/tickets/{ticketId}/remove-employee', [SupportTicketController::class, 'removeAssignedEmployee'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('tickets.removeEmployee');
+
 // route for change the ticket-status from admin-side
 Route::put('/support-ticket/{id}/change-status', [SupportTicketController::class, 'changeStatus'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin, admin, employee'])

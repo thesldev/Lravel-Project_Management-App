@@ -36,5 +36,10 @@ class Servics extends Model
         return $this->belongsToMany(User::class, 'service_user', 'service_id', 'user_id');
     }
 
+    public function assignedEmployees()
+    {
+        return $this->belongsToMany(User::class, 'employee_service', 'service_id', 'employee_id');
+    }
+
 
 }
