@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>My Projects - Client Portal</title>
+    <title>SB Admin 2 - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
@@ -41,59 +41,48 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    <h1 class="h3 mb-4 text-gray-800">Project #{{$project->id}} - Details</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Service #{{$service->id}} - Details</h1>
 
                     <!-- firest-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Project Information</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Service Information</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Project Name:</strong> {{ $project->name }}</p>
-                                    <p><strong>Client Name:</strong> {{ $project->client->name }}</p>
-                                    <p><strong>Project Type:</strong> {{ $project->project_type }}</p>
-                                    <p><strong>Total Budget:</strong> {{ $project->budget }} $</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Description:</strong> {{ $project->description }}</p>
+                                    <p><strong>Service Title:</strong> {{ $service->name }}</p>
+                                    <p><strong>Service Type:</strong> {{ $service->service_type }}</p>
                                     <p>
-                                        <strong>Project Status:</strong> 
+                                        <strong>Service Status:</strong> 
                                         <span 
                                             class="badge 
-                                                {{ $project->status === 'Pending' ? 'bg-warning text-dark' : '' }}
-                                                {{ $project->status === 'Ongoing' ? 'bg-primary' : '' }}
-                                                {{ $project->status === 'Completed' ? 'bg-success' : '' }}
-                                                {{ $project->status === 'Delivered' ? 'bg-info text-dark' : '' }}"
+                                                {{ $service->status === 'inactive' ? 'bg-warning text-dark' : '' }}
+                                                {{ $service->status === 'on_hold' ? 'bg-primary' : '' }}
+                                                {{ $service->status === 'active' ? 'bg-success' : '' }}"
                                         >
-                                            {{ $project->status }}
+                                            {{ $service->status }}
                                         </span>
                                     </p>
-                                    <p><strong>Project Start Date:</strong> {{ $project->start_date }}</p>
-                                    <p><strong>Project End Date:</strong> {{ $project->end_date }}</p>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Description:</strong> {{ $service->description }}</p>
                                 </div>
                             </div>
-                        </div>
-  
-                        <!-- Extended Deadline -->
-                        <hr>
-                        <div class="card-body">
-                            <h5 class="font-weight-bold text-primary">Extended Deadlines</h5>
-                            @if($project->extended_deadline)
-                                <p><strong>Extended Deadline:</strong> {{ $project->extended_deadline }}</p>
-                            @else
-                                <p>No extended deadline set for this project.</p>
-                            @endif
-                         </div>                       
+                        </div>                     
                     </div>
 
                     <!-- second-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Support Tickets | Active</h6>
-                            <button id="createTicketBtn" class="btn btn-primary btn-sm">
-                                <i class="bi bi-ticket-perforated-fill mr-2" ></i> 
+                            <button 
+                                id="createTicketBtn" 
+                                class="btn btn-primary btn-sm" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#createTicketModal">
+                                <i class="bi bi-ticket-perforated-fill mr-2"></i>
                                 Create Ticket
                             </button>
                         </div>
@@ -107,9 +96,9 @@
                 
                 <br>
                 <div class="container-fluid mt-5">
-                    <h1 class="h3 mb-4 text-gray-800">Project #{{$project->id}} - Ticket-History</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Service #{{$service->id}} - Ticket-History</h1>
                     
-                    <!-- second-section -->
+                    <!-- Second Section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <!-- Section Title -->
@@ -122,7 +111,7 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" href="">
+                                        <a class="dropdown-item" href="#" onclick="viewAllTickets()">
                                             <i class="bi bi-list"></i> View All Tickets
                                         </a>
                                     </li>
@@ -142,7 +131,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
 
@@ -163,6 +151,7 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
 
     <!-- Create Support Ticket Modal -->
     <div id="createTicketModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createTicketModalLabel" aria-hidden="true">
@@ -215,13 +204,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="projectId" class="form-label" style="font-weight: bold;">Project</label>
+                            <label for="serviceId" class="form-label" style="font-weight: bold;">Service</label>
                             <input 
                                 type="text" 
                                 class="form-control" 
-                                id="projectId" 
-                                name="project_id" 
-                                value="{{ $project->id }}" 
+                                id="serviceId" 
+                                name="service_id" 
+                                value="{{ $service->id }}" 
                                 readonly>
                         </div>
                         <div class="mb-3">
@@ -249,9 +238,21 @@
         </div>
     </div>
 
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+
+
+    <!-- Bootstrap Bundle JS (includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <script>
         $(document).ready(function () {
@@ -286,7 +287,7 @@
 
                 // Send an Ajax request
                 $.ajax({
-                    url: '/support_tickets/create',
+                    url: '/support_tickets/create-service',
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -294,6 +295,7 @@
                     success: function (response) {
                         alert('Ticket created successfully!');
                         $('#createTicketModal').modal('hide');
+                        location.reload(); // Reload the page to update ticket list
                     },
                     error: function (xhr) {
                         alert('Failed to create ticket. Please try again.');
@@ -301,10 +303,10 @@
                 });
             });
 
-            // Function to fetch tickets
-            function fetchTickets(projectId) {
+            // Function to fetch tickets related to a service
+            function fetchServiceTickets(serviceId) {
                 $.ajax({
-                    url: `/my-prokects/${projectId}/ticket-history`, // Replace with the correct route URL
+                    url: `/my-service/${serviceId}/ticket-history`, // Replace with the correct route URL
                     method: 'GET',
                     success: function (response) {
                         const ticketContainer = $('.ticket-container');
@@ -314,10 +316,10 @@
 
                         // Check if tickets are available
                         if (response.tickets && response.tickets.length > 0) {
-                            // Filter out 'Resolved' tickets
+                            // Filter out 'Resolved' and 'Closed' tickets
                             const filteredTickets = response.tickets.filter(
-                                    ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
-                                );
+                                ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
+                            );
 
                             if (filteredTickets.length > 0) {
                                 filteredTickets.forEach(ticket => {
@@ -334,7 +336,6 @@
 
                                                 <!-- Body Section -->
                                                 <div class="card-body d-flex justify-content-between align-items-center">
-                                                    <!-- Ticket Description -->
                                                     <div class="flex-grow-1">
                                                         <p class="card-text mb-1">
                                                             ${ticket.description}
@@ -348,7 +349,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <li>
-                                                                <a class="dropdown-item" href="/view-ticket/${ticket.id}/view">
+                                                                <a class="dropdown-item" href="/view-service-ticket/${ticket.id}/view">
                                                                     <i class="bi bi-eye"></i> View Ticket
                                                                 </a>
                                                             </li>
@@ -360,6 +361,7 @@
                                                         </ul>
                                                     </div>
                                                 </div>
+
                                                 <!-- Footer Section -->
                                                 <div class="card-footer d-flex justify-content-between align-items-center">
                                                     <div>
@@ -393,12 +395,12 @@
                                     ticketContainer.append(ticketHtml);
                                 });
                             } else {
-                                // Display a message if no tickets are found
-                                ticketContainer.append('<p>No tickets found for this project.</p>');
+                                // Display a message if no tickets are found after filtering
+                                ticketContainer.append('<p>No tickets found for this service.</p>');
                             }
                         } else {
                             // Display a message if no tickets are found
-                            ticketContainer.append('<p>No tickets found for this project.</p>');
+                            ticketContainer.append('<p>No tickets found for this service.</p>');
                         }
                     },
                     error: function () {
@@ -408,11 +410,10 @@
             }
 
 
-
-            // Function to fetch closed tickets
-            function fetchResolvedTickets(projectId) {
+            // Function to fetch closed tickets for a service
+            function fetchResolvedTickets(serviceId) {
                 $.ajax({
-                    url: `/my-projects/${projectId}/closed-tickets`,
+                    url: `/my-services/${serviceId}/closed-tickets`,
                     method: 'GET',
                     success: function (response) {
                         const ticketContainer = $('.resolve-ticket-container');
@@ -463,15 +464,16 @@
                         alert(`Failed to load resolved tickets: ${xhr.responseText}`);
                     }
                 });
-            }
-
+            }   
+                        
             // Fetch tickets on page load
-            const projectId = "{{ $project->id }}"; // Replace with your dynamic project ID
-            fetchTickets(projectId);
-            fetchResolvedTickets(projectId);
+            const serviceId = "{{ $service->id }}"; // Replace with your dynamic service ID
+            fetchServiceTickets(serviceId);
+            fetchResolvedTickets(serviceId);
         });
     </script>
 
+    <!-- script for change ticket status from client-side -->
     <script>
         function changeTicketStatus(ticketId) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -496,16 +498,6 @@
             .catch(error => console.error('Error:', error));
         }
     </script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-
-    <!-- Bootstrap Bundle JS (includes Popper.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

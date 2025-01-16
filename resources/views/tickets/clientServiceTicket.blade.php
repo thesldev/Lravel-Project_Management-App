@@ -45,7 +45,7 @@
                 <div class="container-fluid">
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-2 text-gray-800">Project Tickets</h1>                  
+                        <h1 class="h3 mb-2 text-gray-800">Service Tickets</h1>                  
                         <div class="ms-auto">
                             <div class="d-flex align-items-center dropdown">
                                 <span class="me-2 text-muted fw-bold">Ticket Status</span>
@@ -122,7 +122,7 @@
     <script>
         function fetchTickets(status = 'all') {
             // Determine the API endpoint based on the selected status
-            const url = status === 'all' ? '/client-tickets/all' : `/client-tickets/status/${status}`;
+            const url = status === 'all' ? '/client-service-tickets/all' : `/client-tickets/status/${status}`;
 
             $.ajax({
                 url: url,
@@ -181,8 +181,8 @@
                                     <div class="card-body pt-1 pb-3">
                                         <h5 class="card-title">${ticket.title}</h5>
                                         <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span><strong>Project:</strong> ${ticket.project?.name || 'Unknown'}</span>
-                                            <a class="btn btn-primary btn-sm" href="/client-tickets/${ticket.id}/view">View Ticket</a>
+                                            <span><strong>Service:</strong> ${ticket.service?.name || 'Unknown'}</span>
+                                            <a class="btn btn-primary btn-sm" href="/client-service-tickets/${ticket.id}/view">View Ticket</a>
                                         </div>
                                         <p class="card-text mb-1"><strong>Status:</strong> ${statusBadge}</p>
                                     </div>

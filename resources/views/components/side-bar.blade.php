@@ -110,7 +110,8 @@
                 <a class="collapse-item" href="{{route('status.status')}}">Add Ticket Status</a>
                 <a class="collapse-item" href="{{route('type.index')}}">Add Ticket Types</a>
                 <h6 class="collapse-header">Manage Client Tickets:</h6>
-                <a class="collapse-item" href="{{route('ticket.clientTickets')}}">Client Tickets</a>
+                <a class="collapse-item" href="{{route('ticket.clientTickets')}}">Project Tickets</a>
+                <a class="collapse-item" href="{{route('ticket.clientServiceTickets')}}">Service Tickets</a>
             </div>
         </div>
     </li>
