@@ -541,6 +541,4 @@ class SupportTicketController extends Controller
     }
 
 
-
-
 }
