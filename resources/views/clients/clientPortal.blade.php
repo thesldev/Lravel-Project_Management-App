@@ -52,12 +52,6 @@
               class="d-sm-flex align-items-center justify-content-between mb-4"
             >
               <h1 class="h3 mb-0 text-gray-800">My Dashboard</h1>
-              <a
-                href="#"
-                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                ><i class="fas fa-download fa-sm text-white-50"></i> Generate
-                Report</a
-              >
             </div>
 
             <!-- Content Row -->
@@ -71,10 +65,10 @@
                         <div
                           class="text-xs font-weight-bold text-primary text-uppercase mb-1"
                         >
-                          Earnings (Monthly)
+                          My Projects
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            ${{ number_format($monthlyEarnings, 2) }}
+                          {{ $totalProjects }}
                         </div>
                       </div>
                       <div class="col-auto">
@@ -92,10 +86,10 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Earnings (Annual)
+                                    My Services
                                 </div>
                                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    ${{ number_format($totalBudget, 2) }} <!-- Display total budget -->
+                                    {{$totalServices}}
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -115,14 +109,14 @@
                         <div
                           class="text-xs font-weight-bold text-info text-uppercase mb-1"
                         >
-                          Total Projects
+                          Project Tickets (Active)
                         </div>
                         <div class="row no-gutters align-items-center">
                           <div class="col-auto">
                             <div
                               class="h5 mb-0 mr-3 font-weight-bold text-gray-800"
                             >
-                              {{ $totalProjects }}
+                              {{ $totalProjectTickets }}
                             </div>
                           </div>
                           <div class="col">
@@ -158,10 +152,10 @@
                         <div
                           class="text-xs font-weight-bold text-warning text-uppercase mb-1"
                         >
-                          Our Team
+                          Service Tickets (Active)
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          {{ $totalEmployees }}
+                          {{ $totalServiceTickets }}
                         </div>
                       </div>
                       <div class="col-auto">
@@ -181,19 +175,7 @@
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                    <div class="dropdown no-arrow">
-                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
-                    </div>
+                    <h6 class="m-0 font-weight-bold text-primary">Tickets Overview</h6>
                   </div>
                   <!-- Card Body -->
                   <div class="card-body">
@@ -207,36 +189,24 @@
               <!-- Pie Chart -->
               <div class="col-xl-4 col-lg-5">
                 <div class="card shadow mb-4">
-                  <!-- Card Header - Dropdown -->
-                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Project Status</h6>
-                    <div class="dropdown no-arrow">
-                      <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Ticket Status</h6>
                     </div>
-                  </div>
-                  <!-- Card Body -->
-                  <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                      <canvas id="projectStatusPieChart"></canvas>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="ticketStatusPieChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2"><i class="fas fa-circle text-primary"></i> Open</span>
+                            <span class="mr-2"><i class="fas fa-circle text-warning"></i> In Progress</span>
+                            <span class="mr-2"><i class="fas fa-circle text-secondary"></i> On Hold</span>
+                            <span class="mr-2"><i class="fas fa-circle text-success"></i> Resolved</span>
+                        </div>
                     </div>
-                    <div class="mt-4 text-center small">
-                      <span class="mr-2"><i class="fas fa-circle text-primary"></i> Completed</span>
-                      <span class="mr-2"><i class="fas fa-circle text-success"></i> Ongoing</span>
-                      <span class="mr-2"><i class="fas fa-circle text-info"></i> Pending</span>
-                    </div>
-                  </div>
                 </div>
-              </div>
-
+            </div>
             </div>
 
             <div class="row">
@@ -287,44 +257,31 @@
 
     <!-- Logout Modal-->
     <x-logoutModule />
-
-    
-
-    <!-- scripts for area chart -->
-    <script>
-        // Pass the PHP data to JavaScript
-        const monthlyData = <?= json_encode(array_values($monthlyData)); ?>;
-        const months = <?= json_encode(array_keys($monthlyData)); ?>;
-    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Data for the chart
+        const monthlyTicketLabels = <?php echo json_encode($ticketLabels); ?>;
+        const monthlyTicketCounts = <?php echo json_encode($ticketCounts); ?>;
+
         const ctx = document.getElementById('myAreaChart').getContext('2d');
         const myAreaChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: months.map(month => {
-                    // Convert numeric months to their names
-                    const date = new Date(0);
-                    date.setMonth(month - 1);
-                    return date.toLocaleString('default', { month: 'long' });
-                }),
+                labels: monthlyTicketLabels,
                 datasets: [{
-                    label: 'Earnings',
-                    data: monthlyData,
+                    label: 'Monthly Tickets',
+                    data: monthlyTicketCounts,
                     backgroundColor: 'rgba(78, 115, 223, 0.05)',
                     borderColor: 'rgba(78, 115, 223, 1)',
+                    pointRadius: 3,
                     pointBackgroundColor: 'rgba(78, 115, 223, 1)',
                     pointBorderColor: 'rgba(78, 115, 223, 1)',
                     pointHoverRadius: 3,
                     pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
                     pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
-                    pointRadius: 3,
                     pointHitRadius: 10,
-                    pointBorderWidth: 2,
-                    lineTension: 0.3
+                    pointBorderWidth: 2
                 }]
             },
             options: {
@@ -339,19 +296,15 @@
                 },
                 scales: {
                     x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 12
-                        }
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 12 }
                     },
                     y: {
                         ticks: {
                             maxTicksLimit: 5,
                             padding: 10,
                             callback: function(value) {
-                                return '$' + value.toLocaleString(); // Format as currency
+                                return value;
                             }
                         },
                         grid: {
@@ -364,9 +317,7 @@
                     }
                 },
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         backgroundColor: 'rgb(255,255,255)',
                         bodyColor: '#858796',
@@ -374,12 +325,9 @@
                         titleFont: { size: 14 },
                         borderColor: '#dddfeb',
                         borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        caretPadding: 10,
                         callbacks: {
                             label: function(context) {
-                                return context.dataset.label + ': $' + context.raw.toLocaleString();
+                                return context.dataset.label + ': ' + context.raw;
                             }
                         }
                     }
@@ -392,42 +340,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-      // Pass PHP data to JavaScript
-      const projectData = <?= json_encode([
-          $chartData['completed'], 
-          $chartData['ongoing'], 
-          $chartData['pending']
-      ]); ?>;
+        // Pass PHP data to JavaScript
+        const ticketData = <?= json_encode([
+            $chartData['Open'], 
+            $chartData['In Progress'], 
+            $chartData['On Hold'], 
+            $chartData['Resolved']
+        ]); ?>;
 
-      var ctp = document.getElementById("projectStatusPieChart").getContext("2d");
+        const ctp = document.getElementById("ticketStatusPieChart").getContext("2d");
 
-      var projectStatusPieChart = new Chart(ctp, {
-        type: 'pie',
-        data: {
-          datasets: [{
-            data: projectData,
-            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
-            hoverBorderColor: "rgba(234, 236, 244, 1)",
-          }],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
+        const ticketStatusPieChart = new Chart(ctp, {
+            type: 'pie',
+            data: {
+                labels: ['Open', 'In Progress', 'On Hold', 'Resolved'],
+                datasets: [{
+                    data: ticketData,
+                    backgroundColor: ['#4e73df', '#f6c23e', '#858796', '#1cc88a'],
+                    hoverBackgroundColor: ['#2e59d9', '#f4b619', '#6c757d', '#17a673'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
             },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  return tooltipItem.label + ": " + tooltipItem.raw + " Projects";
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false // Disable the legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const label = tooltipItem.label || '';
+                                const value = tooltipItem.raw || 0;
+                                return `${label}: ${value} Tickets`;
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      });
+        });
     </script>
+
 
 
     <!-- Bootstrap core JavaScript-->

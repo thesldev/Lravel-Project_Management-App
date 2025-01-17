@@ -26,7 +26,7 @@
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" href="{{ route('client') }}">
-            <i class="fas fa-fw fa-chart-line"></i>
+            <i class="fas fa-fw fa-home"></i>
             <span>Home</span>
         </a>
     </li>
@@ -53,8 +53,8 @@
             aria-expanded="true" 
             aria-controls="collapseClients"
         >
-            <i class="fas fa-fw fa-users"></i>
-            <span>My Work-Space</span>
+            <i class="fas fa-fw fa-ticket-alt"></i>
+            <span>Handle Tickets</span>
         </a>
         <div 
             id="collapseClients" 
@@ -63,9 +63,9 @@
             data-parent="#accordionSidebar"
         >
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">WorkSpace Options:</h6>
-                <a class="collapse-item" href="{{ route('client.myProjects', ['id' => Auth::user()->id]) }}">My Projects</a>
-                <a class="collapse-item" href="{{ route('client.myServices', ['id' => Auth::user()->id]) }}">My Services</a>
+                <h6 class="collapse-header">Ticket Options:</h6>
+                <a class="collapse-item" href="{{ route('client.myProjects', ['id' => Auth::user()->id]) }}">Project Support</a>
+                <a class="collapse-item" href="{{ route('client.myServices', ['id' => Auth::user()->id]) }}">Service Support</a>
             </div>
         </div>
     </li>
@@ -118,8 +118,8 @@
         >
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Contact Options:</h6>
-                <a class="collapse-item" href="">Support Tickets</a>
-                <a class="collapse-item" href="">Schedule Meeting</a>
+                <a class="collapse-item" href="">Comming Soon</a>
+                <a class="collapse-item" href="">Comming Soon</a>
             </div>
         </div>
     </li>
