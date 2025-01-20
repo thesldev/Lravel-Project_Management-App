@@ -27,33 +27,6 @@
     <!-- Heading -->
     <div class="sidebar-heading">Interface</div>
 
-    <!-- Nav Item - clients Collapse Menu -->
-    <li class="nav-item">
-        <a 
-            class="nav-link collapsed" 
-            href="#" 
-            data-toggle="collapse" 
-            data-target="#collapseClients" 
-            aria-expanded="true" 
-            aria-controls="collapseClients"
-        >
-            <i class="fas fa-fw fa-users"></i>
-            <span>Tickets</span>
-        </a>
-        <div 
-            id="collapseClients" 
-            class="collapse" 
-            aria-labelledby="headingClients" 
-            data-parent="#accordionSidebar"
-        >
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Ticket Options:</h6>
-                <a class="collapse-item" href="{{ route('client.index') }}">View All Clients</a>
-                <a class="collapse-item" href="{{ route('client.create') }}">Add New Client</a>
-            </div>
-        </div>
-    </li>
-
     <!-- Nav Item - projects Collapse Menu -->
     <li class="nav-item">
         <a
@@ -75,8 +48,8 @@
         >
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Manage Projects:</h6>
-            <a class="collapse-item" href="{{route('projects.index')}}">View All Projects</a>
-            <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a>
+            <!-- <a class="collapse-item" href="{{route('projects.index')}}">View All Projects</a>
+            <a class="collapse-item" href="{{route('project.create')}}">Add New Project</a> -->
         </div>
         </div>
     </li>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
+use App\Models\Servics;
+use App\Models\SupportTicket;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -139,54 +141,74 @@ class ClientController extends Controller
 
 
     // functon for go to client-portal dashboard
-    public function portalIndex(){
+    public function portalIndex()
+    {
 
-        // Calculate total budget for the current year
-        $totalBudget = Project::whereYear('start_date', Carbon::now()->year)->sum('budget');
-
-        // Calculate total budget for the current month
-        $monthlyEarnings = Project::whereYear('start_date', Carbon::now()->year)
-            ->whereMonth('start_date', Carbon::now()->month)
-            ->sum('budget');
-
-        // Get monthly earnings for the chart
-        $monthlyData = Project::selectRaw('SUM(budget) as total, MONTH(start_date) as month')
-            ->whereYear('start_date', Carbon::now()->year)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month')->toArray();
 
         // Count total number of projects
         $totalProjects = Project::where('client_id', Auth::id())->count();
 
-        // Count total employees
-        $totalEmployees = Employees::count();
-        
+        // Count total services
+        $totalServices = Servics::whereHas('users', function ($query) {
+            $query->where('user_id', Auth::id());
+        })->count();
 
-        // Calculate the number of completed, ongoing, and pending projects
-        $completedProjects = Project::where('status', 'completed')->count();
-        $ongoingProjects = Project::where('status', 'ongoing')->count();
-        $pendingProjects = Project::where('status', 'pending')->count();
+        // Count total tickets with project_id
+        $totalProjectTickets = DB::table('support_tickets')
+            ->whereNotNull('project_id')
+            ->where('client_id', Auth::id())
+            ->count();
+
+        // Count total tickets with service_id
+        $totalServiceTickets = DB::table('support_tickets')
+            ->whereNotNull('service_id')
+            ->where('client_id', Auth::id())
+            ->count();
+
+        // Get monthly ticket counts for the chart
+        $currentYear = date('Y');
+
+        $monthlyTicketData = DB::table('support_tickets')
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
+            ->where('client_id', Auth::id()) // Assuming client-specific tickets
+            ->whereYear('created_at', $currentYear) // Filter by the current year
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->pluck('count', 'month')
+            ->toArray();
+
+        // Convert to full month names and fill missing months with 0
+        $formattedTicketData = collect(range(1, 12))->mapWithKeys(function ($month) use ($monthlyTicketData) {
+            return [date('F', mktime(0, 0, 0, $month, 1)) => $monthlyTicketData[$month] ?? 0];
+        })->toArray();
+
+        $ticketLabels = array_keys($formattedTicketData);
+        $ticketCounts = array_values($formattedTicketData);
+
+        // Calculate the number of tickets by status
+        $openTickets = DB::table('support_tickets')->where('status', 'Open')->count();
+        $inProgressTickets = DB::table('support_tickets')->where('status', 'In Progress')->count();
+        $onHoldTickets = DB::table('support_tickets')->where('status', 'On Hold')->count();
+        $resolvedTickets = DB::table('support_tickets')->where('status', 'Resolved')->count();
 
         // Prepare data for the pie chart
         $chartData = [
-            'completed' => $completedProjects,
-            'ongoing' => $ongoingProjects,
-            'pending' => $pendingProjects,
+            'Open' => $openTickets,
+            'In Progress' => $inProgressTickets,
+            'On Hold' => $onHoldTickets,
+            'Resolved' => $resolvedTickets,
         ];
 
-        
         return view('clients.clientPortal', compact(
-            'totalBudget',
-            'monthlyEarnings',
             'totalProjects',
-            'totalEmployees',
-            'monthlyData',
             'chartData',
+            'totalServices',
+            'totalProjectTickets',
+            'totalServiceTickets',
+            'formattedTicketData',
+            'ticketLabels',
+            'ticketCounts'
         ));
-
     }
-
 
     // function for go to my-projects page in client-portal
     public function myProjects($id)

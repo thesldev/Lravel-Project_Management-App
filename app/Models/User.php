@@ -64,4 +64,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Servics::class, 'service_user');
     }
 
+    /**
+     * Relationship with employees assigned to services.
+     */
+    public function assignedEmployees()
+    {
+        return $this->belongsToMany(User::class, 'employee_service');
+    }
 }

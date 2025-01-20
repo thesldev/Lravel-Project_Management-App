@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Service Tickets - Admin Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" type="text/css" />
@@ -54,7 +54,7 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item {{ $ticket->status === 'Closed' ? 'disabled' : '' }}" id="assignMemberButton" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
+                                        <a class="dropdown-item {{ $ticket->status === 'Closed' ? 'disabled' : '' }}" id="assignMemberButton" data-bs-toggle="modal" data-bs-target="#assignEmployeeModal">
                                             <i class="bi bi-person-plus-fill"></i> Assign Member
                                         </a>
                                     </li>
@@ -148,14 +148,27 @@
                             </div>
 
                             <div class="row">
-                                <div class="me-3">
-                                    <p>
-                                        Assign to: <strong>{{ $ticket->assignedUser->name ?? 'Not Assigned' }}</strong>
-                                        <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Job Role: <strong>{{ $ticket->assignedUser->job_role ?? 'Not Assigned' }}</strong>
-                                        <span class="mx-3">|</span> <!-- Add margin around the separator -->
-                                        Position: <strong>{{ $ticket->assignedUser->position ?? 'Not Assigned' }}</strong>
-                                    </p>
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <p class="mb-0 d-flex align-items-center">
+                                            Assign to: <strong class="ms-2">{{ $ticket->service->assignedEmployees->first()->name ?? 'Not Assigned' }}</strong>
+                                            <span class="mx-3">|</span>
+                                            Job Role: <strong class="ms-2">{{ $ticket->service->assignedEmployees->first()->job_role ?? 'Not Assigned' }}</strong>
+                                            <span class="mx-3">|</span>
+                                            Position: <strong class="ms-2">{{ $ticket->service->assignedEmployees->first()->position ?? 'Not Assigned' }}</strong>
+                                        </p>
+                                    </div>
+                                    @if($ticket->service->assignedEmployees->isNotEmpty())
+                                        <div class="col-auto">
+                                            <form action="{{ route('tickets.removeEmployee', $ticket->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-link text-secondary p-0" onclick="return confirm('Are you sure you want to remove the assigned employee?')">
+                                                    <i class="bi bi-trash-fill" style="font-size: 1.5rem;"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
 
@@ -237,7 +250,42 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    
+    <!-- Modal -->
+    <div class="modal fade" id="assignEmployeeModal" tabindex="-1" aria-labelledby="assignEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignEmployeeModalLabel">Assign Employee to Service Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Display All Employees -->
+                    <h6>Available Employees:</h6>
+                    <ul id="assignedEmployeesList">
+                        @foreach ($employees as $employee)
+                            <li>{{ $employee->name }} - {{ $employee->job_role }}</li>
+                        @endforeach
+                    </ul>
+
+                    <!-- Select Employee for the Service Ticket -->
+                    <form method="POST" action="{{ route('assign.assignEmployeeToService', $ticket->service->id) }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="employeeSelect" class="form-label">Select Employee for Service Ticket</label>
+                            <select class="form-select" id="employeeSelect" name="employee_id" required>
+                                <option value="" disabled selected>Select an employee</option>
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }} - {{ $employee->job_role }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Assign Employee</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
