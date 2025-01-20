@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Servics;
 use App\Models\SupportTicket;
 use App\Models\TicketAttachment;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -302,7 +303,7 @@ class SupportTicketController extends Controller
 
         $ticket = SupportTicket::with(['client', 'project', 'assignedUser', 'service'])->find($id);
 
-        $employees = Employees::all();
+        $employees = User::whereIn('role', [0, 1, 2])->get();
         return view('tickets.viewClientService', compact('ticket', 'employees'));
 
     }
@@ -474,6 +475,40 @@ class SupportTicketController extends Controller
         $ticket->save();
 
         return redirect()->back()->with('success', 'Member assigned to the support ticket successfully.');
+    }
+
+    public function assignEmployeeToService(Request $request, $serviceId)
+    {
+        // Validate request
+        $request->validate([
+            'employee_id' => 'required|exists:users,id',
+        ]);
+
+        // Find the service
+        $service = Servics::find($serviceId);
+
+        // Attach the selected employee to the service
+        $service->assignedEmployees()->attach($request->employee_id);
+
+        // Return a redirect with a success message
+        return redirect()->back()->with('success', 'Member assigned to the support ticket successfully.');
+    }
+
+    // function for assigned employee from service support ticket
+    public function removeAssignedEmployee($ticketId)
+    {
+        // Find the ticket
+        $ticket = SupportTicket::with('service.assignedEmployees')->find($ticketId);
+
+        if (!$ticket || !$ticket->service) {
+            return redirect()->back()->with('error', 'Ticket or Service not found.');
+        }
+
+        // Detach the assigned employee(s) from the service
+        $ticket->service->assignedEmployees()->detach();
+
+        // Return success message
+        return redirect()->back()->with('success', 'Assigned employee removed successfully.');
     }
 
 
