@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\BackLogController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
@@ -577,14 +578,17 @@ Route::post('/sprint/generateReport', [ReportController::class, 'generateSprintR
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('sprint.generateReport');
 
-
 // Route for storing the report data
 Route::post('/store-report', [ReportController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('store.projectReport');
 
 
-
+// routes for announcements 
+// route for go to ccreate new announcement page
+Route::get('/create-announcement', [AnnouncementController::class, 'newAnnouncement'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('announcement.newAnnouncement');
 
 
 

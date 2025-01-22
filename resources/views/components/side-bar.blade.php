@@ -196,7 +196,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Announcements:</h6>
                 <a class="collapse-item" href="">View All Announcements</a>
-                <a class="collapse-item" href="">New Announcement</a>
+                <a class="collapse-item" href="{{route('announcement.newAnnouncement')}}">New Announcement</a>
             </div>
         </div>
     </li>
