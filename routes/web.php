@@ -590,10 +590,31 @@ Route::get('/create-announcement', [AnnouncementController::class, 'newAnnouncem
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('announcement.newAnnouncement');
 
+// route for view all announcements
+Route::get('/announcements/view', [AnnouncementController::class, 'index'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('announcement.index');
+
 // route for store announcment
 Route::post('announcement/create', [AnnouncementController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('announcements.store');
+
+// route for get announcement by id
+Route::get('/announcement/{id}/view', [AnnouncementController::class, 'viewAnnouncement'])
+    ->middleware(['auth','verified', 'rolemanager:supperAdmin, admin'])
+    ->name('announcements.view');
+
+// route for update announcement
+Route::put('/announcement/{id}', [AnnouncementController::class, 'updateAnnouncement'])
+    ->middleware(['auth','verified', 'rolemanager:supperAdmin, admin'])
+    ->name('announcement.update');
+
+//route for delete announcement data
+Route::delete('/announcement/{id}/destroy', [AnnouncementController::class, 'deleteData'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('announcement.deleteData');
+
 
 
 
