@@ -590,7 +590,10 @@ Route::get('/create-announcement', [AnnouncementController::class, 'newAnnouncem
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
     ->name('announcement.newAnnouncement');
 
-
+// route for store announcment
+Route::post('announcement/create', [AnnouncementController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin, admin')
+    ->name('announcements.store');
 
 
 
