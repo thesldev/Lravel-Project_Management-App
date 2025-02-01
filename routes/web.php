@@ -698,6 +698,11 @@ Route::get('/client-service-tickets/all', [SupportTicketController::class, 'getA
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.getAllServiceTickets');
 
+
+// routes for client's general tickets 
+// route for general ticket page
+
+
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
