@@ -73,6 +73,69 @@
                         </div>                     
                     </div>
 
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Service Announcements</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @if($service->announcements->isNotEmpty())
+                                    @foreach($service->announcements as $announcement)
+                                        <div class="col-12 mb-3">
+                                            <div class="card shadow-sm">
+                                                <!-- Header Section -->
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <h5 class="mb-0 me-2">{{ $announcement->title }}</h5> 
+                                                        <span class="badge bg-primary">#{{ $announcement->id }}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Body Section -->
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <div class="flex-grow-1">
+                                                        <p class="card-text mb-1">
+                                                            {{ $announcement->body }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Footer Section -->
+                                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="text-muted mr-2" style="font-size: 0.9rem;">
+                                                            <strong>Created At:</strong> {{ $announcement->created_at->toFormattedDateString() }}
+                                                        </span>
+                                                        <span class="text-muted mr-2" style="font-size: 0.9rem;">
+                                                            <strong>|</strong>
+                                                        </span>
+                                                        <span class="text-muted" style="font-size: 0.9rem;">
+                                                            <strong>Announced By:</strong> {{ $announcement->creator->name }}
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="text-muted ms-3">priority:</span> 
+                                                        <span class="badge 
+                                                            @if($announcement->priority === 'Critical') bg-danger 
+                                                            @elseif($announcement->priority === 'High') bg-warning text-dark 
+                                                            @elseif($announcement->priority === 'Medium') bg-primary 
+                                                            @else bg-secondary 
+                                                            @endif">
+                                                            {{ $announcement->priority }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>                            
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p>No announcements available.</p>
+                                @endif
+                            </div>                     
+                        </div>
+                    </div>
+
+
                     <!-- second-section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">

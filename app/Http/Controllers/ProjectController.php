@@ -163,10 +163,11 @@ class ProjectController extends Controller
     // function for view product in client-portal
     public function viewMyService($id)
     {
-        // Fetch the project by its ID
-        $service = Servics::with('clients')->findOrFail($id);
+        // Fetch the service by its ID with related clients and announcements
+        $service = Servics::with(['clients', 'announcements'])
+                        ->findOrFail($id);
 
-        // Return the view with the project data
+        // Return the view with the service data
         return view('services.view-service-clientPortal', compact('service'));
     }
 

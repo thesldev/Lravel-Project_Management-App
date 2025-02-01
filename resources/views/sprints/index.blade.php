@@ -21,6 +21,7 @@
 
      <!-- Custom styles for this template-->
      <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+     <link rel="stylesheet" href="{{ asset('css/sprint_style.css') }}">
 </head>
 
 <body id="page-top">
@@ -50,28 +51,36 @@
                         </div>
                     </div>
 
-                    <div class="container mt-4">
-                        <div class="row">
-                            @foreach($sprints as $sprint)
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
+                    <!-- Active Sprints -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">All Sprints</h6>
+                        </div>
+                        <div class="card-body overflow-wrapper">
+                            @foreach($sprints as $sprint)    
+                                <div class="col-md-6 col-lg-12 mb-4">
+                                    <div class="card shadow-sm border-0">
+                                        <div class="card-body pt-3 pb-1">
+                                            <h6 class="card-title">
+                                                Project: <span class="fw-bold">{{ $sprint->project->name ?? 'N/A' }}</span>
+                                                <span class="float-end">Duration: {{ $sprint->duration_weeks }} weeks</span>
+                                            </h6>
+                                        </div>
+                                        <div class="card-body pt-1 pb-3">
                                             <h5 class="card-title">{{ $sprint->title }}</h5>
-                                            <p class="card-text">{{ $sprint->description }}</p>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    Project: {{ $sprint->project->name ?? 'N/A' }}<br>
-                                                    Duration: {{ $sprint->duration_weeks }} weeks<br>
-                                                    Start Date: {{ $sprint->start_date }}<br>
-                                                    End Date: {{ $sprint->end_date }}
-                                                </small>
-                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span><strong>Description:</strong> {{ $sprint->description }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-1 pb-3 start-end-dates">
+                                            <div>Start Date: {{ $sprint->start_date }}</div>
+                                            <div>End Date: {{ $sprint->end_date }}</div>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                    </div>                  
+                    </div>
                 </div>
                 <!-- /.container-fluid -->
 
@@ -178,18 +187,6 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
-    <!-- Page level plugins -->
-    <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
-
-    <!-- jQuery (necessary for DataTables) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
     <!-- Initialize DataTables -->
     <script>

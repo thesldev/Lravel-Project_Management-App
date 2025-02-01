@@ -42,4 +42,9 @@ class Servics extends Model
     }
 
 
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class, 'service', 'id');
+    }
+
 }
