@@ -174,6 +174,34 @@
         </div>
     </li>
 
+    <!-- Nav Item - Announcements Collapse Menu -->
+    <li class="nav-item">
+        <a
+            class="nav-link collapsed"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseAnnouncements"
+            aria-expanded="true"
+            aria-controls="collapseAnnouncements"
+        >
+            <i class="fas fa-bullhorn"></i>
+            <span>Announcements</span>
+        </a>
+        <div
+            id="collapseAnnouncements"
+            class="collapse"
+            aria-labelledby="headingAnnouncements"
+            data-parent="#accordionSidebar"
+        >
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Manage Announcements:</h6>
+                <a class="collapse-item" href="{{route('announcement.index')}}">View All Announcements</a>
+                <a class="collapse-item" href="{{route('announcement.newAnnouncement')}}">New Announcement</a>
+            </div>
+        </div>
+    </li>
+
+
     <!-- Divider -->
     <hr class="sidebar-divider" />
 
