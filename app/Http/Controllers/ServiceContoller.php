@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Servics;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -38,26 +39,32 @@ class ServiceContoller extends Controller
         ]);
 
         try {
-            // Use a database transaction
-            DB::transaction(function () use ($validated) {
-                // Create the client record
-                Servics::create([
-                    'name' => $validated['name'],
-                    'description' => $validated['description'],
-                    'service_type' => $validated['service_type'],
-                    'status' => $validated['status'],
-                    'priority' => $validated['priority'],
-                    'start_date' => $validated['start_date'],
-                ]);
-            });
+            // Debugging validation result
+            Log::info('Validated Data: ', $validated);
+
+            // Get the authenticated user's ID
+            $userId = Auth::id();
+
+            // Use Eloquent Model to create a new record
+            Servics::create([
+                'name' => $validated['name'],
+                'description' => $validated['description'],
+                'service_type' => $validated['service_type'],
+                'status' => $validated['status'],
+                'priority' => $validated['priority'],
+                'start_date' => $validated['start_date'],
+                'user_id' => $userId, // Required field
+            ]);
 
             // Redirect back with success message
-            return redirect()->route('service.index')->with('success', 'Client data saved successfully!');
+            return redirect()->route('service.index')->with('success', 'Service data saved successfully!');
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::error('Database Error: ' . $e->getMessage());
             return redirect()->back()->withErrors('An error occurred. Please try again.');
         }
     }
+
+
 
     // function for get service by Id
     public function viewService($id)

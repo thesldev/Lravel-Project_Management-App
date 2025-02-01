@@ -6,6 +6,7 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\GeneralTicketController;
 use App\Http\Controllers\IssuesInSprint;
 use App\Http\Controllers\IssuesInSprintController;
 use App\Http\Controllers\ProfileController;
@@ -701,7 +702,9 @@ Route::get('/client-service-tickets/all', [SupportTicketController::class, 'getA
 
 // routes for client's general tickets 
 // route for general ticket page
-
+Route::get('/general-tickets/{id}', [GeneralTicketController::class, 'generalTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.generalTickets');
 
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
