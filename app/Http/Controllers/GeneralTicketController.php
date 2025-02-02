@@ -39,6 +39,7 @@ class GeneralTicketController extends Controller
         }
     }
 
+    // function for store general ticket
     public function store(Request $request)
     {
         try {
@@ -77,5 +78,25 @@ class GeneralTicketController extends Controller
         }
     }
 
+
+    // function for change the ticket status into closed from client portal
+    public function closeTicket($id)
+    {
+        try {
+            // Find the ticket and ensure it belongs to the authenticated user
+            $ticket = GeneralTicket::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
+
+            // Update ticket status
+            $ticket->status = 'closed';
+            $ticket->save();
+
+            return redirect()->back()->with('success', 'Ticket closed successfully.');
+        } catch (\Exception $e) {
+            Log::error('Error closing ticket: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Failed to close ticket.');
+        }
+    }
     
 }

@@ -711,7 +711,10 @@ Route::post('/tickets', [GeneralTicketController::class, 'store'])
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('tickets.store');
 
-// route for display general tickets according to the logged in user.
+// route for closed general ticket from client portal.
+Route::post('/general-tickets/{id}/close', [GeneralTicketController::class, 'closeTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('generalTickets.close');
 
 
 

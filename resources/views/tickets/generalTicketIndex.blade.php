@@ -62,12 +62,6 @@
                                          Create Ticket
                                         </a>
                                     </li>
-                                    <li class="dropdown-item position-relative ">
-                                        <a id="changeStatusButton">
-                                            <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         Ticket Status
-                                        </a>
-                                    </li>
                                     <li>
                                         <a class="dropdown-item ">
                                             <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
@@ -117,11 +111,12 @@
                                                                     <i class="bi bi-eye"></i> View Ticket
                                                                 </a>
                                                             </li>
-                                                            <li>
-                                                                <a class="dropdown-item" href="#" onclick="">
+                                                            <form action="{{ route('generalTickets.close', $ticket->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to close this ticket?');">
+                                                                @csrf
+                                                                <button type="submit" class="dropdown-item">
                                                                     <i class="bi bi-x-circle"></i> Close Ticket
-                                                                </a>
-                                                            </li>
+                                                                </button>
+                                                            </form>
                                                         </ul>
                                                     </div>
                                                 </div>
