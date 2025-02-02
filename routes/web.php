@@ -706,6 +706,15 @@ Route::get('/general-tickets/{id}', [GeneralTicketController::class, 'generalTic
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('client.generalTickets');
 
+// route for create general ticket
+Route::post('/tickets', [GeneralTicketController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('tickets.store');
+
+// route for display general tickets according to the logged in user.
+
+
+
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 

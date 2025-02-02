@@ -27,4 +27,9 @@ class GeneralTicket extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(TicketAttachment::class, 'ticket_id', 'id');
+    }
 }
