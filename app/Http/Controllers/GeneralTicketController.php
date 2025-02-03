@@ -191,4 +191,29 @@ class GeneralTicketController extends Controller
     }
 
 
+    // function for view general tickets in admin side
+    public function clientGeneralTickets(){
+        return view('tickets.clientGeneralTicket');
+    }
+
+    //  function for fetch active general tickets into admin dashboard
+    public function getAllTickets(){
+        $tickets = GeneralTicket::with(['client']) // Include required relationships
+            ->where('status', 'Open')
+            ->get();
+
+        return response()->json($tickets);
+    }
+
+
+    // function for fetched closed or resolved tickets
+    public function getClosedOrResolvedTickets()
+    {
+        $tickets = GeneralTicket::with(['client'])
+            ->whereIn('status', ['closed', 'resolved']) // Filter for Closed or Resolved tickets
+            ->get();
+
+        return response()->json($tickets);
+    }
+
 }

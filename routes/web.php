@@ -731,6 +731,22 @@ Route::post('/general-ticket/{id}/update', [GeneralTicketController::class, 'upd
     ->middleware('auth', 'verified', 'rolemanager:client')
     ->name('general-ticket.update');
 
+// Route for go to general ticket page in admin side
+Route::get('/client-general-tickets', [GeneralTicketController::class, 'clientGeneralTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.clientGeneralTickets');
+
+// route for fetch clinet-projects tickets
+Route::get('/client-general-tickets/all', [GeneralTicketController::class, 'getAllTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.getAllTickets');
+
+
+// Fetch closed or resolved general tickets
+Route::get('/client-general-tickets/closed-or-resolved', [GeneralTicketController::class, 'getClosedOrResolvedTickets'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('ticket.closedOrResolved');
+
 
 
 
