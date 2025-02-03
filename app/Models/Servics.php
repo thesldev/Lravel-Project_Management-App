@@ -19,6 +19,7 @@ class Servics extends Model
         'status',
         'priority',
         'start_date',
+        'user_id',
     ];
 
     /**

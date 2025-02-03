@@ -6,6 +6,7 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\GeneralTicketController;
 use App\Http\Controllers\IssuesInSprint;
 use App\Http\Controllers\IssuesInSprintController;
 use App\Http\Controllers\ProfileController;
@@ -698,6 +699,70 @@ Route::get('/client-service-tickets/all', [SupportTicketController::class, 'getA
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.getAllServiceTickets');
 
+
+// routes for client's general tickets 
+// route for general ticket page
+Route::get('/general-tickets/{id}', [GeneralTicketController::class, 'generalTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('client.generalTickets');
+
+// route for create general ticket
+Route::post('/tickets', [GeneralTicketController::class, 'store'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('tickets.store');
+
+// route for closed general ticket from client portal.
+Route::post('/general-tickets/{id}/close', [GeneralTicketController::class, 'closeTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('generalTickets.close');
+
+// route for view selected general-ticket (client-side)
+Route::get('/view-general-ticket/{id}/view', [GeneralTicketController::class, 'viewGeneralTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.viewGeneralTicket');
+
+// route for change the general ticket priority
+Route::put('/general-ticket/{id}/change-priority', [GeneralTicketController::class, 'changePriority'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('generalTickets.changePriority');
+
+// Route for updating general ticket
+Route::post('/general-ticket/{id}/update', [GeneralTicketController::class, 'updateGeneralTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('general-ticket.update');
+
+// Route for go to general ticket page in admin side
+Route::get('/client-general-tickets', [GeneralTicketController::class, 'clientGeneralTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.clientGeneralTickets');
+
+// route for fetch clinet-projects tickets
+Route::get('/client-general-tickets/all', [GeneralTicketController::class, 'getAllTickets'])
+    ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
+    ->name('ticket.getAllTickets');
+
+// Fetch closed or resolved general tickets
+Route::get('/client-general-tickets/closed-or-resolved', [GeneralTicketController::class, 'getClosedOrResolvedTickets'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('ticket.closedOrResolved');
+
+// view selected general ticket from admin side
+Route::get('/client-general-tickets/{id}/view', [GeneralTicketController::class, 'viewGeneralTicketAdmin'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('client.general-tickets.view');
+
+// route for chnage the general ticket's status
+Route::put('/general-ticket/{id}/change-status-admin', [GeneralTicketController::class, 'changeStatus'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('general-ticket.change-status');
+
+//  route for change the general ticket status into resolved in admin side
+Route::post('/client-general-tickets/{id}/resolve', [GeneralTicketController::class, 'markAsResolved'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('tickets.markResolved');
+
+
+
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
@@ -707,7 +772,7 @@ Route::get('/client-status-tickets/status/{status}', [SupportTicketController::c
 // route for view selected client ticket
 // view selected project ticket (admin-side)
 Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
-    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin', 'checkPortalAccess')
     ->name('ticket.viewTicket');
 
 // view selected service ticket (admin-side)

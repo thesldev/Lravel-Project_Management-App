@@ -66,6 +66,7 @@
                 <h6 class="collapse-header">Ticket Options:</h6>
                 <a class="collapse-item" href="{{ route('client.myProjects', ['id' => Auth::user()->id]) }}">Project Support</a>
                 <a class="collapse-item" href="{{ route('client.myServices', ['id' => Auth::user()->id]) }}">Service Support</a>
+                <a class="collapse-item" href="{{ route('client.generalTickets', ['id' => Auth::user()->id]) }}">General Tickets</a>
             </div>
         </div>
     </li>

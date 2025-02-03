@@ -112,6 +112,7 @@
                 <h6 class="collapse-header">Manage Client Tickets:</h6>
                 <a class="collapse-item" href="{{route('ticket.clientTickets')}}">Project Tickets</a>
                 <a class="collapse-item" href="{{route('ticket.clientServiceTickets')}}">Service Tickets</a>
+                <a class="collapse-item" href="{{route('ticket.clientGeneralTickets')}}">General Tickets</a>
             </div>
         </div>
     </li>
