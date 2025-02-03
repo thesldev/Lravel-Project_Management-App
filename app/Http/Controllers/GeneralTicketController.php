@@ -8,6 +8,7 @@ use App\Models\TicketAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GeneralTicketController extends Controller
 {
@@ -132,5 +133,62 @@ class GeneralTicketController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Priority updated successfully.']);
     }
+
+
+    // function for update the existing general ticket
+    public function updateGeneralTicket(Request $request, $id)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+            'attachments.*' => 'file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
+            'remove_attachments.*' => 'integer|exists:ticket_attachments,id',
+        ]);
+
+        try {
+            // Find the ticket by ID
+            $ticket = GeneralTicket::where('id', $id)
+                ->where('user_id', Auth::id()) // Ensure the user owns the ticket
+                ->firstOrFail();
+
+            // Update the ticket details
+            $ticket->subject = $validated['subject'];
+            $ticket->description = $validated['description'];
+            $ticket->save();
+
+            // Handle attachment removal
+            if ($request->has('remove_attachments')) {
+                $attachmentsToRemove = $ticket->attachments()->whereIn('id', $request->remove_attachments)->get();
+
+                foreach ($attachmentsToRemove as $attachment) {
+                    Storage::disk('public')->delete($attachment->file_path);
+                    $attachment->delete();
+                }
+            }
+
+            // Handle new attachments
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $file) {
+                    $filePath = $file->store('general-ticket-attachments', 'public');
+                    $ticket->attachments()->create([
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_path' => $filePath,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'General ticket updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating general ticket: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
 }

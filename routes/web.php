@@ -726,6 +726,13 @@ Route::put('/general-ticket/{id}/change-priority', [GeneralTicketController::cla
     ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('generalTickets.changePriority');
 
+// Route for updating general ticket
+Route::post('/general-ticket/{id}/update', [GeneralTicketController::class, 'updateGeneralTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->name('general-ticket.update');
+
+
+
 
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);

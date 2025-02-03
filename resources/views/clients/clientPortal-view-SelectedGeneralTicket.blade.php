@@ -54,7 +54,7 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" href="" id="updateTicketButton">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateGeneralTicketModal">
                                             <i class="bi bi-file-earmark-break-fill"></i> Update Ticket
                                         </a>
                                     </li>
@@ -158,53 +158,62 @@
     </div>
     <!-- End of Wrapper -->
 
-    <!-- Update Ticket Modal -->
-    <div class="modal fade" id="updateTicketModal" tabindex="-1" aria-labelledby="updateTicketModalLabel" aria-hidden="true">
+    <!-- Update General Ticket Modal -->
+    <div class="modal fade" id="updateGeneralTicketModal" tabindex="-1" aria-labelledby="updateGeneralTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateTicketModalLabel">Update Ticket #{{ $ticket->id }}</h5>
+                    <h5 class="modal-title" id="updateGeneralTicketModalLabel">Update Ticket #{{ $ticket->id }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <!-- Modal Body -->
                 <div class="modal-body">
-                <form id="updateTicketForm" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="ticketTitle" class="form-label">Ticket Title</label>
-                        <input type="text" class="form-control" id="ticketTitle" name="title" value="{{ $ticket->title }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ticketDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="ticketDescription" name="description" rows="8" required>{{ $ticket->description }}</textarea>
-                    </div>
+                    <form id="updateGeneralTicketForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="generalTicketTitle" class="form-label">Ticket Title</label>
+                            <input type="text" class="form-control" id="generalTicketTitle" name="subject" value="{{ $ticket->subject }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="generalTicketDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="generalTicketDescription" name="description" rows="8" required>{{ $ticket->description }}</textarea>
+                        </div>
 
-                    <!-- Display Existing Attachments -->
-                    <div class="mb-3">
-                        <label class="form-label">Existing Attachments</label>
-                        <ul class="list-group">
-                            
-                        </ul>
-                    </div>
+                        <!-- Display Existing Attachments -->
+                        <div class="mb-3">
+                            <label class="form-label">Existing Attachments</label>
+                            <ul class="list-group">
+                                @foreach ($ticket->attachments as $attachment)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>{{ $attachment->file_name }}</span>
+                                        <a href="{{ asset('storage/' . $attachment->file_path) }}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+                                        <label class="d-flex align-items-center gap-1 mb-0">
+                                            <input type="checkbox" name="remove_attachments[]" value="{{ $attachment->id }}"> 
+                                            <span>Remove</span>
+                                        </label>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
 
-                    <!-- Add New Attachments -->
-                    <div class="mb-3">
-                        <label for="ticketAttachments" class="form-label">Add New Attachments</label>
-                        <input type="file" class="form-control" id="ticketAttachments" name="attachments[]" multiple>
-                    </div>
+                        <!-- Add New Attachments -->
+                        <div class="mb-3">
+                            <label for="generalTicketAttachments" class="form-label">Add New Attachments</label>
+                            <input type="file" class="form-control" id="generalTicketAttachments" name="attachments[]" multiple>
+                        </div>
 
-                    <input type="hidden" id="ticketId" name="id" value="{{ $ticket->id }}">
-                </form>
-
+                        <input type="hidden" id="generalTicketId" name="id" value="{{ $ticket->id }}">
+                    </form>
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveTicketChanges()">Save Changes</button>
+                    <button type="button" class="btn btn-primary" onclick="saveGeneralTicketChanges()">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <!-- Scroll to Top Button-->
@@ -226,7 +235,43 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
 
-     <!-- script for handling the ticket details -->
+    <script>
+        // Function to save general ticket changes
+        async function saveGeneralTicketChanges() {
+            const form = document.getElementById('updateGeneralTicketForm');
+            const ticketId = document.getElementById('generalTicketId').value;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(`/general-ticket/${ticketId}/update`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    if (result.errors) {
+                        alert(`Validation Errors: ${JSON.stringify(result.errors)}`);
+                    } else {
+                        alert(result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating ticket:', error);
+                alert('An error occurred while updating the ticket.');
+            }
+        }
+
+    </script>
+     
+    <!-- script for handling the ticket details -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const changePriorityButton = document.getElementById('changePriorityButton');
@@ -293,6 +338,8 @@
                 alert('An error occurred while updating the priority.');
             }
         }
+
+
     </script>
 
 
