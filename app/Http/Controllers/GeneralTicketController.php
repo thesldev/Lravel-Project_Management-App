@@ -252,4 +252,21 @@ class GeneralTicketController extends Controller
         return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
     }
 
+
+    // function for change general ticket's stats into resolved in admin side
+    public function markAsResolved($id)
+    {
+        $ticket = GeneralTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json(['success' => false, 'message' => 'Ticket not found.'], 404);
+        }
+
+        $ticket->status = 'resolved';
+        $ticket->save();
+
+        return response()->json(['success' => true, 'message' => 'Ticket marked as resolved successfully.']);
+    }
+
+
 }

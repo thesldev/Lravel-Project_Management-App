@@ -756,9 +756,12 @@ Route::put('/general-ticket/{id}/change-status-admin', [GeneralTicketController:
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('general-ticket.change-status');
 
+//  route for change the general ticket status into resolved in admin side
+Route::post('/client-general-tickets/{id}/resolve', [GeneralTicketController::class, 'markAsResolved'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('tickets.markResolved');
 
 
-    
 
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);

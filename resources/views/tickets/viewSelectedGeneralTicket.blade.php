@@ -57,7 +57,7 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateGeneralTicketModal">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateGeneralTicketModal" data-ticket-id="{{ $ticket->id }}">
                                             <i class="bi bi-file-earmark-break-fill"></i> Mark as Resolved
                                         </a>
                                     </li>
@@ -255,6 +255,41 @@
                 alert('An error occurred while updating the status.');
             }
         }
+
+
+        $(document).on('click', '.dropdown-item[data-bs-target="#updateGeneralTicketModal"]', function (e) {
+            e.preventDefault();
+
+            const ticketId = $(this).data('ticket-id');
+
+            if (!ticketId) {
+                alert("Ticket ID not found!");
+                return;
+            }
+
+            // Show confirmation prompt before proceeding
+            const confirmAction = window.confirm("Are you sure you want to mark this ticket as resolved?");
+            
+            if (!confirmAction) {
+                return; // Exit if user cancels
+            }
+
+            $.ajax({
+                url: `/client-general-tickets/${ticketId}/resolve`,
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function (response) {
+                    alert(response.message);
+                    location.reload(); // Optionally reload the page
+                },
+                error: function (xhr) {
+                    alert(xhr.responseJSON?.message || 'An error occurred while updating the ticket.');
+                }
+            });
+        });
+
 
     </script>
 
