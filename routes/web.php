@@ -741,14 +741,24 @@ Route::get('/client-general-tickets/all', [GeneralTicketController::class, 'getA
     ->middleware('auth', 'verified', 'rolemanager:supperAdmin,admin')
     ->name('ticket.getAllTickets');
 
-
 // Fetch closed or resolved general tickets
 Route::get('/client-general-tickets/closed-or-resolved', [GeneralTicketController::class, 'getClosedOrResolvedTickets'])
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('ticket.closedOrResolved');
 
+// view selected general ticket from admin side
+Route::get('/client-general-tickets/{id}/view', [GeneralTicketController::class, 'viewGeneralTicketAdmin'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('client.general-tickets.view');
+
+// route for chnage the general ticket's status
+Route::put('/general-ticket/{id}/change-status-admin', [GeneralTicketController::class, 'changeStatus'])
+    ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
+    ->name('general-ticket.change-status');
 
 
+
+    
 
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);

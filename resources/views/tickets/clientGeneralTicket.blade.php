@@ -61,13 +61,19 @@
                                     <li>
                                         <a class="dropdown-item" id="createTicket" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
                                             <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         Create Ticket
+                                         Open Ticket
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item ">
                                             <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         All Tickets
+                                         In-Progress Tickets
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item ">
+                                            <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
+                                         On-Hold Tickets
                                         </a>
                                     </li>
                                 </ul>
@@ -219,7 +225,7 @@
                             <h5 class="card-title">${ticket.subject}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span><strong>Description:</strong> ${ticket.description || 'No Description'}</span>
-                                <a class="btn btn-primary btn-sm" href="/client-tickets/${ticket.id}/view">View Ticket</a>
+                                <a class="btn btn-primary btn-sm" href="/client-general-tickets/${ticket.id}/view">View Ticket</a>
                             </div>
                             <p class="card-text mb-1"><strong>Status:</strong> ${statusBadge}</p>
                         </div>
@@ -230,20 +236,20 @@
 
         function getStatusClass(status) {
             switch (status) {
-                case 'Open': return 'bg-primary';
-                case 'In Progress': return 'bg-info text-dark';
-                case 'On Hold': return 'bg-warning text-dark';
-                case 'Resolved': return 'bg-success';
-                case 'Closed': return 'bg-secondary';
+                case 'open': return 'bg-primary';
+                case 'in-progress': return 'bg-info text-dark';
+                case 'on-hold': return 'bg-warning text-dark';
+                case 'resolved': return 'bg-success';
+                case 'closed': return 'bg-secondary';
                 default: return 'bg-dark';
             }
         }
 
         function getPriorityClass(priority) {
             switch (priority) {
-                case 'Critical': return 'bg-danger';
-                case 'High': return 'bg-warning text-dark';
-                case 'Medium': return 'bg-primary';
+                case 'high': return 'bg-danger';
+                case 'medium': return 'bg-warning text-dark';
+                case 'low': return 'bg-primary';
                 default: return 'bg-secondary';
             }
         }

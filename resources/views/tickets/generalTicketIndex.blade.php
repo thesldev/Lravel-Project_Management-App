@@ -132,9 +132,9 @@
                                                         <span class="text-muted">Status:</span> 
                                                         <span class="badge 
                                                             {{ match($ticket->status) {
-                                                                'In Progress' => 'bg-info text-dark',
+                                                                'in-progress' => 'bg-info text-dark',
                                                                 'open' => 'bg-info text-indigo-500',
-                                                                'On Hold' => 'bg-warning text-dark',
+                                                                'on-hold' => 'bg-warning text-dark',
                                                                 default => 'bg-secondary',
                                                             } }}">
                                                             {{ $ticket->status }}

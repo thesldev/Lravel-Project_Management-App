@@ -28,7 +28,7 @@ class GeneralTicketController extends Controller
                 ->get();
 
             $closedTickets = GeneralTicket::where('user_id', Auth::id())
-                ->where('status', ['closed', 'resolved'])
+                ->where('status', ['closed', 'resolved', 'in-progress'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -199,7 +199,7 @@ class GeneralTicketController extends Controller
     //  function for fetch active general tickets into admin dashboard
     public function getAllTickets(){
         $tickets = GeneralTicket::with(['client']) // Include required relationships
-            ->where('status', 'Open')
+            ->where('status', ['Open'])
             ->get();
 
         return response()->json($tickets);
@@ -214,6 +214,40 @@ class GeneralTicketController extends Controller
             ->get();
 
         return response()->json($tickets);
+    }
+
+
+    // Function for viewing a selected ticket
+    public function viewGeneralTicketAdmin($id)
+    {
+        $ticket = GeneralTicket::with(['client', 'attachments'])->find($id);
+
+        // Check if the ticket exists
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
+
+        return view('tickets.viewSelectedGeneralTicket', compact('ticket'));
+    }
+
+
+    // Function to change the status of a ticket
+    public function changeStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:open,in-progress,on-hold,closed',
+        ]);
+
+        $ticket = GeneralTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json(['success' => false, 'message' => 'Ticket not found.'], 404);
+        }
+
+        $ticket->status = $request->status;
+        $ticket->save();
+
+        return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
     }
 
 }
