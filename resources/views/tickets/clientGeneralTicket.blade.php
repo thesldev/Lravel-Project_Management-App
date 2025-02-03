@@ -59,21 +59,21 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" id="createTicket" data-bs-toggle="modal" data-bs-target="#assignMemberModal">
-                                            <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         Open Ticket
+                                        <a class="dropdown-item filter-tickets" data-status="open">
+                                            <i class="bi bi-ticket-perforated-fill" ...></i>
+                                            Open Tickets
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item ">
-                                            <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         In-Progress Tickets
+                                        <a class="dropdown-item filter-tickets" data-status="in-progress">
+                                            <i class="bi bi-ticket-perforated-fill" ...></i>
+                                            In-Progress Tickets
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item ">
-                                            <i class="bi bi-ticket-perforated-fill" style="transform: rotate(45deg); display: inline-block;"></i>
-                                         On-Hold Tickets
+                                        <a class="dropdown-item filter-tickets" data-status="on-hold">
+                                            <i class="bi bi-ticket-perforated-fill" ...></i>
+                                            On-Hold Tickets
                                         </a>
                                     </li>
                                 </ul>
@@ -150,31 +150,39 @@
     <!-- Ajax & jQuery for handling ticket functions -->
     <script>
         $(document).ready(function () {
-            fetchTickets();
+            // Load open tickets by default
+            fetchTickets('open');
             fetchClosedResolvedTickets();
         });
 
-        function fetchTickets() {
+        // Add click handler for status filters
+        $(document).on('click', '.filter-tickets', function(e) {
+            e.preventDefault();
+            const status = $(this).data('status');
+            fetchTickets(status);
+        });
+
+
+        // Modified fetchTickets function
+        function fetchTickets(status = 'open') {
             $.ajax({
-                url: '/client-general-tickets/all',
+                url: `/client-general-tickets/all?status=${status}`,
                 method: 'GET',
-                success: function (tickets) {
+                success: function(tickets) {
                     let container = $('.active-tickets-container');
                     container.empty();
                     
-                    let activeTickets = tickets.filter(ticket => ['open', 'in-progress', 'on-hold'].includes(ticket.status));
-                    
-                    if (activeTickets.length === 0) {
-                        container.append('<p class="text-center">No active tickets found.</p>');
+                    if (tickets.length === 0) {
+                        container.append('<p class="text-center">No tickets found.</p>');
                         return;
                     }
 
-                    activeTickets.forEach(ticket => {
+                    tickets.forEach(ticket => {
                         container.append(generateTicketHTML(ticket));
                     });
                 },
-                error: function (error) {
-                    console.error('Error fetching active tickets:', error);
+                error: function(error) {
+                    console.error('Error fetching tickets:', error);
                 }
             });
         }

@@ -197,11 +197,13 @@ class GeneralTicketController extends Controller
     }
 
     //  function for fetch active general tickets into admin dashboard
-    public function getAllTickets(){
-        $tickets = GeneralTicket::with(['client']) // Include required relationships
-            ->where('status', ['Open'])
+    public function getAllTickets(Request $request) {
+        $status = $request->input('status', 'open'); // Default to 'open'
+        
+        $tickets = GeneralTicket::with(['client'])
+            ->where('status', $status)
             ->get();
-
+    
         return response()->json($tickets);
     }
 
