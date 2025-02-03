@@ -60,15 +60,14 @@
                                     </li>
                                     <li class="dropdown-item position-relative">
                                         <a href="#" id="changePriorityButton">
-                                            <i class="bi bi-arrow-clockwise"></i> Change Status
+                                            <i class="bi bi-arrow-clockwise"></i> Change Priority
                                         </a>
                                         <!-- Status List -->
                                         <div id="priorityList" class="status-popup position-absolute d-none">
                                             <ul class="list-unstyled mb-0">
-                                                <li class="dropdown-item" data-status="Open">Low</li>
-                                                <li class="dropdown-item" data-status="On Hold">Medium</li>
-                                                <li class="dropdown-item" data-status="Resolved">High</li>
-                                                <li class="dropdown-item" data-status="Closed">Critical</li>
+                                                <li class="dropdown-item" data-status="low">Low</li>
+                                                <li class="dropdown-item" data-status="medium">Medium</li>
+                                                <li class="dropdown-item" data-status="high">High</li>
                                             </ul>
                                         </div>
                                     </li>
@@ -139,34 +138,6 @@
                                 @else
                                     <p>No attachments available for this ticket.</p>
                                 @endif
-                            </div>
-   
-                            <form method="POST" action="{{ route('comments.storeClientComment', $ticket->id) }}">
-                                @csrf
-                                <div class="row mt-5">
-                                    <h6 class="mb-3">Put a Comment:</h6>
-                                    <div class="input-group">
-                                        <textarea name="content" class="form-control" id="commentInput" placeholder="Write your comment here..." rows="2" required></textarea>
-                                        <button class="btn btn-primary" type="submit">send</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- ticket history section -->
-                    <h1 class="h3 mb-4 text-gray-800">Ticket #{{ $ticket->id }} Comment History</h1>
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div class="ks-messages ks-messenger__messages">
-                                <div
-                                    class="ks-body ks-scrollable"
-                                    style="height: 480px; overflow-y: auto; padding: 0;"
-                                >
-                                    <ul class="ks-items" id="comments-container">
-                                        <!-- Comments will be dynamically injected here -->
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -254,6 +225,76 @@
     <!-- Font Awesome (optional, for icons) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-   
+
+     <!-- script for handling the ticket details -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const changePriorityButton = document.getElementById('changePriorityButton');
+            const priorityList = document.getElementById('priorityList');
+            const priorityItems = priorityList.querySelectorAll('.dropdown-item');
+
+            // Show priority list when hovering
+            changePriorityButton.addEventListener('mouseenter', function () {
+                priorityList.classList.remove('d-none');
+            });
+
+            // Hide priority list when mouse leaves
+            changePriorityButton.addEventListener('mouseleave', function () {
+                setTimeout(() => {
+                    if (!priorityList.matches(':hover')) {
+                        priorityList.classList.add('d-none');
+                    }
+                }, 200);
+            });
+
+            priorityList.addEventListener('mouseenter', function () {
+                priorityList.classList.remove('d-none');
+            });
+
+            priorityList.addEventListener('mouseleave', function () {
+                priorityList.classList.add('d-none');
+            });
+
+            // Handle click on priority items
+            priorityItems.forEach(function (item) {
+                item.addEventListener('click', function () {
+                    const selectedPriority = item.getAttribute('data-status');
+                    const ticketId = document.getElementById('ticketId').value;
+
+                    if (confirm(`Are you sure you want to change the priority to: ${selectedPriority}?`)) {
+                        updateTicketPriority(ticketId, selectedPriority);
+                    }
+                });
+            });
+        });
+
+        // Function to update the ticket priority via AJAX
+        async function updateTicketPriority(ticketId, priority) {
+            try {
+                const response = await fetch(`/general-ticket/${ticketId}/change-priority`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ priority }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Priority updated to: ${priority}`);
+                    location.reload();
+                } else {
+                    alert(`Failed to update priority: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating priority:', error);
+                alert('An error occurred while updating the priority.');
+            }
+        }
+    </script>
+
+
 </body>
 </html>

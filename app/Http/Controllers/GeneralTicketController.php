@@ -113,4 +113,24 @@ class GeneralTicketController extends Controller
         return view('clients.clientPortal-view-SelectedGeneralTicket', compact('ticket'));
     }
 
+
+    // function for change the general ticket priority
+    public function changePriority(Request $request, $id)
+    {
+        $request->validate([
+            'priority' => 'required|in:low,medium,high',
+        ]);
+
+        $ticket = GeneralTicket::find($id);
+
+        if (!$ticket) {
+            return response()->json(['success' => false, 'message' => 'Ticket not found.'], 404);
+        }
+
+        $ticket->priority = $request->priority;
+        $ticket->save();
+
+        return response()->json(['success' => true, 'message' => 'Priority updated successfully.']);
+    }
+
 }
