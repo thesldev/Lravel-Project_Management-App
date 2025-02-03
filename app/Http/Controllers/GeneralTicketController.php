@@ -99,4 +99,18 @@ class GeneralTicketController extends Controller
         }
     }
     
+
+    // function for view selected ticket
+    public function viewGeneralTicket($id)
+    {
+        $ticket = GeneralTicket::with(['client', 'attachments'])->find($id);
+
+        // Check if ticket exists
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
+
+        return view('clients.clientPortal-view-SelectedGeneralTicket', compact('ticket'));
+    }
+
 }

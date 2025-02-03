@@ -107,7 +107,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <li>
-                                                                <a class="dropdown-item" href="">
+                                                                <a class="dropdown-item" href="{{route('ticket.viewGeneralTicket', ['id' => $ticket->id])}}">
                                                                     <i class="bi bi-eye"></i> View Ticket
                                                                 </a>
                                                             </li>

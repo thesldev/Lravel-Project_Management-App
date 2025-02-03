@@ -713,8 +713,13 @@ Route::post('/tickets', [GeneralTicketController::class, 'store'])
 
 // route for closed general ticket from client portal.
 Route::post('/general-tickets/{id}/close', [GeneralTicketController::class, 'closeTicket'])
-    ->middleware('auth', 'verified', 'rolemanager:client')
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
     ->name('generalTickets.close');
+
+// route for view selected general-ticket (client-side)
+Route::get('/view-general-ticket/{id}/view', [GeneralTicketController::class, 'viewGeneralTicket'])
+    ->middleware('auth', 'verified', 'rolemanager:client', 'checkPortalAccess')
+    ->name('ticket.viewGeneralTicket');
 
 
 
@@ -727,7 +732,7 @@ Route::get('/client-status-tickets/status/{status}', [SupportTicketController::c
 // route for view selected client ticket
 // view selected project ticket (admin-side)
 Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
-    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin', 'checkPortalAccess')
     ->name('ticket.viewTicket');
 
 // view selected service ticket (admin-side)

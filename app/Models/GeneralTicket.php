@@ -16,11 +16,6 @@ class GeneralTicket extends Model
         'description',
         'status',
         'priority',
-        'attachments',
-    ];
-
-    protected $casts = [
-        'attachments' => 'array', // Store attachments as JSON
     ];
 
     public function user()
@@ -28,8 +23,13 @@ class GeneralTicket extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'user_id');
+    }
+
     public function attachments()
     {
-        return $this->hasMany(TicketAttachment::class, 'ticket_id', 'id');
+        return $this->hasMany(TicketAttachment::class, 'ticket_id'); // Explicitly define the foreign key
     }
 }
