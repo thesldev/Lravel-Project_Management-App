@@ -54,11 +54,12 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <li>
-                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#updateGeneralTicketModal">
+                                        <a class="dropdown-item {{ in_array($ticket->status, ['closed', 'resolved', 'in-progress']) ? 'disabled' : '' }}" 
+                                        href="#" data-bs-toggle="modal" data-bs-target="#updateGeneralTicketModal">
                                             <i class="bi bi-file-earmark-break-fill"></i> Update Ticket
                                         </a>
                                     </li>
-                                    <li class="dropdown-item position-relative">
+                                    <li class="dropdown-item position-relative {{ in_array($ticket->status, ['closed', 'resolved', 'in-progress']) ? 'disabled' : '' }}">
                                         <a href="#" id="changePriorityButton">
                                             <i class="bi bi-arrow-clockwise"></i> Change Priority
                                         </a>
