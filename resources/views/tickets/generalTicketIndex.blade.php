@@ -133,14 +133,15 @@
                                                             <span class="text-muted">Status:</span> 
                                                             <span class="badge 
                                                                 {{ match($ticket->status) {
-                                                                    'in-progress' => 'bg-info text-dark',
-                                                                    'open' => 'bg-info text-indigo-500',
-                                                                    'on-hold' => 'bg-warning text-dark',
-                                                                    default => 'bg-secondary',
+                                                                    'in-progress' => 'bg-primary text-white',       
+                                                                    'open' => 'bg-info text-white',             
+                                                                    'on-hold' => 'bg-warning text-dark',           
+                                                                    'resolved' => 'bg-success bg-opacity-75 text-white',        
+                                                                    'closed' => 'bg-danger text-white',           
+                                                                    default => 'bg-secondary text-white',         
                                                                 } }}">
-                                                                {{ $ticket->status }}
+                                                                {{ ucfirst($ticket->status) }}
                                                             </span>
-
                                                             <span class="text-muted ms-3">Priority:</span> 
                                                             <span class="badge 
                                                                 {{ match($ticket->priority) {
@@ -203,7 +204,7 @@
                                                             </button>
                                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                                 <li>
-                                                                    <a class="dropdown-item" href="">
+                                                                    <a class="dropdown-item" href="{{route('ticket.viewGeneralTicket', ['id' => $closedTicket->id])}}">
                                                                         <i class="bi bi-eye"></i> View Ticket
                                                                     </a>
                                                                 </li>
@@ -222,19 +223,21 @@
                                                             <span class="text-muted">Status:</span> 
                                                             <span class="badge 
                                                                 {{ match($closedTicket->status) {
-                                                                    'In Progress' => 'bg-info text-dark',
-                                                                    'open' => 'bg-info text-indigo-500',
-                                                                    'On Hold' => 'bg-warning text-dark',
-                                                                    default => 'bg-secondary',
-                                                                } }} ">
-                                                                {{ $closedTicket->status }}
+                                                                    'in-progress' => 'bg-primary text-white',       
+                                                                    'open' => 'bg-success text-white',             
+                                                                    'on-hold' => 'bg-warning text-dark',           
+                                                                    'resolved' => 'bg-success bg-opacity-75 text-white',        
+                                                                    'closed' => 'bg-danger text-white',           
+                                                                    default => 'bg-secondary text-white',         
+                                                                } }}">
+                                                                {{ ucfirst($closedTicket->status) }}
                                                             </span>
 
                                                             <span class="text-muted ms-3">Priority:</span> 
                                                             <span class="badge 
                                                                 {{ match($closedTicket->priority) {
                                                                     'high' => 'bg-danger',
-                                                                    'medium' => 'bg-warning text-dark',
+                                                                    'medium' => 'bg-warning text-white',
                                                                     'low' => 'bg-primary',
                                                                     default => 'bg-secondary',
                                                                 } }} ">
