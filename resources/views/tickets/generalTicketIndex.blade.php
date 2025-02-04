@@ -80,172 +80,177 @@
                                 @if($tickets->isEmpty())
                                     <p class="text-center">No tickets found.</p>
                                 @else
-                                    @foreach($tickets as $ticket)
-                                        <div class="col-12 mb-3">
-                                            <div class="card shadow-sm">
-                                                <!-- Header Section -->
-                                                <div class="card-header d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex align-items-center">
-                                                        <h5 class="mb-0 me-2">{{ $ticket->subject }}</h5> 
-                                                        <span class="badge bg-primary">#{{ $ticket->id }}</span>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Body Section -->
-                                                <div class="card-body d-flex justify-content-between align-items-center">
-                                                    <!-- Ticket Description -->
-                                                    <div class="flex-grow-1">
-                                                        <p class="card-text mb-1">
-                                                            {{ Str::limit($ticket->description, 100) }}
-                                                        </p>
+                                    <div class="col-12" style="max-height: 400px; overflow-y: auto;">
+                                        @foreach($tickets as $ticket)
+                                            <div class="mb-3">
+                                                <div class="card shadow-sm">
+                                                    <!-- Header Section -->
+                                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex align-items-center">
+                                                            <h5 class="mb-0 me-2">{{ $ticket->subject }}</h5> 
+                                                            <span class="badge bg-primary">#{{ $ticket->id }}</span>
+                                                        </div>
                                                     </div>
 
-                                                    <!-- Dropdown Button -->
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="bi bi-three-dots-vertical"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <li>
-                                                                <a class="dropdown-item" href="{{route('ticket.viewGeneralTicket', ['id' => $ticket->id])}}">
-                                                                    <i class="bi bi-eye"></i> View Ticket
-                                                                </a>
-                                                            </li>
-                                                            <form action="{{ route('generalTickets.close', $ticket->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to close this ticket?');">
-                                                                @csrf
-                                                                <button type="submit" class="dropdown-item">
-                                                                    <i class="bi bi-x-circle"></i> Close Ticket
-                                                                </button>
-                                                            </form>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                    <!-- Body Section -->
+                                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                                        <!-- Ticket Description -->
+                                                        <div class="flex-grow-1">
+                                                            <p class="card-text mb-1">
+                                                                {{ Str::limit($ticket->description, 100) }}
+                                                            </p>
+                                                        </div>
 
-                                                <!-- Footer Section -->
-                                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <span class="text-muted" style="font-size: 0.9rem;">
-                                                            <strong>Created At:</strong> {{ $ticket->created_at->format('Y-m-d H:i') }}
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="text-muted">Status:</span> 
-                                                        <span class="badge 
-                                                            {{ match($ticket->status) {
-                                                                'in-progress' => 'bg-info text-dark',
-                                                                'open' => 'bg-info text-indigo-500',
-                                                                'on-hold' => 'bg-warning text-dark',
-                                                                default => 'bg-secondary',
-                                                            } }}">
-                                                            {{ $ticket->status }}
-                                                        </span>
-
-                                                        <span class="text-muted ms-3">Priority:</span> 
-                                                        <span class="badge 
-                                                            {{ match($ticket->priority) {
-                                                                'high' => 'bg-danger',
-                                                                'medium' => 'bg-warning text-dark',
-                                                                'low' => 'bg-primary',
-                                                                default => 'bg-secondary',
-                                                            } }}">
-                                                            {{ ucfirst($ticket->priority) }}
-                                                        </span>
+                                                        <!-- Dropdown Button -->
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="bi bi-three-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                <li>
+                                                                    <a class="dropdown-item" href="{{route('ticket.viewGeneralTicket', ['id' => $ticket->id])}}">
+                                                                        <i class="bi bi-eye"></i> View Ticket
+                                                                    </a>
+                                                                </li>
+                                                                <form action="{{ route('generalTickets.close', $ticket->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to close this ticket?');">
+                                                                    @csrf
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="bi bi-x-circle"></i> Close Ticket
+                                                                    </button>
+                                                                </form>
+                                                            </ul>
+                                                        </div>
                                                     </div>
 
+                                                    <!-- Footer Section -->
+                                                    <div class="card-footer d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="text-muted" style="font-size: 0.9rem;">
+                                                                <strong>Created At:</strong> {{ $ticket->created_at->format('Y-m-d H:i') }}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-muted">Status:</span> 
+                                                            <span class="badge 
+                                                                {{ match($ticket->status) {
+                                                                    'in-progress' => 'bg-info text-dark',
+                                                                    'open' => 'bg-info text-indigo-500',
+                                                                    'on-hold' => 'bg-warning text-dark',
+                                                                    default => 'bg-secondary',
+                                                                } }}">
+                                                                {{ $ticket->status }}
+                                                            </span>
+
+                                                            <span class="text-muted ms-3">Priority:</span> 
+                                                            <span class="badge 
+                                                                {{ match($ticket->priority) {
+                                                                    'high' => 'bg-danger',
+                                                                    'medium' => 'bg-warning text-dark',
+                                                                    'low' => 'bg-primary',
+                                                                    default => 'bg-secondary',
+                                                                } }}">
+                                                                {{ ucfirst($ticket->priority) }}
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 @endif
                             </div>
                         </div>
                     </div>
 
-                    <!-- closed tickets -->
+                    <!-- Closed Tickets Section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Closed & Resolved General Tickets</h6>
                         </div>
-                        <!-- display ticket data -->
+
+                        <!-- Scrollable Ticket Section -->
                         <div class="card-body">
                             <div class="row">
                                 @if($closedTickets->isEmpty())
                                     <p class="text-center">No tickets found.</p>
                                 @else
-                                    @foreach($closedTickets as $closedTicket)
-                                        <div class="col-12 mb-3">
-                                            <div class="card shadow-sm">
-                                                <!-- Header Section -->
-                                                <div class="card-header d-flex justify-content-between align-items-center">
-                                                    <div class="d-flex align-items-center">
-                                                        <h5 class="mb-0 me-2">{{ $closedTicket->subject }}</h5> 
-                                                        <span class="badge bg-primary">#{{ $closedTicket->id }}</span>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Body Section -->
-                                                <div class="card-body d-flex justify-content-between align-items-center">
-                                                    <!-- Ticket Description -->
-                                                    <div class="flex-grow-1">
-                                                        <p class="card-text mb-1">
-                                                            {{ Str::limit($closedTicket->description, 100) }}
-                                                        </p>
+                                    <!-- Scrollable Container -->
+                                    <div class="col-12" style="max-height: 400px; overflow-y: auto;">
+                                        @foreach($closedTickets as $closedTicket)
+                                            <div class="mb-3">
+                                                <div class="card shadow-sm">
+                                                    <!-- Header Section -->
+                                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                                        <div class="d-flex align-items-center">
+                                                            <h5 class="mb-0 me-2">{{ $closedTicket->subject }}</h5> 
+                                                            <span class="badge bg-primary">#{{ $closedTicket->id }}</span>
+                                                        </div>
                                                     </div>
 
-                                                    <!-- Dropdown Button -->
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <i class="bi bi-three-dots-vertical"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <li>
-                                                                <a class="dropdown-item" href="">
-                                                                    <i class="bi bi-eye"></i> View Ticket
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                    <!-- Body Section -->
+                                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                                        <div class="flex-grow-1">
+                                                            <p class="card-text mb-1">
+                                                                {{ Str::limit($closedTicket->description, 100) }}
+                                                            </p>
+                                                        </div>
 
-                                                <!-- Footer Section -->
-                                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <span class="text-muted" style="font-size: 0.9rem;">
-                                                            <strong>Created At:</strong> {{ $closedTicket->created_at->format('Y-m-d H:i') }}
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <span class="text-muted">Status:</span> 
-                                                        <span class="badge 
-                                                            {{ match($closedTicket->status) {
-                                                                'In Progress' => 'bg-info text-dark',
-                                                                'open' => 'bg-info text-indigo-500',
-                                                                'On Hold' => 'bg-warning text-dark',
-                                                                default => 'bg-secondary',
-                                                            } }}">
-                                                            {{ $closedTicket->status }}
-                                                        </span>
-
-                                                        <span class="text-muted ms-3">Priority:</span> 
-                                                        <span class="badge 
-                                                            {{ match($closedTicket->priority) {
-                                                                'high' => 'bg-danger',
-                                                                'medium' => 'bg-warning text-dark',
-                                                                'low' => 'bg-primary',
-                                                                default => 'bg-secondary',
-                                                            } }}">
-                                                            {{ ucfirst($closedTicket->priority) }}
-                                                        </span>
+                                                        <!-- Dropdown Button -->
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-light btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="bi bi-three-dots-vertical"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                <li>
+                                                                    <a class="dropdown-item" href="">
+                                                                        <i class="bi bi-eye"></i> View Ticket
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
 
+                                                    <!-- Footer Section -->
+                                                    <div class="card-footer d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <span class="text-muted" style="font-size: 0.9rem;">
+                                                                <strong>Created At:</strong> {{ $closedTicket->created_at->format('Y-m-d H:i') }}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-muted">Status:</span> 
+                                                            <span class="badge 
+                                                                {{ match($closedTicket->status) {
+                                                                    'In Progress' => 'bg-info text-dark',
+                                                                    'open' => 'bg-info text-indigo-500',
+                                                                    'On Hold' => 'bg-warning text-dark',
+                                                                    default => 'bg-secondary',
+                                                                } }} ">
+                                                                {{ $closedTicket->status }}
+                                                            </span>
+
+                                                            <span class="text-muted ms-3">Priority:</span> 
+                                                            <span class="badge 
+                                                                {{ match($closedTicket->priority) {
+                                                                    'high' => 'bg-danger',
+                                                                    'medium' => 'bg-warning text-dark',
+                                                                    'low' => 'bg-primary',
+                                                                    default => 'bg-secondary',
+                                                                } }} ">
+                                                                {{ ucfirst($closedTicket->priority) }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 @endif
                             </div>
                         </div>
                     </div>
+
                 <!-- /.container-fluid -->
                 </div>
             <!-- End of Main Content -->

@@ -23,14 +23,15 @@ class GeneralTicketController extends Controller
             // Retrieve the client data
             $client = Client::where('user_id', $id)->firstOrFail();
             $tickets = GeneralTicket::where('user_id', Auth::id())
-                ->where('status', ['open', 'in-progress', 'on-hold'])
+                ->whereIn('status', ['open', 'in-progress', 'on-hold'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
             $closedTickets = GeneralTicket::where('user_id', Auth::id())
-                ->where('status', ['closed', 'resolved', 'in-progress'])
+                ->whereIn('status', ['closed', 'resolved'])
                 ->orderBy('created_at', 'desc')
                 ->get();
+            
 
             // Pass the services to the view
             return view('tickets.generalTicketIndex', compact('client', 'tickets', 'closedTickets'));
