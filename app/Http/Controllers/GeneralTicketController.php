@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\GeneralTicket;
+use App\Models\GeneralTicketAttachment;
 use App\Models\TicketAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,7 @@ class GeneralTicketController extends Controller
                 ->get();
 
             $closedTickets = GeneralTicket::where('user_id', Auth::id())
-                ->whereIn('status', ['closed', 'resolved'])
+                ->whereIn('status', ['closed', 'resolved',]) 
                 ->orderBy('created_at', 'desc')
                 ->get();
             
@@ -63,8 +64,8 @@ class GeneralTicketController extends Controller
             // Handle attachments if present
             if ($request->hasFile('attachments')) {
                 foreach ($request->file('attachments') as $file) {
-                    $filePath = $file->store('tickets', 'public');
-                    TicketAttachment::create([
+                    $filePath = $file->store('general-ticket-attachments', 'public');
+                    GeneralTicketAttachment::create([
                         'ticket_id' => $ticket->id,
                         'file_name' => $file->getClientOriginalName(),
                         'file_path' => $filePath,
@@ -79,6 +80,8 @@ class GeneralTicketController extends Controller
             return redirect()->back()->with('error', 'Failed to create ticket: ' . $e->getMessage());
         }
     }
+
+    
 
 
     // function for change the ticket status into closed from client portal
@@ -191,7 +194,6 @@ class GeneralTicketController extends Controller
         }
     }
 
-
     // function for view general tickets in admin side
     public function clientGeneralTickets(){
         return view('tickets.clientGeneralTicket');
@@ -203,6 +205,7 @@ class GeneralTicketController extends Controller
         
         $tickets = GeneralTicket::with(['client'])
             ->where('status', $status)
+            ->orderBy('created_at', 'desc')
             ->get();
     
         return response()->json($tickets);

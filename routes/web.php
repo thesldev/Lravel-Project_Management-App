@@ -761,8 +761,6 @@ Route::post('/client-general-tickets/{id}/resolve', [GeneralTicketController::cl
     ->middleware(['auth', 'verified', 'rolemanager:supperAdmin,admin'])
     ->name('tickets.markResolved');
 
-
-
 // route for filter the client tickets according to the ticket status
 Route::get('/client-tickets/status/{status}', [SupportTicketController::class, 'filterByStatus']);
 
