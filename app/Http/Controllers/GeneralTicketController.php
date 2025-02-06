@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GeneralTicketNotification;
 use App\Models\Client;
 use App\Models\GeneralTicket;
 use App\Models\GeneralTicketAttachment;
-use App\Models\TicketAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class GeneralTicketController extends Controller
@@ -73,8 +74,22 @@ class GeneralTicketController extends Controller
                 }
             }
 
+            // Email Recipients
+            $adminEmails = [
+                'siriwardhanad.sanka@gmail.com',
+                'sankasiriwardhana.me@gmail.com',
+                'sankasiriwardhanadeg@gmail.com',
+            ];
+
+            // Send Email Notification
+            try {
+                Mail::to($adminEmails)->send(new GeneralTicketNotification($ticket));
+            } catch (\Exception $e) {
+                Log::error('Email Notification Failed: ' . $e->getMessage());
+            }
+
             return redirect()->route('client.generalTickets', ['id' => Auth::user()->id])
-                ->with('success', 'Ticket created successfully.');
+                ->with('success', 'Ticket created successfully. Email notification sent.');
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create ticket: ' . $e->getMessage());

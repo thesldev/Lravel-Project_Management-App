@@ -10,14 +10,15 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewGeneralTicketNotification extends Mailable implements ShouldQueue
+class GeneralTicketNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $ticket;
     /**
      * Create a new message instance.
      */
+    public $ticket;
+
     public function __construct(GeneralTicket $ticket)
     {
         //
@@ -25,14 +26,14 @@ class NewGeneralTicketNotification extends Mailable implements ShouldQueue
     }
 
     /**
-     * Build the message.
+     * Get the message envelope.
      */
     public function build()
     {
-        return $this->subject('New General Ticket Created - #' . $this->ticket->id)
-                    ->view('emails.newGeneralTicket')
+        return $this->subject('New General Ticket Created')
+                    ->view('emails.general_ticket_notification')
                     ->with([
-                        'ticket' => $this->ticket
+                        'ticket' => $this->ticket,
                     ]);
     }
 }

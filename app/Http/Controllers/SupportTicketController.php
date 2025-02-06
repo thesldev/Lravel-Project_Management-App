@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProjectSupportTicketNotification;
 use App\Mail\ServiceSupportTicketNotification;
 use App\Models\Employees;
 use App\Models\Project;
@@ -63,10 +64,27 @@ class SupportTicketController extends Controller
                 }
             }
 
-            return response()->json([
-                'message' => 'Support ticket created successfully.',
-                'ticket' => $supportTicket,
-            ]);
+            // Email Recipients
+            $adminEmails = [
+                'siriwardhanad.sanka@gmail.com',
+                'sankasiriwardhana.me@gmail.com',
+                'sankasiriwardhanadeg@gmail.com'
+            ];
+
+
+
+            // Send Email Notification
+        try {
+            Mail::to($adminEmails)->send(new ProjectSupportTicketNotification($supportTicket));
+        } catch (\Exception $e) {
+            Log::error('Project Ticket Email Notification Failed: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'message' => 'Project support ticket created successfully. Email notification sent.',
+            'ticket' => $supportTicket,
+        ]);
+        
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create support ticket.',
@@ -111,7 +129,7 @@ class SupportTicketController extends Controller
                 }
             }
 
-             // Email Recipients
+            // Email Recipients
             $adminEmails = [
                 'siriwardhanad.sanka@gmail.com',
                 'sankasiriwardhana.me@gmail.com',
