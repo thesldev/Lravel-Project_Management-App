@@ -114,7 +114,7 @@
                             </div>
 
                            <!-- Attachments Section -->
-                            <div class="mt-4">
+                           <div class="mt-4">
                                 <h6>Attachments:</h6>
                                 @if($ticket->attachments && $ticket->attachments->isNotEmpty())
                                     <ul class="list-group">

@@ -28,8 +28,10 @@ class GeneralTicket extends Model
         return $this->belongsTo(Client::class, 'user_id');
     }
 
+
     public function attachments()
     {
-        return $this->hasMany(TicketAttachment::class, 'ticket_id'); // Explicitly define the foreign key
+        return $this->hasMany(GeneralTicketAttachment::class, 'ticket_id');
     }
+    
 }

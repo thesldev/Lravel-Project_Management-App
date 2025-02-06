@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('subject');
             $table->text('description');
             $table->string('status')->default('open'); // open, in_progress, resolved, closed
-            $table->string('priority')->default('normal'); // low, normal, high, urgent
-            $table->json('attachments')->nullable(); // Store multiple file paths
+            $table->string('priority')->default('normal');
             $table->timestamps();
 
             // Foreign key constraint

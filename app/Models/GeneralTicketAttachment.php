@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TicketAttachment extends Model
+class GeneralTicketAttachment extends Model
 {
     //
     use HasFactory;
@@ -18,12 +18,6 @@ class TicketAttachment extends Model
 
     public function ticket()
     {
-        return $this->belongsTo(SupportTicket::class, 'ticket_id'); // Explicitly define the foreign key
-    }
-
-    public function generalTicket()
-    {
         return $this->belongsTo(GeneralTicket::class, 'ticket_id'); // Explicitly define the foreign key
     }
-    
 }
