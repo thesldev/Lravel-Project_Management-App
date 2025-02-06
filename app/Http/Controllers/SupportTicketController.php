@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProjectSupportTicketNotification;
+use App\Mail\ServiceSupportTicketNotification;
 use App\Models\Employees;
 use App\Models\Project;
 use App\Models\Servics;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -61,10 +64,27 @@ class SupportTicketController extends Controller
                 }
             }
 
-            return response()->json([
-                'message' => 'Support ticket created successfully.',
-                'ticket' => $supportTicket,
-            ]);
+            // Email Recipients
+            $adminEmails = [
+                'siriwardhanad.sanka@gmail.com',
+                'sankasiriwardhana.me@gmail.com',
+                'sankasiriwardhanadeg@gmail.com'
+            ];
+
+
+
+            // Send Email Notification
+        try {
+            Mail::to($adminEmails)->send(new ProjectSupportTicketNotification($supportTicket));
+        } catch (\Exception $e) {
+            Log::error('Project Ticket Email Notification Failed: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'message' => 'Project support ticket created successfully. Email notification sent.',
+            'ticket' => $supportTicket,
+        ]);
+        
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create support ticket.',
@@ -108,9 +128,23 @@ class SupportTicketController extends Controller
                     ]);
                 }
             }
+
+            // Email Recipients
+            $adminEmails = [
+                'siriwardhanad.sanka@gmail.com',
+                'sankasiriwardhana.me@gmail.com',
+                'sankasiriwardhanadeg@gmail.com'
+            ];
+
+            // Send Email Notification
+            try {
+                Mail::to($adminEmails)->send(new ServiceSupportTicketNotification($supportTicket));
+            } catch (\Exception $e) {
+                Log::error('Email Notification Failed: ' . $e->getMessage());
+            }
     
             return response()->json([
-                'message' => 'Service support ticket created successfully.',
+                'message' => 'Service support ticket created successfully.Email notification sent.',
                 'ticket' => $supportTicket,
             ]);
         } catch (\Exception $e) {
