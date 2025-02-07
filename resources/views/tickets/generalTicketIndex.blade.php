@@ -343,6 +343,29 @@
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
+    <!-- script for disable submit button until get the response -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("createTicketForm");
+
+            if (form) {
+                form.addEventListener("submit", function (event) {
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    const closeButton = document.querySelector("#assignMemberModal .btn-close");
+
+                    // Disable buttons and show user feedback
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.textContent = "Submitting...";
+                    }
+
+                    if (closeButton) {
+                        closeButton.disabled = true;
+                    }
+                });
+            }
+        });
+    </script>
 
     <!-- Initialize DataTables -->
     <script>

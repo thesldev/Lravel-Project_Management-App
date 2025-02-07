@@ -348,6 +348,13 @@
                 // Get form data
                 const formData = new FormData(this);
 
+                // Disable the submit button and close icon
+                const submitButton = $(this).find('button[type="submit"]');
+                const closeButton = $('.btn-close-white');
+
+                submitButton.prop('disabled', true).text('Submitting...');
+                closeButton.prop('disabled', true);
+
                 // Send an Ajax request
                 $.ajax({
                     url: '/support_tickets/create-service',
@@ -356,12 +363,17 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        alert('Ticket created successfully!');
+                        alert(response.message);
                         $('#createTicketModal').modal('hide');
                         location.reload(); // Reload the page to update ticket list
                     },
                     error: function (xhr) {
                         alert('Failed to create ticket. Please try again.');
+                    },
+                    complete: function () {
+                        // Re-enable buttons after the request completes
+                        submitButton.prop('disabled', false).text('Submit');
+                        closeButton.prop('disabled', false);
                     }
                 });
             });
