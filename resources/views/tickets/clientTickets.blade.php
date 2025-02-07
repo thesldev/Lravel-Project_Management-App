@@ -182,7 +182,7 @@
                                         <h5 class="card-title">${ticket.title}</h5>
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <span><strong>Project:</strong> ${ticket.project?.name || 'Unknown'}</span>
-                                            <a class="btn btn-primary btn-sm" href="/client-tickets/${ticket.id}/view">View Ticket</a>
+                                            <a class="btn btn-primary btn-sm" href="/client-project-tickets/${ticket.id}/view">View Ticket</a>
                                         </div>
                                         <p class="card-text mb-1"><strong>Status:</strong> ${statusBadge}</p>
                                     </div>
