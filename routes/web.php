@@ -769,8 +769,8 @@ Route::get('/client-status-tickets/status/{status}', [SupportTicketController::c
 
 // route for view selected client ticket
 // view selected project ticket (admin-side)
-Route::get('/client-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
-    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin', 'checkPortalAccess')
+Route::get('/client-project-tickets/{id}/view', [SupportTicketController::class, 'viewTicket'])
+    ->middleware('auth','verified', 'rolemanager:supperAdmin, admin')
     ->name('ticket.viewTicket');
 
 // view selected service ticket (admin-side)

@@ -283,8 +283,11 @@
 
                 // Get form data
                 const formData = new FormData(this);
+                const submitButton = $('#createTicketForm button[type="submit"]');
 
-                // Send an Ajax request
+                // Disable submit button and show a loading message
+                submitButton.prop('disabled', true).text('Submitting...');
+
                 $.ajax({
                     url: '/support_tickets/create',
                     method: 'POST',
@@ -294,9 +297,15 @@
                     success: function (response) {
                         alert('Ticket created successfully!');
                         $('#createTicketModal').modal('hide');
+                        // Reset form after submission
+                        $('#createTicketForm')[0].reset();
                     },
                     error: function (xhr) {
                         alert('Failed to create ticket. Please try again.');
+                    },
+                    complete: function () {
+                        // Re-enable button and reset text regardless of outcome
+                        submitButton.prop('disabled', false).text('Submit');
                     }
                 });
             });

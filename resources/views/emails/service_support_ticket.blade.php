@@ -5,92 +5,144 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #181818;
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        .container {
-            max-width: 600px;
-            background: #ffffff;
+        .content {
+            background-color: #181818;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: small;
+            color: #cccccc;
         }
+
+        .content h2{
+            font-size: medium;
+            color: #cccccc;
+            text-align: center;
+        }
+
+        .content p{
+            font-size: small;
+            color: #ffffff;
+        }
+
+        .content a{
+            color: #ffffff;
+        }
+
         .ticket-header {
             background: #007bff;
-            color: white;
+            color: #ffffff;
             padding: 15px;
             text-align: center;
             border-radius: 8px 8px 0 0;
         }
-        .table th {
-            background: #007bff;
-            color: white;
-        }
         .footer {
+            background-color: #181818;
             text-align: center;
-            padding: 10px;
-            font-size: 14px;
+            padding: 20px;
+            font-size: 12px;
+            color: #cccccc;
+        }
+        .footer a {
+            color: #7e3aff;
+            text-decoration: none;
+        }
+        .footer-icons img {
+            width: 16px;
+            margin: 0 5px;
+            opacity: 0.8;
+        }
+        .content h2 {
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .content p {
+            margin: 10px 0;
+            color: #ffffff;
+        }
+        .ticket-info p {
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .ticket-details {
+            display: flex;
+            gap: 20px;
+            font-size: smaller;
+            font-weight: 500;
+            color: #ffffff;
+            margin: 15px 0;
+        }
+        .priority {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+        .status {
             color: #6c757d;
+            font-weight: bold;
+        }
+        .cta-button {
+            background-color: #7e3aff;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
+    <div class="email-container">
+        <div class="content">
+            <h2>New Support-Ticket (Service) Created</h2>
+            <p>Hello Team,</p>
+            <p>A new service support ticket has been raised by a client. Below are the details:</p>
+            <br>
+            <div class="ticket-info">
+                <p class="title"><strong>Title:</strong> {{ $ticket->title }}</p>
+                <p><strong>Description:</strong> {{ $ticket->description }}</p>
 
-<div class="container">
-    <div class="ticket-header">
-        <h2>New Service Support Ticket Created</h2>
+                <div class="ticket-details">
+                    <span><strong>Priority:</strong> 
+                        @if($ticket->priority == 'Critical')
+                            <span class="priority">{{ $ticket->priority }}</span>
+                        @elseif($ticket->priority == 'High')
+                            <span style="color: #ffcc00;">{{ $ticket->priority }}</span>
+                        @elseif($ticket->priority == 'Medium')
+                            <span style="color: #17a2b8;">{{ $ticket->priority }}</span>
+                        @else
+                            <span style="color: #28a745;">{{ $ticket->priority }}</span>
+                        @endif
+                    </span>
+
+                    <span><strong>Status:</strong> 
+                        <span class="status">{{ $ticket->status }}</span>
+                    </span>
+                </div>
+                <br>
+                <p><strong>Client ID:</strong> {{ $ticket->client_id }}</p>
+                <p><strong>Service ID:</strong> {{ $ticket->service_id }}</p>
+            </div>
+
+            <a href="{{route('ticket.viewServiceTicket', ['id' => $ticket->id])}}" class="cta-button">View Ticket Details</a>
+
+            <br>
+            <br>
+
+            <p>Best Regards,</p>
+            <p><strong>Claps - Project Management Tool</strong></p>
+        </div>
+
+        <div class="footer">
+            <p>
+                You are receiving this email because of your activity on the Project Management Tool. If you wish to stop receiving notifications, you can 
+                <a href="#">manage your notification preferences</a>.
+            </p>
+            <p>© 2025 Claps-Dev, No.40, Kirimetiyana west, Lunuwila, (NWP) Sri Lanka</p>
+        </div>
     </div>
-
-    <p>Hello,</p>
-    <p>A new service support ticket has been raised by a client. Below are the details:</p>
-
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th>Title</th>
-                <td>{{ $ticket->title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ $ticket->description }}</td>
-            </tr>
-            <tr>
-                <th>Priority</th>
-                <td>
-                    @if($ticket->priority == 'Critical')
-                        <span class="badge bg-danger">{{ $ticket->priority }}</span>
-                    @elseif($ticket->priority == 'High')
-                        <span class="badge bg-warning">{{ $ticket->priority }}</span>
-                    @elseif($ticket->priority == 'Medium')
-                        <span class="badge bg-info">{{ $ticket->priority }}</span>
-                    @else
-                        <span class="badge bg-success">{{ $ticket->priority }}</span>
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td><span class="badge bg-secondary">{{ $ticket->status }}</span></td>
-            </tr>
-            <tr>
-                <th>Client ID</th>
-                <td>{{ $ticket->client_id }}</td>
-            </tr>
-            <tr>
-                <th>Service ID</th>
-                <td>{{ $ticket->service_id }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <p>Please log in to the system to review and take necessary action.</p>
-
-    <div class="footer">
-        <p>Best Regards,</p>
-        <p><strong>Your Support Team</strong></p>
-    </div>
-</div>
-
 </body>
 </html>
