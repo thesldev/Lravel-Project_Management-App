@@ -48,4 +48,12 @@ class Servics extends Model
         return $this->hasMany(Announcement::class, 'service', 'id');
     }
 
+    /**
+     * Support tickets related to this service.
+     */
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'service_id', 'id');
+    }
+
 }
