@@ -6,12 +6,13 @@ use App\Models\Client;
 use App\Models\Employees;
 use App\Models\Project;
 use App\Models\Servics;
+use App\Models\SupportTicket;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -163,15 +164,17 @@ class ProjectController extends Controller
     // function for view product in client-portal
     public function viewMyService($id)
     {
+        $userId = Auth::id();
+    
         // Fetch the service by its ID with related clients and announcements
         $service = Servics::with(['clients', 'announcements'])
                         ->findOrFail($id);
 
-        // Return the view with the service data
+    
+        // Return the view with the service and filtered support tickets
         return view('services.view-service-clientPortal', compact('service'));
     }
-
-
+    
 
 
 }

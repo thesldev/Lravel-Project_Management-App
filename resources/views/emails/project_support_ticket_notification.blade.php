@@ -126,7 +126,7 @@
                 <p><strong>Project ID:</strong> {{ $ticket->project_id ?? 'N/A' }}</p>
             </div>
 
-            <a href="" class="cta-button">View Ticket Details</a>
+            <a href="{{ route('ticket.viewTicket', ['id' => $ticket->id]) }}" class="cta-button">View Ticket Details</a>
 
             <br>
             <br>
