@@ -185,22 +185,21 @@ class ClientController extends Controller
         $ticketCounts = array_values($formattedTicketData);
 
         // Calculate the number of tickets by status
-        $openTickets = DB::table('support_tickets')->where('status', 'Open')->count();
-        $inProgressTickets = DB::table('support_tickets')->where('status', 'In Progress')->count();
-        $onHoldTickets = DB::table('support_tickets')->where('status', 'On Hold')->count();
-        $resolvedTickets = DB::table('support_tickets')->where('status', 'Resolved')->count();
+        // $openTickets = DB::table('support_tickets')->where('status', 'Open')->count();
+        // $inProgressTickets = DB::table('support_tickets')->where('status', 'In Progress')->count();
+        // $onHoldTickets = DB::table('support_tickets')->where('status', 'On Hold')->count();
+        // $resolvedTickets = DB::table('support_tickets')->where('status', 'Resolved')->count();
 
         // Prepare data for the pie chart
-        $chartData = [
-            'Open' => $openTickets,
-            'In Progress' => $inProgressTickets,
-            'On Hold' => $onHoldTickets,
-            'Resolved' => $resolvedTickets,
-        ];
+        // $chartData = [
+        //     'Open' => $openTickets,
+        //     'In Progress' => $inProgressTickets,
+        //     'On Hold' => $onHoldTickets,
+        //     'Resolved' => $resolvedTickets,
+        // ];
 
         return view('clients.clientPortal', compact(
             'totalProjects',
-            'chartData',
             'totalServices',
             'totalProjectTickets',
             'totalServiceTickets',

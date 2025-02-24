@@ -157,7 +157,7 @@
 
             <div class="row">
               <!-- Area Chart -->
-              <div class="col-xl-8 col-lg-7">
+              <div class="col-xl col-lg">
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -173,26 +173,7 @@
               </div>
 
               <!-- Pie Chart -->
-              <div class="col-xl-4 col-lg-5">
-                <div class="card shadow mb-4">
-                    <!-- Card Header - Dropdown -->
-                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Active Ticket's Status</h6>
-                    </div>
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="chart-pie pt-4 pb-2">
-                            <canvas id="ticketStatusPieChart"></canvas>
-                        </div>
-                        <div class="mt-4 text-center small">
-                            <span class="mr-2"><i class="fas fa-circle text-primary"></i> Open</span>
-                            <span class="mr-2"><i class="fas fa-circle text-warning"></i> In Progress</span>
-                            <span class="mr-2"><i class="fas fa-circle text-secondary"></i> On Hold</span>
-                            <span class="mr-2"><i class="fas fa-circle text-success"></i> Resolved</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+              
             </div>
 
             <div class="row">
@@ -324,48 +305,6 @@
 
     <!-- script files for pie chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        // Pass PHP data to JavaScript
-        const ticketData = <?= json_encode([
-            $chartData['Open'], 
-            $chartData['In Progress'], 
-            $chartData['On Hold'], 
-            $chartData['Resolved']
-        ]); ?>;
-
-        const ctp = document.getElementById("ticketStatusPieChart").getContext("2d");
-
-        const ticketStatusPieChart = new Chart(ctp, {
-            type: 'pie',
-            data: {
-                labels: ['Open', 'In Progress', 'On Hold', 'Resolved'],
-                datasets: [{
-                    data: ticketData,
-                    backgroundColor: ['#4e73df', '#f6c23e', '#858796', '#1cc88a'],
-                    hoverBackgroundColor: ['#2e59d9', '#f4b619', '#6c757d', '#17a673'],
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
-                }],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false // Disable the legend
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                const label = tooltipItem.label || '';
-                                const value = tooltipItem.raw || 0;
-                                return `${label}: ${value} Tickets`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 
 
 
