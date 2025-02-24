@@ -43,7 +43,7 @@
                 <div class="container-fluid">
                     <h1 class="h3 mb-4 text-gray-800">Service #{{$service->id}} - Details</h1>
 
-                    <!-- firest-section -->
+                    <!-- firest-section - service data-->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Service Information</h6>
@@ -73,6 +73,7 @@
                         </div>                     
                     </div>
 
+                    <!-- service announcments section -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Service Announcements</h6>
@@ -134,7 +135,6 @@
                             </div>                     
                         </div>
                     </div>
-
 
                     <!-- second-section -->
                     <div class="card shadow mb-4">
@@ -378,6 +378,8 @@
                 });
             });
 
+            const LOGGED_IN_USER_ID = {{ json_encode(Auth::id()) }};
+
             // Function to fetch tickets related to a service
             function fetchServiceTickets(serviceId) {
                 $.ajax({
@@ -391,9 +393,9 @@
 
                         // Check if tickets are available
                         if (response.tickets && response.tickets.length > 0) {
-                            // Filter out 'Resolved' and 'Closed' tickets
-                            const filteredTickets = response.tickets.filter(
-                                ticket => ticket.status !== 'Resolved' && ticket.status !== 'Closed'
+                            // Filter tickets based on the logged-in user ID and remove 'Resolved' and 'Closed' tickets
+                            const filteredTickets = response.tickets.filter(ticket =>
+                                ticket.client_id === LOGGED_IN_USER_ID && ticket.status !== 'Resolved' && ticket.status !== 'Closed'
                             );
 
                             if (filteredTickets.length > 0) {
@@ -412,9 +414,7 @@
                                                 <!-- Body Section -->
                                                 <div class="card-body d-flex justify-content-between align-items-center">
                                                     <div class="flex-grow-1">
-                                                        <p class="card-text mb-1">
-                                                            ${ticket.description}
-                                                        </p>
+                                                        <p class="card-text mb-1">${ticket.description}</p>
                                                     </div>
 
                                                     <!-- Dropdown Button -->
@@ -484,8 +484,7 @@
                 });
             }
 
-
-            // Function to fetch closed tickets for a service
+            // Function to fetch closed/resolved tickets for a service
             function fetchResolvedTickets(serviceId) {
                 $.ajax({
                     url: `/my-services/${serviceId}/closed-tickets`,
@@ -498,48 +497,57 @@
 
                         // Check if tickets exist
                         if (response.closedTickets && response.closedTickets.length > 0) {
-                            response.closedTickets.forEach(ticket => {
-                                const statusBadgeClass = 
-                                    ticket.status === 'Resolved' ? 'bg-success' : // Green for Resolved
-                                    ticket.status === 'Closed' ? 'bg-danger' : ''; // Red for Closed
+                            // Filter tickets based on the logged-in user ID
+                            const filteredTickets = response.closedTickets.filter(ticket => 
+                                ticket.client_id === LOGGED_IN_USER_ID
+                            );
 
-                                const ticketHtml = `
-                                    <div class="col-12 mb-3">
-                                        <div class="card shadow-sm">
-                                            <!-- Header Section -->
-                                            <div class="card-header d-flex justify-content-between align-items-center">
-                                                <div class="d-flex align-items-center">
-                                                    <h5 class="mb-0 me-2">${ticket.title}</h5> 
-                                                    <span class="badge bg-primary">#${ticket.id}</span>
+                            if (filteredTickets.length > 0) {
+                                filteredTickets.forEach(ticket => {
+                                    const statusBadgeClass = 
+                                        ticket.status === 'Resolved' ? 'bg-success' : // Green for Resolved
+                                        ticket.status === 'Closed' ? 'bg-danger' : ''; // Red for Closed
+
+                                    const ticketHtml = `
+                                        <div class="col-12 mb-3">
+                                            <div class="card shadow-sm">
+                                                <!-- Header Section -->
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center">
+                                                        <h5 class="mb-0 me-2">${ticket.title}</h5> 
+                                                        <span class="badge bg-primary">#${ticket.id}</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Body Section -->
+                                                <div class="card-body">
+                                                    <p class="card-text mb-1">${ticket.description}</p>
+                                                </div>
+
+                                                <!-- Footer Section -->
+                                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                                    <span class="text-muted">Created At: ${new Date(ticket.created_at).toLocaleString()}</span>
+                                                    <span class="badge ${statusBadgeClass}">${ticket.status}</span>
                                                 </div>
                                             </div>
-
-                                            <!-- Body Section -->
-                                            <div class="card-body">
-                                                <p class="card-text mb-1">
-                                                    ${ticket.description}
-                                                </p>
-                                            </div>
-
-                                            <!-- Footer Section -->
-                                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                                <span class="text-muted">Created At: ${new Date(ticket.created_at).toLocaleString()}</span>
-                                                <span class="badge ${statusBadgeClass}">${ticket.status}</span>
-                                            </div>
                                         </div>
-                                    </div>
-                                `;
-                                ticketContainer.append(ticketHtml);
-                            });
+                                    `;
+                                    ticketContainer.append(ticketHtml);
+                                });
+                            } else {
+                                // No resolved/closed tickets for the logged-in user
+                                ticketContainer.append('<p>No resolved tickets found for this service.</p>');
+                            }
                         } else {
-                            ticketContainer.append('<p>No resolved tickets found for this project.</p>');
+                            ticketContainer.append('<p>No resolved tickets found for this service.</p>');
                         }
                     },
                     error: function (xhr) {
                         alert(`Failed to load resolved tickets: ${xhr.responseText}`);
                     }
                 });
-            }   
+            }
+   
                         
             // Fetch tickets on page load
             const serviceId = "{{ $service->id }}"; // Replace with your dynamic service ID
