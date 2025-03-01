@@ -309,7 +309,7 @@
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-    <!-- Custom scripts for all pages-->
+    <!-- Custom scripts for all pages--> 
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 
 
@@ -407,7 +407,7 @@
                                                 <div class="card-header d-flex justify-content-between align-items-center">
                                                     <div class="d-flex align-items-center">
                                                         <h5 class="mb-0 me-2">${ticket.title}</h5> 
-                                                        <span class="badge bg-primary">#${ticket.id}</span>
+                                                        <span class="badge bg-primary">#${ticket.id}</span>-
                                                     </div>
                                                 </div>
 
